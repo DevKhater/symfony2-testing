@@ -30,10 +30,10 @@ class RegistrationController extends Controller
             $em->persist($user);
             $em->flush();
 
-            return $this->redirectToRoute('homepage');
+            return $this->redirectToRoute('secure_login');
         }
 
-        return $this->render('MKUSERBundle:Security:register.html.twig', array('form' => $form->createView()));
+        return $this->render('MKUserBundle:Security:register.html.twig', array('form' => $form->createView()));
     }
 
 }

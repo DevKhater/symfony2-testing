@@ -38,6 +38,8 @@ framework:
 twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
+    paths:
+        '%kernel.root_dir%/../src/MK/UserBundle/Resources': MKUserBundle
 
 # Doctrine Configuration
 doctrine:

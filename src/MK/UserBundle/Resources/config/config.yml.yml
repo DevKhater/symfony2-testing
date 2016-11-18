@@ -1,3 +1,0 @@
-twig:
-    paths:
-        '%kernel.root_dir%/../src/MK/UserBundle/Resources': MKUSERBundle

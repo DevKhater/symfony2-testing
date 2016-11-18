@@ -1,9 +1,14 @@
 # To get started with security, check out the documentation:
 # http://symfony.com/doc/current/book/security.html
 security:
+    encoders:
+        MK\UserBundle\Entity\User: 
+            id: mk.user.password_encoder
 
     # http://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
     providers:
+        mk_user_service:
+            id: mk.user.provider
         in_memory:
             memory: ~
 
@@ -14,7 +19,15 @@ security:
             security: false
 
         main:
+            pattern: /
             anonymous: ~
+            provider: mk_user_service
+            guard: 
+                authenticators:
+                    - mk.login.form_authenticator
+            logout:
+                path:   /logout
+                target: /
             # activate different ways to authenticate
 
             # http_basic: ~
