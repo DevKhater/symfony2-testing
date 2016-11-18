@@ -13,3 +13,6 @@ secure_login:
 login_check:
     path:     /login_check
     defaults: { _controller: MKUserBundle:Security:loginCheck }
+    
+logout:
+    path: /logout

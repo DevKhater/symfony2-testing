@@ -36,29 +36,32 @@ class UserHandler implements UserHandlerInterface
 
     public function loadUserByUsername($username)
     {
-        return $this->em->getRepository('UserBundle:User')->loadUserByUsername($username);
+        return $this->em->getRepository('MKUserBundle:User')->loadUserByUsername($username);
     }
 
     public function makeUserSuperUser(User $user)
     {
-        //$user = $this->loadUserByUsername($username);
-        $user->setSuperAdmin(true);
+        $user->isSuperAdmin() ? $user->setSuperAdmin(false) : $user->setSuperAdmin(true);
         $this->save($user);
     }
 
     public function changeUserPassword(User $user, $plainNewPassword)
     {
-        
+        $password = $this->passwordEncoder->encodePassword($user, $plainNewPassword);
+        $user->setPassword($password);
+        $this->save($user);
     }
 
     public function changeEmail(User $user, $newEmail)
     {
-        
+        $user->setEmail($newEmail);
+        $this->save($user);
     }
 
     public function deleteUser(User $user)
     {
-        
+        $this->em->remove($user);
+        $this->em->flush();
     }
 
     private function save($user)

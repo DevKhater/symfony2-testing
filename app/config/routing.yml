@@ -1,3 +1,8 @@
+mk_api:
+    resource: "@MKApiBundle/Controller/"
+    type:     annotation
+    prefix:   /api
+
 mk_user:
     resource: "@MKUserBundle/Resources/config/routing.yml"
     prefix:   /
