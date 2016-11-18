@@ -1,3 +1,8 @@
+music:
+    resource: "@MusicBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 mk_api:
     resource: "@MKApiBundle/Controller/"
     type:     annotation

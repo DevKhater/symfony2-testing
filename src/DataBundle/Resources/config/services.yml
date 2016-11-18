@@ -1,0 +1,27 @@
+parameters:
+    upload_directory: '%kernel.root_dir%/../web/uploads/images'
+    upload_prefix_directory: 'uploads/images'
+    data.band.handler.class: 'DataBundle\Handler\BandHandler'
+    data.band.class: 'DataBundle\Entity\Band'
+    data.media.handler.class: 'DataBundle\Handler\MediaHandler'
+    data.media.class: 'DataBundle\Entity\Media'
+
+services:
+    mkcrud.file.uploader:
+        class: DataBundle\Service\FileUploader
+        arguments: [%upload_directory%, %upload_prefix_directory%]
+    mk.doctrine_media_listener:
+        class: DataBundle\EventListener\MediaUploadListener
+        arguments: ['@mkcrud.file.uploader']
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: preUpdate }
+            - { name: doctrine.event_listener, event: postLoad }
+    
+    mk.music.band.handler:
+        class: %data.band.handler.class%
+        arguments: ['@doctrine.orm.entity_manager','%data.band.class%','@form.factory']
+        
+    mk.music.media.handler:
+        class: %data.media.handler.class%
+        arguments: ['@doctrine.orm.entity_manager','%data.media.class%']
