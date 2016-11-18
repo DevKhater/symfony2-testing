@@ -2,8 +2,8 @@
 
 namespace MK\ApiBundle\EventListener;
 
-use AppBundle\Api\ApiProblem;
-use AppBundle\Api\ApiProblemException;
+use MK\ApiBundle\Api\ApiProblem;
+use MK\ApiBundle\Api\ApiProblemException;
 use MK\ApiBundle\Factory\ApiResponseFactory;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
