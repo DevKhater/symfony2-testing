@@ -42,6 +42,7 @@ twig:
     strict_variables: "%kernel.debug%"
     paths:
         '%kernel.root_dir%/../src/MK/UserBundle/Resources': MKUserBundle
+        '%kernel.root_dir%/../src/DataBundle/Resources': DataBundle
 
 # Doctrine Configuration
 doctrine:
@@ -78,3 +79,9 @@ lexik_jwt_authentication:
     public_key_path:  %jwt_public_key_path%
     pass_phrase:      %jwt_key_pass_phrase%
     token_ttl:        %jwt_token_ttl%
+
+stof_doctrine_extensions:
+        default_locale: en_US
+        orm:
+            default:
+                sluggable: true

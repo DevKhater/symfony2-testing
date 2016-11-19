@@ -3,6 +3,7 @@
 namespace DataBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * BandRepository
@@ -12,4 +13,40 @@ use Doctrine\ORM\EntityRepository;
  */
 class BandRepository extends EntityRepository
 {
+
+    public function findAllBands($currentPage = 1, $limit)
+    {
+
+        $query = $this->createQueryBuilder('b')
+                ->getQuery();
+
+        $query->setFirstResult($limit * ($currentPage - 1)) // Offset
+                ->setMaxResults($limit); // Limit
+
+        $result = $query->getResult();
+        return $result;
+//        $paginator = $this->paginate($query, $currentPage);
+        //      return $paginator;
+    }
+
+    public function countAllBands()
+    {
+        $query = $this->getEntityManager()
+                ->createQuery(
+                'SELECT  count(a) FROM DataBundle:Band a');
+        $count = $query->getSingleScalarResult();
+        return $count;
+    }
+
+    public function paginate($dql, $page = 1, $limit = 5)
+    {
+        $paginator = new Paginator($dql);
+        //        $paginator->setUseOutputWalkers(false);
+        $paginator->getQuery()
+                ->setFirstResult($limit * ($page - 1)) // Offset
+                ->setMaxResults($limit); // Limit
+
+        return $paginator;
+    }
+
 }

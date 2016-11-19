@@ -18,7 +18,7 @@ services:
             - { name: doctrine.event_listener, event: preUpdate }
             - { name: doctrine.event_listener, event: postLoad }
     
-    mk.music.band.handler:
+    data.band.handler:
         class: %data.band.handler.class%
         arguments: ['@doctrine.orm.entity_manager','%data.band.class%','@form.factory']
         

@@ -1,0 +1,18 @@
+<form enctype="multipart/form-data" action="{{ path('data_bandcrud_edit', {'slug' : name})}}" class="" method="POST">
+    <div class="form-group">
+        <label for="name">Band Name</label>
+        {{ form_widget(form.name)}}
+    </div>
+    <div class="form-group">
+        <label for="genre">Genre</label>
+        {{ form_widget(form.genre)}}
+    </div>
+{#    <div class="form-group">
+        <label for="genre">Image</label>
+        {{ form_widget(form.image)}}
+    </div>#}
+    {{ form_errors(form) }}
+    {{ form_row(form._token) }}
+    <input type="submit" class="btn btn-default" value="Save"/>
+
+</form>

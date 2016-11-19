@@ -129,7 +129,6 @@ class BandHandler implements BandHandlerInterface
         $form = $this->formFactory->create(new BandType(), $band, array('method' => $method));
         $form->handleRequest($parameters);
         if ($form->isValid()) {
-            dump('formcvalid');
             $band = $form->getData();
             $this->em->persist($band);
             $this->em->flush($band);

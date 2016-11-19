@@ -6,8 +6,8 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\File\File;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
-use MK\CRUDBundle\Entity\Media;
-use MK\CRUDBundle\Service\FileUploader;
+use DataBundle\Entity\Media;
+use DataBundle\Service\FileUploader;
 
 class MediaUploadListener
 {

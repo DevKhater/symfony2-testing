@@ -1,5 +1,5 @@
-music:
-    resource: "@MusicBundle/Controller/"
+data:
+    resource: "@DataBundle/Controller/"
     type:     annotation
     prefix:   /
 
@@ -15,3 +15,7 @@ mk_user:
 app:
     resource: "@AppBundle/Controller/"
     type:     annotation
+
+NelmioApiDocBundle:
+    resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
+    prefix:   /doc/api

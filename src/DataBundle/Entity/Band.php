@@ -4,9 +4,7 @@ namespace DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use JMS\Serializer\Annotation as Serializer;
 use Gedmo\Mapping\Annotation as Gedmo;
-
 use DataBundle\Model\BandInterface;
 
 /**
@@ -14,7 +12,7 @@ use DataBundle\Model\BandInterface;
  *
  * @ORM\Table()
  * @ORM\Entity()
- * @Serializer\ExclusionPolicy("all")
+ * @ORM\Entity(repositoryClass="DataBundle\Repository\BandRepository")
  */
 class Band implements BandInterface
 {
@@ -28,29 +26,25 @@ class Band implements BandInterface
 
     /**
      * @ORM\Column(name="name", type="string", length=255)
-     * @Serializer\Expose
      */
     private $name;
 
     /**
      * @ORM\Column(name="genre", type="string", length=255)
-     * @Serializer\Expose
      */
     private $genre;
 
     /**
-     * @ORM\OneToOne(targetEntity="MK\DataBundle\Entity\Media", cascade={"persist"}, fetch="LAZY")
+     * @ORM\OneToOne(targetEntity="DataBundle\Entity\Media", cascade={"persist"}, fetch="LAZY")
      * @ORM\JoinColumn(name="media_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
-     * @Serializer\Expose
      */
     protected $image;
 
-    /** 
+    /**
      * @ORM\Column(type="string") 
      * @Gedmo\Translatable
      * @Gedmo\Slug(fields={"name"})
      * @ORM\Column(length=64, unique=true)
-     * @Serializer\Expose
      */
     protected $slug;
 

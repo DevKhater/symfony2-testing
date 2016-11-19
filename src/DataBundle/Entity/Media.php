@@ -31,7 +31,6 @@ class Media implements MediaInterface
      * 
      * @Assert\NotBlank(message="Please Upload Image")
      * @Assert\Image()
-     * @Serializer\Expose
      * 
      */
     private $image;
