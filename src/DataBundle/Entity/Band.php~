@@ -164,37 +164,4 @@ class Band implements BandInterface
         return $this->slug;
     }
 
-
-    /**
-     * Add concerts
-     *
-     * @param \DataBundle\Entity\Concert $concerts
-     * @return Band
-     */
-    public function addConcert(\DataBundle\Entity\Concert $concerts)
-    {
-        $this->concerts[] = $concerts;
-
-        return $this;
-    }
-
-    /**
-     * Remove concerts
-     *
-     * @param \DataBundle\Entity\Concert $concerts
-     */
-    public function removeConcert(\DataBundle\Entity\Concert $concerts)
-    {
-        $this->concerts->removeElement($concerts);
-    }
-
-    /**
-     * Get concerts
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getConcerts()
-    {
-        return $this->concerts;
-    }
 }

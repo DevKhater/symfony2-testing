@@ -1,0 +1,54 @@
+<?php
+
+namespace DataBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+
+/**
+ * Location
+ *
+ * @ORM\Table(name="location")
+ * @ORM\Entity(repositoryClass="DataBundle\Repository\LocationRepository")
+ */
+class Location
+{
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="name", type="string")
+     */
+    private $name;
+
+    /**
+     * @ORM\OneToMany(targetEntity="DataBundle\Entity\Concert", mappedBy="location")
+     * 
+     */
+    private $concerts;
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function __construct()
+    {
+        $this->concert = new ArrayCollection();
+    }
+
+}

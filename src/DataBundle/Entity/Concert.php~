@@ -1,0 +1,56 @@
+<?php
+
+namespace DataBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use DataBundle\Model\ConcertInterface;
+
+/**
+ * Concert
+ *
+ * @ORM\Table(name="concert")
+ * @ORM\Entity(repositoryClass="DataBundle\Repository\ConcertRepository")
+ */
+class Concert implements ConcertInterface
+{
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var date
+     *
+     * @ORM\Column(name="date", type="date")
+     */
+    private $date;
+
+    /**
+     * @var location
+     * 
+     * @ORM\ManyToOne(targetEntity="DataBundle\Entity\Location", inversedBy="concerts")
+     * @ORM\JoinColumn(name="location_id", referencedColumnName="id")     */
+    private $location;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="DataBundle\Entity\Band", inversedBy="concerts")
+     * @ORM\JoinColumn(name="band_id", referencedColumnName="id")
+     */
+    protected $band;
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+}
