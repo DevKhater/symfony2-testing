@@ -8,7 +8,8 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpFoundation\Response;
 use DataBundle\Model\BandInterface;
 use DataBundle\Model\MediaInterface;
-use DataBundle\Form\BandType;
+use DataBundle\Form\Api\ApiBandType;
+use DataBundle\Form\Api\ApiBandPATCHType;
 use DataBundle\Exception\InvalidFormException;
 use DataBundle\Handler\HandlerInterface\BandHandlerInterface;
 
@@ -60,7 +61,7 @@ class BandHandler implements BandHandlerInterface
      *
      * @return BandInterface
      */
-    public function post($parameters)
+    public function post(array $parameters)
     {
         $band = $this->createBand();
 
@@ -88,7 +89,7 @@ class BandHandler implements BandHandlerInterface
      *
      * @return BandInterface
      */
-    public function patch(BandInterface $band, $parameters)
+    public function patch(BandInterface $band, array $parameters)
     {
         return $this->processForm($band, $parameters, 'PATCH');
     }
@@ -126,8 +127,9 @@ class BandHandler implements BandHandlerInterface
      */
     private function processForm(BandInterface $band, $parameters, $method = "PUT")
     {
-        $form = $this->formFactory->create(new BandType(), $band, array('method' => $method));
-        $form->handleRequest($parameters);
+        $method == "PATCH" ? $form = $this->formFactory->create(new ApiBandPATCHType(), $band, array('method' => $method)) : $form = $this->formFactory->create(new ApiBandType(), $band, array('method' => $method)); 
+        $form->submit($parameters);
+        //dump($parameters);dump($band);exit;
         if ($form->isValid()) {
             $band = $form->getData();
             $this->em->persist($band);

@@ -3,23 +3,18 @@
 namespace DataBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-//use FOS\RestBundle\Controller\FOSRestController;
-//use FOS\RestBundle\Controller\Annotations;
-//use FOS\RestBundle\View\View;
-//use FOS\RestBundle\Request\ParamFetcherInterface;
 use JMS\Serializer\SerializationContext;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Form\FormTypeInterface;
-//use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-//use Symfony\Component\HttpKernel\Exception\HttpException;
-//use DataBundle\Entity\Band;
-use DataBundle\Form\BandType;
-//use DataBundle\Form\UpdateBandType;
-use MK\ApiBundle\Api\ApiProblem;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use DataBundle\Entity\Band;
+use DataBundle\Form\Api\ApiBandType;
+use DataBundle\Form\Api\ApiBandPATCHType;
 
 class ApiBandController extends Controller
 {
@@ -33,7 +28,19 @@ class ApiBandController extends Controller
      *   statusCodes = {
      *     200 = "Returned when Successful",
      *     404 = "Returned when No Content Found",
-     *   }
+     *   },
+     *  requirements={
+     *      {
+     *          "name"="offset",
+     *          "dataType"="integer",
+     *          "description"="offset to display bands"
+     *      },
+     *      {
+     *          "name"="limit",
+     *          "dataType"="integer",
+     *          "description"="limit number per query Default (10)"
+     *      },
+     *  }
      * )
      * 
      */
@@ -64,21 +71,50 @@ class ApiBandController extends Controller
     }
 
     /**
-     * @Route("api/band/", name="api_band_form")
+     * @Route("api/form/band/{type}/", name="api_band_new_form")
+     * @Route("api/form/band/{type}/{slug}", name="api_band_form")
      * @Method("GET")
      *
      * @ApiDoc(
      *  resource = true,
-     *  description="Get Create Band Form",
+     *  description="Get Band Form TYPES [new, edit, clone]",
      *  statusCodes = {
      *     200 = "Returned when successful"
-     *   }
+     *   },
+     *  requirements={
+     *      {
+     *          "name"="type",
+     *          "dataType"="string",
+     *          "requirement"="new | edit | clone",
+     *          "description"="form depends on request type POST, PATCH, PUT"
+     *      }
+     *  }
      * )
-     *
+     * 
+     * @Template()
      */
-    public function newBandAction()
+    public function bandFormAction(Request $request)
     {
-        return $this->createApiResponse($this->createForm(new BandType()));
+        $type = $request->attributes->get('type');
+        $slug = $request->attributes->get('slug');
+        if (!is_null($slug))
+            $band = $band = $this->getOr404($slug);
+        if ($band instanceof Response)
+            return $band;
+        switch ($type) {
+            case 'new':
+                $form = $this->createBandForm('POST', new Band());
+                break;
+            case 'edit':
+                $form = $this->createBandForm('PATCH', $band[0]);
+                break;
+            case 'clone':
+                $form = $this->createBandForm('PUT', $band[0]);
+                break;
+            default :
+                return $this->createApiResponse('Type Not Found', 404);
+        }
+        return array('form' => $form->createView());
     }
 
     /**
@@ -98,26 +134,16 @@ class ApiBandController extends Controller
     public function postBandAction(Request $request)
     {
         try {
-            $newBand = $this->container->get('data.band.handler')->post(
-                    $request
-                    //->request->all()
-            );
-
-            $routeOptions = array(
-                'slug' => $newBand->getSlug(),
-                '_format' => $request->get('_format')
-            );
-
-            return $this->routeRedirectView('api_band_show', $routeOptions, Response::HTTP_CREATED);
+            $newBand = $this->container->get('data.band.handler')->post($request->request->all());
+            return $this->redirect($this->generateUrl('api_band_show', array('slug' => $newBand->getSlug())));
         } catch (InvalidFormException $exception) {
-
-            return $exception->getForm();
+            return $this->createApiResponse($exception->getForm(), 500);
         }
     }
 
     /**
      * @Route("api/band/update/{slug}", name="api_band_update")
-     * @Method({"PUT"})
+     * @Method("PUT")
      * @ApiDoc(
      *   resource = true,
      *   description = "Update a Band resource",
@@ -127,36 +153,32 @@ class ApiBandController extends Controller
      *     400 = "Returned when the form has errors"
      *   }
      * )
-     * /
-      public function putBandAction(Request $request, $slug)
-      {
-      try {
-      if (!($band = $this->container->get('data.band.handler')->get($slug))) {
-      $statusCode = Response::HTTP_CREATED;
-      $band = $this->container->get('data.band.handler')->post(
-      $request->request->all()
-      );
-      } else {
-      $statusCode = Response::HTTP_NO_CONTENT;
-      $band = $this->container->get('data.band.handler')->put(
-      $band, $request->request->all()
-      );
-      }
+     * 
+     */
+    public function putBandAction(Request $request, $slug)
+    {
+        try {
+            if (!($band = $this->container->get('data.band.handler')->get($slug))) {
+                $statusCode = Response::HTTP_CREATED;
+                $band = $this->container->get('data.band.handler')->post(
+                        $request->request->all()
+                );
+            } else {
+                $statusCode = Response::HTTP_NO_CONTENT;
+                $band = $this->container->get('data.band.handler')->put(
+                        $band[0], $request->request->all()
+                );
+            }
 
-      $routeOptions = array(
-      'slug' => $band->getSlug(),
-      '_format' => $request->get('_format')
-      );
+            return $this->redirect($this->generateUrl('api_band_show', array('slug' => $band->getSlug())));
+        } catch (InvalidFormException $exception) {
 
-      return $this->routeRedirectView('api_band_show', $routeOptions, $statusCode);
-      } catch (InvalidFormException $exception) {
+            return $this->createApiResponse($exception->getForm(), 500);
+        }
+    }
 
-      return $exception->getForm();
-      }
-      }
-
-      /**
-     * @Route("/band/update/{slug}", name="api_band_update")
+    /**
+     * @Route("api/band/update/{slug}", name="api_band_patch")
      * @Method({"PATCH"})
      * @ApiDoc(
      *   resource = true,
@@ -172,20 +194,16 @@ class ApiBandController extends Controller
     public function patchBandAction(Request $request, $slug)
     {
         try {
+            if (!($band = $this->container->get('data.band.handler')->get($slug) instanceof Band)) {
+                return $this->createApiResponse("Band Not Found", 404);
+            }
             $band = $this->container->get('data.band.handler')->patch(
-                    $this->getOr404($slug)[0], $request
-                    //->request->all()
+                    $this->container->get('data.band.handler')->get($slug)[0], $request->request->all()
             );
 
-            $routeOptions = array(
-                'slug' => $band->getSlug(),
-                '_format' => $request->get('_format')
-            );
-
-            return $this->routeRedirectView('api_band_show', $routeOptions, Response::HTTP_NO_CONTENT);
+            return $this->redirect($this->generateUrl('api_band_show', array('slug' => $band->getSlug())));
         } catch (InvalidFormException $exception) {
-
-            return $exception->getForm();
+            return $this->createApiResponse($exception->getForm(), 500);
         }
     }
 
@@ -230,10 +248,10 @@ class ApiBandController extends Controller
         }
     }
 
-    protected function getOr404($id)
+    private function getOr404($id)
     {
         if (!($band = $this->container->get('data.band.handler')->get($id))) {
-            return $this->get('mk.api.response_factory')->createResponse(new ApiProblem(404, 'Not Found', 'Band Not Found'));
+            return $this->createApiResponse('Band Not Found', 404);
         }
         return $band;
     }
@@ -245,7 +263,7 @@ class ApiBandController extends Controller
         return $this->container->get('jms_serializer')->serialize($data, $format, $context);
     }
 
-    protected function createApiResponse($data, $statusCode = 200)
+    private function createApiResponse($data, $statusCode = 200)
     {
         $json = $this->serialize($data);
         return new Response($json, $statusCode, array(
@@ -253,12 +271,13 @@ class ApiBandController extends Controller
         ));
     }
 
-    private function createCreateBandForm(Band $band)
+    private function createBandForm($method, $band)
     {
-        $form = $this->createForm(new BandType(), $band, array(
-            'action' => $this->generateUrl('api_band_create'),
-            'method' => 'POST',
-        ));
+        if ($method == "POST")
+            $form = $this->createForm(new ApiBandType(), $band, array('action' => $this->generateUrl('api_band_create'), 'method' => $method));
+        $method == "PATCH" ? $action = $this->generateUrl('api_band_patch', array('slug' => $band->getSlug())) : $action = $this->generateUrl('api_band_update', array('slug' => $band->getSlug()));
+        $method == "PATCH" ?
+                        $form = $this->createForm(new ApiBandPATCHType(), $band, array('action' => $action, 'method' => $method)) : $form = $this->createForm(new ApiBandType(), $band, array('action' => $action, 'method' => $method));
         return $form;
     }
 

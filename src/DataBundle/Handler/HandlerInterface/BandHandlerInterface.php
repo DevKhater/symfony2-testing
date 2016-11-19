@@ -36,7 +36,7 @@ interface BandHandlerInterface
      *
      * @return BandInterface
      */
-    public function post( $parameters);
+    public function post(array $parameters);
 
     /**
      * Edit a Band.
@@ -60,5 +60,5 @@ interface BandHandlerInterface
      *
      * @return BandInterface
      */
-    public function patch(BandInterface $page, $parameters);
+    public function patch(BandInterface $page, array $parameters);
 }
