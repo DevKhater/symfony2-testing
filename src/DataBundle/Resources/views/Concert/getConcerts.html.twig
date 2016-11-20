@@ -1,0 +1,19 @@
+
+<h1 class="title">Concerts</h1>
+
+<ul id="concerts-list">
+    {% for concert in data %}
+        <li>
+            <a href="{#{{ path('get_note', {'id': id}) }}#}">{{ concert.date | date }}</a>
+            [<a href="{#{{ path('edit_notes', {'id': id}) }}#}">Edit</a>]
+            [<a href="{#{{ path('remove_notes', {'id': id}) }}#}">Delete</a>]
+        </li>
+    {% else %}
+        <li>No Concerts</li>
+        {% endfor %}
+</ul>
+<p>
+    <a href="{#{{ path('new_note') }}#}">New Concert</a>
+</p>
+
+ {% include '@DataBundle/views/Template/paginator.html.twig' %}

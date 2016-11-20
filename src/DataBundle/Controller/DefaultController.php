@@ -5,7 +5,7 @@ namespace DataBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use JMS\Serializer\SerializationContext;
-use Symfony\Component\BrowserKit\Response;
+use Symfony\Component\HttpFoundation\Response;
 use DataBundle\Entity\Concert;
 use DataBundle\Form\ConcertType;
 
@@ -17,18 +17,17 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
-        $paginator = $this->getDoctrine()->getRepository('DataBundle:Band')->find(24);
-        foreach ($paginator->getConcerts() as $concert) {
-            dump($concert);
-            $context = new SerializationContext();
-            $context->setSerializeNull(true);
-            dump($this->container->get('jms_serializer')->serialize($concert, 'json', $context));
-        }
+        $paginator = $this->getDoctrine()->getRepository('DataBundle:Concert')->find(4);
         $context = new SerializationContext();
         $context->setSerializeNull(true);
-        dump($this->container->get('jms_serializer')->serialize($paginator->getConcerts(), 'json', $context));
-
+        $context->setGroups(array('list'));
+        $json = $this->container->get('jms_serializer')->serialize($paginator, 'json', $context);
+        
+        echo "<pre>";
+        echo $json  ;
         exit;
+        return new Response($json, 200, array('application/json'));exit;
+        
         return $this->render('DataBundle:Concert:newConcert.html.twig', array(
                     'form' => $form->createView()
         ));

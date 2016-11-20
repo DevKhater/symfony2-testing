@@ -14,18 +14,19 @@ class CRUDBandController extends Controller
 {
 
     /**
-     * @Route("/bands/all/{page}/{limit}", name="data_bandcrud_index")
+     * @Route("/bands/all/{offset}/{limit}", name="data_bandcrud_index")
      */
-    public function indexAction($page = 1, $limit = 10)
+    public function indexAction($offset = 1, $limit = 10)
     {
-        $paginator = $this->getDoctrine()->getRepository('DataBundle:Band')->findAllBands($page, $limit);
+        $paginator = $this->getDoctrine()->getRepository('DataBundle:Band')->findAllBands($offset, $limit);
         $counts = $this->getDoctrine()->getRepository('DataBundle:Band')->countAllBands();
         $maxPages = ceil($counts / $limit);
-        $thisPage = $page;
+        $thisPage = $offset;
         return $this->render('DataBundle:Band:index.html.twig', array(
                     'bands' => $paginator,
                     'maxPages' => $maxPages,
-                    'thisPage' => $thisPage
+                    'thisPage' => $thisPage,
+                    'theIndex' => 'data_bandcrud_index'
         ));
     }
 

@@ -7,6 +7,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use DataBundle\Model\BandInterface;
 use Doctrine\Common\Collections\ArrayCollection;
+use Hateoas\Configuration\Annotation as Hateoas;
+use JMS\Serializer\Annotation as Serializer;
+use JMS\Serializer\Annotation\Groups as Groups;
+
 
 /**
  * Band
@@ -14,6 +18,18 @@ use Doctrine\Common\Collections\ArrayCollection;
  * @ORM\Table()
  * @ORM\Entity()
  * @ORM\Entity(repositoryClass="DataBundle\Repository\BandRepository")
+ * 
+ * @Hateoas\Relation("self", href = "expr('/api/bands/' ~ object.getSlug())")\
+ * @Hateoas\Relation(
+ *      "delete",
+ *      href = @Hateoas\Route(
+ *          "api_band_delete",
+ *          parameters = { "slug" = "expr(object.getId())" }
+ *      ),
+ *      exclusion = @Hateoas\Exclusion(
+ *          excludeIf = "expr(not is_granted(['ROLE_SUPER_ADMIN']))"
+ *      )
+ * )
  */
 class Band implements BandInterface
 {
@@ -43,7 +59,9 @@ class Band implements BandInterface
 
     /**
      * @ORM\OneToMany(targetEntity="DataBundle\Entity\Concert", mappedBy="band")
-     * 
+     * @Serializer\Expose
+     * @Serializer\Groups({"Default"})
+     * @Serializer\MaxDepth(1) 
      */
     private $concerts;
 

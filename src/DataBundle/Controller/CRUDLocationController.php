@@ -13,18 +13,19 @@ class CRUDLocationController extends Controller
 {
 
     /**
-     * @Route("/locations/all/{page}/{limit}", name="data_locationcrud_index")
+     * @Route("/locations/all/{offset}/{limit}", name="data_locationcrud_index")
      */
-    public function indexAction($page = 1, $limit = 10)
+    public function indexAction($offset = 1, $limit = 10)
     {
-        $paginator = $this->getDoctrine()->getRepository('DataBundle:Location')->findAllLocations($page, $limit);
+        $paginator = $this->getDoctrine()->getRepository('DataBundle:Location')->findAllLocations($offset, $limit);
         $counts = $this->getDoctrine()->getRepository('DataBundle:Location')->countAllLocations();
         $maxPages = ceil($counts / $limit);
-        $thisPage = $page;
+        $thisPage = $offset;
         return $this->render('DataBundle:Location:index.html.twig', array(
                     'locations' => $paginator,
                     'maxPages' => $maxPages,
-                    'thisPage' => $thisPage
+                    'thisPage' => $thisPage,
+                    'theIndex' => 'data_locationcrud_index'
         ));
     }
 

@@ -20,7 +20,9 @@
         "lexik/jwt-authentication-bundle": "^2.0",
         "stof/doctrine-extensions-bundle": "^1.2",
         "nelmio/api-doc-bundle": "^2.13",
-        "jms/serializer-bundle": "^1.1"
+        "jms/serializer-bundle": "^1.1",
+        "friendsofsymfony/rest-bundle": "^2.1",
+        "willdurand/hateoas-bundle": "^1.2"
     },
     "require-dev": {
         "sensio/generator-bundle": "~3.0",

@@ -13,18 +13,19 @@ class CRUDConcertController extends Controller
 {
 
     /**
-     * @Route("/concerts/all/{page}/{limit}", name="data_concertcrud_index")
+     * @Route("/concerts/all/{offset}/{limit}", name="data_concertcrud_index")
      */
-    public function indexAction($page = 1, $limit = 10)
+    public function indexAction($offset = 1, $limit = 10)
     {
-        $paginator = $this->getDoctrine()->getRepository('DataBundle:Concert')->findAllConcerts($page, $limit);
+        $paginator = $this->getDoctrine()->getRepository('DataBundle:Concert')->findAllConcerts($offset, $limit);
         $counts = $this->getDoctrine()->getRepository('DataBundle:Concert')->countAllConcerts();
         $maxPages = ceil($counts / $limit);
-        $thisPage = $page;
+        $thisPage = $offset;
         return $this->render('DataBundle:Concert:index.html.twig', array(
                     'concerts' => $paginator,
                     'maxPages' => $maxPages,
-                    'thisPage' => $thisPage
+                    'thisPage' => $thisPage,
+                    'theIndex' => 'data_concertcrud_index'
         ));
     }
 

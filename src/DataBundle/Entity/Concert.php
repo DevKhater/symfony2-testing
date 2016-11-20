@@ -4,12 +4,43 @@ namespace DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use DataBundle\Model\ConcertInterface;
+use Hateoas\Configuration\Annotation as Hateoas;
+use JMS\Serializer\Annotation as Serializer;
+
 
 /**
  * Concert
- *
+ * 
  * @ORM\Table(name="concert")
  * @ORM\Entity(repositoryClass="DataBundle\Repository\ConcertRepository")
+ * 
+ * @Hateoas\Relation("self", href = "expr('/api/concerts/' ~ object.getId())")
+ * @Hateoas\Relation(
+ *      "delete",
+ *      href = @Hateoas\Route(
+ *          "api_concert_delete",
+ *          parameters = { "id" = "expr(object.getId())" }
+ *      ),
+ *      exclusion = @Hateoas\Exclusion(
+ *          excludeIf = "expr(not is_granted(['ROLE_SUPER_ADMIN']))"
+ *      )
+ * )
+ *  @Hateoas\Relation(
+ *     "band",
+ *     href = "expr('/api/band/' ~ object.getBand().getSlug())",
+ *     embedded = @Hateoas\Embedded("expr(object.getBand())"),
+ *     exclusion = @Hateoas\Exclusion(groups = {"default"}),    
+ *     exclusion = @Hateoas\Exclusion(excludeIf = "expr(object.getBand() === null)")
+ 
+ * )
+ *  @Hateoas\Relation(
+ *     "location",
+ *     href = "expr('/api/location/' ~ object.getLocation().getName())",
+ *     embedded = "expr(object.getLocation().getName())",
+ *     exclusion = @Hateoas\Exclusion(excludeIf = "expr(object.getLocation() === null)")
+ * )
+ * 
+ *
  */
 class Concert implements ConcertInterface
 {
@@ -34,12 +65,16 @@ class Concert implements ConcertInterface
      * @var location
      * 
      * @ORM\ManyToOne(targetEntity="DataBundle\Entity\Location", inversedBy="concerts")
-     * @ORM\JoinColumn(name="location_id", referencedColumnName="id")     */
+     * @ORM\JoinColumn(name="location_id", referencedColumnName="id")     
+     * @Serializer\Exclude 
+     * 
+     */
     private $location;
 
     /**
      * @ORM\ManyToOne(targetEntity="DataBundle\Entity\Band", inversedBy="concerts")
      * @ORM\JoinColumn(name="band_id", referencedColumnName="id")
+     * @Serializer\Exclude 
      */
     protected $band;
 
