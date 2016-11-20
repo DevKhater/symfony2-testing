@@ -27,11 +27,11 @@ class MediaType extends AbstractType
         ));
     }
 
-    /**
-     * @return string
+  /**
+     * {@inheritdoc}
      */
-    public function getName()
+    public function getBlockPrefix()
     {
-        return 'mk_musicbundle_media';
+        return 'databundle_media';
     }
 }

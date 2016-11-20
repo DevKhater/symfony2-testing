@@ -53,4 +53,73 @@ class Concert implements ConcertInterface
         return $this->id;
     }
 
+
+    /**
+     * Set date
+     *
+     * @param \DateTime $date
+     * @return Concert
+     */
+    public function setDate($date)
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    /**
+     * Get date
+     *
+     * @return \DateTime 
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
+
+    /**
+     * Set location
+     *
+     * @param \DataBundle\Entity\Location $location
+     * @return Concert
+     */
+    public function setLocation(\DataBundle\Entity\Location $location = null)
+    {
+        $this->location = $location;
+
+        return $this;
+    }
+
+    /**
+     * Get location
+     *
+     * @return \DataBundle\Entity\Location 
+     */
+    public function getLocation()
+    {
+        return $this->location;
+    }
+
+    /**
+     * Set band
+     *
+     * @param \DataBundle\Entity\Band $band
+     * @return Concert
+     */
+    public function setBand(\DataBundle\Entity\Band $band = null)
+    {
+        $this->band = $band;
+
+        return $this;
+    }
+
+    /**
+     * Get band
+     *
+     * @return \DataBundle\Entity\Band 
+     */
+    public function getBand()
+    {
+        return $this->band;
+    }
 }

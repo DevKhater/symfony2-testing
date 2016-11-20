@@ -31,6 +31,13 @@ class Location
     private $name;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(name="address", type="string")
+     */
+    private $address;
+
+    /**
      * @ORM\OneToMany(targetEntity="DataBundle\Entity\Concert", mappedBy="location")
      * 
      */
@@ -106,5 +113,28 @@ class Location
     public function getConcerts()
     {
         return $this->concerts;
+    }
+
+    /**
+     * Set address
+     *
+     * @param string $address
+     * @return Location
+     */
+    public function setAddress($address)
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * Get address
+     *
+     * @return string 
+     */
+    public function getAddress()
+    {
+        return $this->address;
     }
 }

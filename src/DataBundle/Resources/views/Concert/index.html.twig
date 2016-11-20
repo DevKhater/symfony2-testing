@@ -1,0 +1,11 @@
+Hello World - 
+
+{{dump(concerts)}}
+
+{% for concert in concerts %}
+    {{concert.date | date}}<br/>
+    {{concert.band.name}}<br/>
+    {% if concert.location.name is defined %}{{concert.location.name}}{%endif%}<br/>
+    {%endfor%}
+
+ {% include '@DataBundle/views/Template/paginator.html.twig' %}

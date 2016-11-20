@@ -5,9 +5,8 @@ namespace DataBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use DataBundle\Form\MediaType;
 
-class BandType extends AbstractType
+class LocationType extends AbstractType
 {
 
     /**
@@ -17,31 +16,26 @@ class BandType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-        ->add('name', 'text', [
-        // readonly if we're in edit mode
-        'disabled' => $options['is_edit']
-        ])
-        ->add('genre', 'text')
-        ;
+                ->add('name', 'text')
+                ->add('address', 'text');
     }
 
     /**
      * @param OptionsResolverInterface $resolver
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
-        {
-            $resolver->setDefaults(array(
-                'data_class' => 'DataBundle\Entity\Band',
-                 'is_edit' => false
-            ));
+    {
+        $resolver->setDefaults(array(
+            'data_class' => 'DataBundle\Entity\Location',
+            'allow_extra_fields' => true
+        ));
     }
 
-    /**
+  /**
      * {@inheritdoc}
      */
     public function getBlockPrefix()
     {
-        return 'databundle_band';
+        return 'databundle_location';
     }
-
 }

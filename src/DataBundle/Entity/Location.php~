@@ -31,6 +31,13 @@ class Location
     private $name;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(name="address", type="string")
+     */
+    private $address;
+
+    /**
      * @ORM\OneToMany(targetEntity="DataBundle\Entity\Concert", mappedBy="location")
      * 
      */
@@ -51,4 +58,60 @@ class Location
         $this->concert = new ArrayCollection();
     }
 
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     * @return Location
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string 
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Add concerts
+     *
+     * @param \DataBundle\Entity\Concert $concerts
+     * @return Location
+     */
+    public function addConcert(\DataBundle\Entity\Concert $concerts)
+    {
+        $this->concerts[] = $concerts;
+
+        return $this;
+    }
+
+    /**
+     * Remove concerts
+     *
+     * @param \DataBundle\Entity\Concert $concerts
+     */
+    public function removeConcert(\DataBundle\Entity\Concert $concerts)
+    {
+        $this->concerts->removeElement($concerts);
+    }
+
+    /**
+     * Get concerts
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getConcerts()
+    {
+        return $this->concerts;
+    }
 }
