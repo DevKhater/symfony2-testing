@@ -9,8 +9,6 @@ use DataBundle\Model\BandInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Hateoas\Configuration\Annotation as Hateoas;
 use JMS\Serializer\Annotation as Serializer;
-use JMS\Serializer\Annotation\Groups as Groups;
-
 
 /**
  * Band
@@ -60,7 +58,6 @@ class Band implements BandInterface
     /**
      * @ORM\OneToMany(targetEntity="DataBundle\Entity\Concert", mappedBy="band")
      * @Serializer\Expose
-     * @Serializer\Groups({"Default"})
      * @Serializer\MaxDepth(1) 
      */
     private $concerts;
@@ -182,7 +179,6 @@ class Band implements BandInterface
         return $this->slug;
     }
 
-
     /**
      * Add concerts
      *
@@ -215,4 +211,15 @@ class Band implements BandInterface
     {
         return $this->concerts;
     }
+
+    /*
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("band")
+     */
+
+    public function getBandInformation()
+    {
+        return ['name' => $this->name, 'genre' => $this->genre, 'concerts' => count($this->getConcerts())];
+    }
+
 }

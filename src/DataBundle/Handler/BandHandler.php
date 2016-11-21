@@ -127,8 +127,10 @@ class BandHandler implements BandHandlerInterface
      */
     private function processForm(BandInterface $band, $parameters, $method = "PUT")
     {
-        $method == "PATCH" ? $form = $this->formFactory->create(new ApiBandPATCHType(), $band, array('method' => $method)) : $form = $this->formFactory->create(new ApiBandType(), $band, array('method' => $method)); 
-        $form->submit($parameters);
+//        $method == "PATCH" ? $form = $this->formFactory->create(new ApiBandPATCHType(), $band, array('method' => $method)) : $form = $this->formFactory->create(new ApiBandType(), $band, array('method' => $method)); 
+//        $form->submit($parameters);
+        $form = $this->formFactory->create(new ApiBandType(), $band, array('method' => $method));
+        $form->submit($parameters[$form->getName()]);
         //dump($parameters);dump($band);exit;
         if ($form->isValid()) {
             $band = $form->getData();
@@ -138,7 +140,7 @@ class BandHandler implements BandHandlerInterface
             return $band;
         }
 
-        throw new InvalidFormException($form->getErrors()  , $form);
+        throw new InvalidFormException($form->getErrors(), $form);
     }
 
     private function createBand()

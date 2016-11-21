@@ -20,11 +20,11 @@ class DefaultController extends Controller
         $paginator = $this->getDoctrine()->getRepository('DataBundle:Concert')->find(4);
         $context = new SerializationContext();
         $context->setSerializeNull(true);
-        $context->setGroups(array('list'));
+        //$context->setGroups(array('list'));
         $json = $this->container->get('jms_serializer')->serialize($paginator, 'json', $context);
         
         echo "<pre>";
-        echo $json  ;
+        dump($json)  ;
         exit;
         return new Response($json, 200, array('application/json'));exit;
         

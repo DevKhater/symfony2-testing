@@ -5,19 +5,9 @@ namespace DataBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-//use Doctrine\Common\Persistence\ObjectManager;
-//use DataBundle\Form\DataTransformer\LocationToSelectTransformer;
-//use DataBundle\Form\DataTransformer\BandToSelectTransformer;
 
 class ConcertType extends AbstractType
 {
-
-//    private $manager;
-//
-//    public function __construct(ObjectManager $manager)
-//    {
-//        $this->manager = $manager;
-//    }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -26,16 +16,13 @@ class ConcertType extends AbstractType
                     'class' => 'DataBundle:Location',
                     'choice_label' => 'name',
                 ))
-                ->add('band','entity', array(
+                ->add('band', 'entity', array(
                     'class' => 'DataBundle:Band',
                     'choice_label' => 'name',
                 ))
+                ->add('save', 'submit', array(
+                    'attr' => array('class' => 'submit')))
         ;
-
-//        $builder->get('location')
-//                ->addModelTransformer(new LocationToSelectTransformer($this->manager));
-//        $builder->get('band')
-//                ->addModelTransformer(new BandToSelectTransformer($this->manager));
     }
 
     /**

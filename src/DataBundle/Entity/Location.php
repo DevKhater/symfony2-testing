@@ -137,4 +137,15 @@ class Location
     {
         return $this->address;
     }
+    
+    
+     /*
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("band")
+     */
+
+    public function getLocationInformation()
+    {
+        return ['name' => $this->name, 'address' => $this->address, 'concerts' => count($this->getConcerts())];
+    }
 }

@@ -3,9 +3,9 @@
 namespace DataBundle\Form\Api;
 
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use DataBundle\Form\BandType;
+use DataBundle\Form\ConcertType;
 
-class ApiBandType extends BandType
+class ApiConcertType extends ConcertType
 {
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

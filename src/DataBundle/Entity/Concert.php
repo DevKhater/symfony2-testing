@@ -7,7 +7,6 @@ use DataBundle\Model\ConcertInterface;
 use Hateoas\Configuration\Annotation as Hateoas;
 use JMS\Serializer\Annotation as Serializer;
 
-
 /**
  * Concert
  * 
@@ -25,22 +24,19 @@ use JMS\Serializer\Annotation as Serializer;
  *          excludeIf = "expr(not is_granted(['ROLE_SUPER_ADMIN']))"
  *      )
  * )
- *  @Hateoas\Relation(
+ * @Hateoas\Relation(
  *     "band",
  *     href = "expr('/api/band/' ~ object.getBand().getSlug())",
- *     embedded = @Hateoas\Embedded("expr(object.getBand())"),
+ *     embedded = @Hateoas\Embedded("expr(object.getBand().getBandInformation())"),
  *     exclusion = @Hateoas\Exclusion(groups = {"default"}),    
  *     exclusion = @Hateoas\Exclusion(excludeIf = "expr(object.getBand() === null)")
- 
  * )
- *  @Hateoas\Relation(
+ * @Hateoas\Relation(
  *     "location",
  *     href = "expr('/api/location/' ~ object.getLocation().getName())",
- *     embedded = "expr(object.getLocation().getName())",
+ *     embedded = "expr(object.getLocation().getLocationInformation())",
  *     exclusion = @Hateoas\Exclusion(excludeIf = "expr(object.getLocation() === null)")
  * )
- * 
- *
  */
 class Concert implements ConcertInterface
 {
@@ -87,7 +83,6 @@ class Concert implements ConcertInterface
     {
         return $this->id;
     }
-
 
     /**
      * Set date
@@ -157,4 +152,5 @@ class Concert implements ConcertInterface
     {
         return $this->band;
     }
+
 }

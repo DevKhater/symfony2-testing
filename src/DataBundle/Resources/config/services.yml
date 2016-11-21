@@ -1,10 +1,12 @@
 parameters:
-    upload_directory: '%kernel.root_dir%/../web/uploads/images'
-    upload_prefix_directory: 'uploads/images'
-    data.band.handler.class: 'DataBundle\Handler\BandHandler'
-    data.band.class: 'DataBundle\Entity\Band'
-    data.media.handler.class: 'DataBundle\Handler\MediaHandler'
-    data.media.class: 'DataBundle\Entity\Media'
+    upload_directory:           '%kernel.root_dir%/../web/uploads/images'
+    upload_prefix_directory:    'uploads/images'
+    data.band.class:            'DataBundle\Entity\Band'
+    data.band.handler.class:    'DataBundle\Handler\BandHandler'
+    data.concert.class:         'DataBundle\Entity\Concert'
+    data.concert.handler.class: 'DataBundle\Handler\ConcertHandler'
+    data.media.class:           'DataBundle\Entity\Media'
+    data.media.handler.class:   'DataBundle\Handler\MediaHandler'
 
 services:
     mkcrud.file.uploader:
@@ -21,6 +23,10 @@ services:
     data.band.handler:
         class: %data.band.handler.class%
         arguments: ['@doctrine.orm.entity_manager','%data.band.class%','@form.factory']
+
+    data.concert.handler:
+        class: %data.concert.handler.class%
+        arguments: ['@doctrine.orm.entity_manager','%data.concert.class%','@form.factory']
         
     mk.music.media.handler:
         class: %data.media.handler.class%
