@@ -10,22 +10,14 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use DataBundle\Entity\Concert;
-use DataBundle\Controller\BaseApiController as ApiController;
 
 /**
  * Description of ApiConcertController
  *
- * @author Michel Khater
+ * @author Michel
  */
-class ApiConcertController extends ApiController
+class ApiConcertController extends FosRestController
 {
-
-    public function __construct()
-    {
-        $this->classEntity = 'DataBundle:Concert';
-        $this->serviceEntity = 'data.concert.handler';
-        $this->templateDirectory = 'DataBundle:Concert:';
-    }
 
     /**
      * @Route("api/concerts", name="api_concerts_list")
@@ -44,10 +36,17 @@ class ApiConcertController extends ApiController
      *
      * @Annotations\View(templateVar="concerts")
      */
-    public function getConcertAction(Request $request, ParamFetcherInterface $paramFetcher)
+    public function getAction(Request $request, ParamFetcherInterface $paramFetcher)
     {
-        $response = parent::getAction($request, $paramFetcher);
-        return($response);
+        $offset = null == $paramFetcher->get('offset') ? 1 : $paramFetcher->get('offset');
+        $limit = $paramFetcher->get('limit');
+        $maxPages = ceil($this->getDoctrine()->getRepository('DataBundle:Concert')->countAllConcerts() / $limit);
+        $data = $this->container->get('data.concert.handler')->all($offset, $limit);
+        $data == null ? $view = $this->view('No concerts found.', 404) : $view = $this->view($data, 200);
+        $view->setTemplate("DataBundle:Concert:concertApiList.html.twig")
+            ->setTemplateData(['maxPages' => $maxPages,
+                'thisPage' => $offset, 'theIndex' => 'api_concerts_list']);
+        return $this->handleView($view);
     }
 
     /**
@@ -62,8 +61,10 @@ class ApiConcertController extends ApiController
     public function showConcertAction(Request $request)
     {
         $id = $request->get('id');
-        $response = parent::showAction($id);
-        return($response);
+        $data = $this->getOr404($id);
+        $view = $this->view($data, 200)
+            ->setTemplate("DataBundle:Concert:concertApiShow.html.twig");
+        return $this->handleView($view);
     }
 
     /**
@@ -78,8 +79,9 @@ class ApiConcertController extends ApiController
     {
         $data = $this->getOr404($request->get('id'))->getBand()->getName();
         $view = $this->view($data, 200)
-            ->setTemplate($this->templateDirectory . "concertApiShowFields.html.twig")
+            ->setTemplate("DataBundle:Concert:concertApiShowFields.html.twig")
             ->setTemplateData(['element' => 'Band Name']);
+
         return $this->handleView($view);
     }
 
@@ -95,7 +97,7 @@ class ApiConcertController extends ApiController
     {
         $data = $this->getOr404($request->get('id'))->getBand()->getGenre();
         $view = $this->view($data, 200)
-            ->setTemplate($this->templateDirectory . "concertApiShowFields.html.twig")
+            ->setTemplate("DataBundle:Concert:concertApiShowFields.html.twig")
             ->setTemplateData(['element' => 'Band Genre']);
 
         return $this->handleView($view);
@@ -112,9 +114,9 @@ class ApiConcertController extends ApiController
     public function getConcertLocationAction(Request $request)
     {
         $location = $this->getOr404($request->get('id'))->getLocation();
-        $data = ['data' => ['name' => $location->getName(), 'address' => $location->getAddress()]];
+        $data = ['name' => $location->getName(), 'address' => $location->getAddress()];
         $view = $this->view($data, 200)
-            ->setTemplate($this->templateDirectory . "concertApiShowFields.html.twig")
+            ->setTemplate("DataBundle:Concert:concertApiShowFields.html.twig")
             ->setTemplateData(['element' => 'Location']);
 
         return $this->handleView($view);
@@ -132,7 +134,7 @@ class ApiConcertController extends ApiController
     {
         $data = $this->getOr404($request->get('id'))->getDate();
         $view = $this->view($data, 200)
-            ->setTemplate($this->templateDirectory . "concertApiShowFields.html.twig")
+            ->setTemplate("DataBundle:Concert:concertApiShowFields.html.twig")
             ->setTemplateData(['element' => 'Date']);
 
         return $this->handleView($view);
@@ -150,7 +152,7 @@ class ApiConcertController extends ApiController
     {
         $form = $this->getConcertForm("POST", New Concert());
         $view = $this->view($form, 200)
-            ->setTemplate($this->templateDirectory . "apiForm.html.twig")
+            ->setTemplate("DataBundle:Concert:concertApiForm.html.twig")
             ->setTemplateData(['action' => 'Create']);
         return $this->handleView($view);
     }
@@ -170,7 +172,7 @@ class ApiConcertController extends ApiController
      */
     public function postConcertAction(Request $request)
     {
-        $newConcert = $this->container->get($this->serviceEntity)->post($request->request->all());
+        $newConcert = $this->container->get('data.concert.handler')->post($request->request->all());
         return $this->redirect($this->generateUrl('api_concert_show', array('id' => $newConcert->getId())));
     }
 
@@ -188,7 +190,7 @@ class ApiConcertController extends ApiController
         $concert = $this->getOr404($request->get('id'));
         $form = $this->getConcertForm("PUT", $concert);
         $view = $this->view($form, 200)
-            ->setTemplate($this->templateDirectory . "concertApiForm.html.twig")
+            ->setTemplate("DataBundle:Concert:concertApiForm.html.twig")
             ->setTemplateData(['action' => 'Edit']);
         return $this->handleView($view);
     }
@@ -208,11 +210,11 @@ class ApiConcertController extends ApiController
      */
     public function putConcertAction(Request $request)
     {
-        $conRequest = $this->container->get($this->serviceEntity)->get($request->get('id'));
-        $concert = $this->container->get($this->serviceEntity)->put(
-            $conRequest, $request->request->all()
+        $concert = $this->container->get('data.concert.handler')->get($request->get('id'));
+        $concert2 = $this->container->get('data.concert.handler')->put(
+            $concert, $request->request->all()
         );
-        return $this->redirect($this->generateUrl('api_concert_show', array('id' => $concert->getId())));
+        return $this->redirect($this->generateUrl('api_concert_show', array('id' => $concert2->getId())));
     }
 
     /**
@@ -241,11 +243,22 @@ class ApiConcertController extends ApiController
      *  description="Delete Band resource",
      * )
      */
-    public function deleteConcertAction(Request $request)
+    public function deleteConcertAction($id)
     {
-        $response = parent::deleteAction($request->get('id'));
-        return($response);
-        
+        $concert = $this->getOr404($id);
+        $this->container->get('data.concert.handler')->delete($concert);
+        $view = View::create();
+        $view->setData(["message" => "Concert deleted."])
+            ->setStatusCode(410);
+        return $this->handleView($view);
+    }
+
+    private function getOr404($id)
+    {
+        if (!($concert = $this->container->get('data.concert.handler')->get($id))) {
+            throw new NotFoundHttpException('Concert Not Found');
+        }
+        return $concert;
     }
 
     private function getConcertForm($method, $concert)
@@ -261,6 +274,6 @@ class ApiConcertController extends ApiController
                 $url = $this->generateUrl('api_concert_patch', ['id' => $concert->getId()]);
                 break;
         }
-        return $this->container->get($this->serviceEntity)->createConcertForm($method, $concert, $url);
+        return $this->container->get('data.concert.handler')->createConcertForm($method, $concert, $url);
     }
 }

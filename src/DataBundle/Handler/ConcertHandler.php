@@ -1,10 +1,7 @@
-<?php
-
-namespace DataBundle\Handler;
+<?php namespace DataBundle\Handler;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use DataBundle\Form\Api\ApiConcertType;
 use DataBundle\Exception\InvalidFormException;
 use DataBundle\Entity\Concert;
@@ -73,7 +70,7 @@ class ConcertHandler
      */
     public function put($concert, array $parameters)
     {
-        
+
         return $this->processForm($concert, $parameters, 'PUT');
     }
 
@@ -95,7 +92,6 @@ class ConcertHandler
         $this->em->remove($concert);
         $this->em->flush();
     }
-
 
     /**
      * Processes the form.
@@ -137,10 +133,13 @@ class ConcertHandler
     public function createConcertForm($method, $concert, $url)
     {
         $form = null;
-        if ($method == "POST")
+        if ($method == "POST") {
             $form = $this->formFactory->create(new ApiConcertType(), $concert, array('action' => $url, 'method' => $method));
-        if ($method == "PUT")
+        } elseif ($method == "PUT") {
             $form = $this->formFactory->create(new ApiConcertType(), $concert, array('action' => $url, 'method' => $method));
+        } elseif ($method == "PATCH") {
+            $form = $this->formFactory->create(new ApiConcertType(), $concert, array('action' => $url, 'method' => $method));
+        }
 //        $method == "PATCH" ? $action = $this->generateUrl('api_band_patch', array('slug' => $band->getSlug())) : $action = $this->generateUrl('api_band_update', array('slug' => $band->getSlug()));
 //        $method == "PATCH" ?
 //                        $form = $this->createForm(new ApiBandPATCHType(), $band, array('action' => $action, 'method' => $method)) : $form = $this->createForm(new ApiBandType(), $band, array('action' => $action, 'method' => $method));
@@ -151,5 +150,4 @@ class ConcertHandler
     {
         return new $this->entityClass();
     }
-
 }
