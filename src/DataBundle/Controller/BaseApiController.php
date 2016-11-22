@@ -42,9 +42,7 @@ class BaseApiController extends FosRestController
     {
         $entity = $this->getOr404($id);
         $this->container->get($this->serviceEntity)->delete($entity);
-        $view = View::create();
-        $view->setData(["message" => $this->classEntity . " deleted."])
-            ->setStatusCode(410);
+        $view = $this->view(null,204);
         return $this->handleView($view);
     }
 

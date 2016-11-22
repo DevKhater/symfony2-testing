@@ -97,6 +97,7 @@ fos_rest:
     disable_csrf_role: ROLE_API
     param_fetcher_listener: true
     view:
+        empty_content: 204
         mime_types:
             json: ['application/json', 'application/json;version=1.0', 'application/json;version=1.1', 'application/json;version=1.2']
 #        view_response_listener: 'force'
