@@ -9,7 +9,6 @@ use Symfony\Component\HttpFoundation\Response;
 use DataBundle\Model\BandInterface;
 use DataBundle\Model\MediaInterface;
 use DataBundle\Form\Api\ApiBandType;
-use DataBundle\Form\Api\ApiBandPATCHType;
 use DataBundle\Exception\InvalidFormException;
 use DataBundle\Handler\HandlerInterface\BandHandlerInterface;
 

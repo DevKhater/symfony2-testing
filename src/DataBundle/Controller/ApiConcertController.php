@@ -1,20 +1,17 @@
-<?php namespace DataBundle\Controller;
+<?php 
 
-use FOS\RestBundle\Controller\Annotations;
-use FOS\RestBundle\View\View;
+namespace DataBundle\Controller;
+
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 use DataBundle\Entity\Concert;
 use DataBundle\Controller\BaseApiController as ApiController;
+use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
-/**
- * Description of ApiConcertController
- *
- * @author Michel Khater
- */
 class ApiConcertController extends ApiController
 {
 

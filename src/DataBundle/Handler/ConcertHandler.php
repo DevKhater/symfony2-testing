@@ -4,8 +4,8 @@ namespace DataBundle\Handler;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Form\FormFactoryInterface;
-use DataBundle\Form\Api\ApiConcertType;
 use DataBundle\Exception\InvalidFormException;
+use DataBundle\Form\Api\ApiConcertType;
 use DataBundle\Entity\Concert;
 
 class ConcertHandler
