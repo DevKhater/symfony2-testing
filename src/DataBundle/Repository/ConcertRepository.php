@@ -13,7 +13,7 @@ use Doctrine\ORM\EntityRepository;
 class ConcertRepository extends EntityRepository
 {
 
-    public function findAllConcerts($currentPage = 1, $limit)
+    public function findAllEntities($currentPage = 1, $limit)
     {
 
         $query = $this->createQueryBuilder('b')
@@ -26,7 +26,7 @@ class ConcertRepository extends EntityRepository
         return $result;
     }
 
-    public function countAllConcerts()
+    public function countAllEntities()
     {
         $query = $this->getEntityManager()
                 ->createQuery(

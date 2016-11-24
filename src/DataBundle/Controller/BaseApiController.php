@@ -21,7 +21,7 @@ class BaseApiController extends FosRestController
     {
         $offset = null == $paramFetcher->get('offset') ? 1 : $paramFetcher->get('offset');
         $limit = $paramFetcher->get('limit');
-        $maxPages = ceil($this->getDoctrine()->getRepository($this->classEntity)->countAllConcerts() / $limit);
+        $maxPages = ceil($this->getDoctrine()->getRepository($this->classEntity)->countAllEntities() / $limit);
         $data = $this->container->get($this->serviceEntity)->all($offset, $limit);
         $data == null ? $view = $this->view('No concerts found.', 404) : $view = $this->view($data, 200);
         $view->setTemplate($this->templateDirectory . "apiList.html.twig")

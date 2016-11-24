@@ -1,4 +1,6 @@
-<?php namespace DataBundle\Handler;
+<?php
+
+namespace DataBundle\Handler;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -13,13 +15,15 @@ class ConcertHandler
     private $entityClass;
     private $repository;
     private $formFactory;
+    private $bandManager;
 
-    public function __construct(ObjectManager $em, $entityClass, FormFactoryInterface $formFactory)
+    public function __construct(ObjectManager $em, $entityClass, FormFactoryInterface $formFactory, BandHandler $bandManager)
     {
         $this->em = $em;
         $this->entityClass = $entityClass;
         $this->repository = $this->em->getRepository($this->entityClass);
         $this->formFactory = $formFactory;
+        $this->bandManager = $bandManager;
     }
 
     /**
@@ -44,7 +48,7 @@ class ConcertHandler
      */
     public function all($offset = 0, $limit = 5)
     {
-        return $this->repository->findAllConcerts($offset, $limit);
+        return $this->repository->findAllEntities($offset, $limit);
     }
 
     /**
@@ -82,7 +86,7 @@ class ConcertHandler
      *
      * @return Concert
      */
-    public function patch(Concert $concert, array $parameters)
+    private function patch(Concert $concert, array $parameters)
     {
         return $this->processForm($concert, $parameters, 'PATCH');
     }
@@ -106,10 +110,8 @@ class ConcertHandler
      */
     private function processForm(Concert $concert, $parameters, $method = "PUT")
     {
-        //$method == "PATCH" ? $form = $this->formFactory->create(new ApiConcertPATCHType(), $concert, array('method' => $method)) : $form = $this->formFactory->create(new ApiConcertType(), $concert, array('method' => $method));
         $form = $this->formFactory->create(new ApiConcertType(), $concert, array('method' => $method));
         $form->submit($parameters[$form->getName()]);
-        //dump($parameters);dump($concert);exit;
         if ($form->isValid()) {
             $concert = $form->getData();
             $this->em->persist($concert);
@@ -140,9 +142,6 @@ class ConcertHandler
         } elseif ($method == "PATCH") {
             $form = $this->formFactory->create(new ApiConcertType(), $concert, array('action' => $url, 'method' => $method));
         }
-//        $method == "PATCH" ? $action = $this->generateUrl('api_band_patch', array('slug' => $band->getSlug())) : $action = $this->generateUrl('api_band_update', array('slug' => $band->getSlug()));
-//        $method == "PATCH" ?
-//                        $form = $this->createForm(new ApiBandPATCHType(), $band, array('action' => $action, 'method' => $method)) : $form = $this->createForm(new ApiBandType(), $band, array('action' => $action, 'method' => $method));
         return $form;
     }
 
@@ -150,4 +149,16 @@ class ConcertHandler
     {
         return new $this->entityClass();
     }
+
+    public function patchBand($concert, $newName)
+    {
+        $band = $this->bandManager->get($newName);
+        if (!$band)
+            return null;
+        $concert->setBand($band);
+        $this->em->persist($concert);
+        $this->em->flush($concert);
+        return $concert;
+    }
+
 }

@@ -32,13 +32,19 @@ class BandHandler implements BandHandlerInterface
     /**
      * Get a Band.
      *
-     * @param mixed $id
+     * @param mixed $slug
      *
      * @return BandInterface
      */
     public function get($slug)
     {
-        return $this->repository->findBy(array('slug' => $slug));
+        if (preg_match('/^[0-9]+$/', $slug)) {
+            return $this->repository->find($slug);
+        } else {
+            $band = $this->repository->findBy(array('slug' => $slug));
+            (count($band) < 1) ? : $band = $band[0];
+            return $band;
+        }
     }
 
     /**
@@ -49,9 +55,9 @@ class BandHandler implements BandHandlerInterface
      *
      * @return array
      */
-    public function all($limit = 5, $offset = 0)
+    public function all($offset = 0, $limit = 5)
     {
-        return $this->repository->findBy(array(), null, $limit, $offset);
+        return $this->repository->findAllEntities($offset, $limit);
     }
 
     /**
@@ -64,7 +70,6 @@ class BandHandler implements BandHandlerInterface
     public function post(array $parameters)
     {
         $band = $this->createBand();
-
         return $this->processForm($band, $parameters, 'POST');
     }
 
@@ -131,7 +136,6 @@ class BandHandler implements BandHandlerInterface
 //        $form->submit($parameters);
         $form = $this->formFactory->create(new ApiBandType(), $band, array('method' => $method));
         $form->submit($parameters[$form->getName()]);
-        //dump($parameters);dump($band);exit;
         if ($form->isValid()) {
             $band = $form->getData();
             $this->em->persist($band);
@@ -141,6 +145,29 @@ class BandHandler implements BandHandlerInterface
         }
 
         throw new InvalidFormException($form->getErrors(), $form);
+    }
+
+    /**
+     * Create Form view.
+     *
+     * @param String        $method
+     * @param BandInterface       $concert 
+     * @param String        $url
+     *
+     * @return ApiConcertFrorm
+     *
+     */
+    public function createBandForm($method, $concert, $url)
+    {
+        $form = null;
+        if ($method == "POST") {
+            $form = $this->formFactory->create(new ApiBandType(), $concert, array('action' => $url, 'method' => $method));
+        } elseif ($method == "PUT") {
+            $form = $this->formFactory->create(new ApiBandType(), $concert, array('action' => $url, 'method' => $method));
+        } elseif ($method == "PATCH") {
+            $form = $this->formFactory->create(new ApiBandType(), $concert, array('action' => $url, 'method' => $method));
+        }
+        return $form;
     }
 
     private function createBand()

@@ -17,11 +17,13 @@ class BandType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-        ->add('name', 'text', [
-        // readonly if we're in edit mode
-        'disabled' => $options['is_edit']
-        ])
-        ->add('genre', 'text')
+                ->add('name', 'text', [
+                    // readonly if we're in edit mode
+                    'disabled' => $options['is_edit']
+                ])
+                ->add('genre', 'text')
+                ->add('save', 'submit', array(
+                    'attr' => array('class' => 'submit')))
         ;
     }
 
@@ -29,11 +31,11 @@ class BandType extends AbstractType
      * @param OptionsResolverInterface $resolver
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
-        {
-            $resolver->setDefaults(array(
-                'data_class' => 'DataBundle\Entity\Band',
-                 'is_edit' => false
-            ));
+    {
+        $resolver->setDefaults(array(
+            'data_class' => 'DataBundle\Entity\Band',
+            'is_edit' => false
+        ));
     }
 
     /**

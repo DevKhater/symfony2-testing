@@ -13,7 +13,7 @@ use Doctrine\ORM\EntityRepository;
 class LocationRepository extends EntityRepository
 {
 
-    public function findAllLocations($currentPage = 1, $limit)
+    public function findAllEntities($currentPage = 1, $limit)
     {
 
         $query = $this->createQueryBuilder('b')
@@ -26,7 +26,7 @@ class LocationRepository extends EntityRepository
         return $result;
     }
 
-    public function countAllLocations()
+    public function countAllEntities()
     {
         $query = $this->getEntityManager()
                 ->createQuery(

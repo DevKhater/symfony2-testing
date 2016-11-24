@@ -80,6 +80,22 @@ class ApiConcertController extends ApiController
             ->setTemplateData(['element' => 'Band Name']);
         return $this->handleView($view);
     }
+    
+    /**
+     * @Route("api/concert/{id}/band/{name}", name="api_concert_patch_band")
+     * @Method("PATCH")
+     * @ApiDoc(
+     *  resource=true,
+     *  description="Show Concert's Band",
+     * )
+     */
+    public function patchConcertBandAction(Request $request)
+    {
+        $newName = $request->get('name');
+        $concert = $this->getOr404($request->get('id'));
+        $updatedConcert = $this->container->get($this->serviceEntity)->patchBand($concert, $newName);
+        return $this->forward('DataBundle:ApiConcert:showConcert', array('id' => $updatedConcert->getId()));
+    }
 
     /**
      * @Route("api/concert/{id}/genre", name="api_concert_get_genre")
@@ -196,7 +212,7 @@ class ApiConcertController extends ApiController
      * @Method("PUT")
      * @ApiDoc(
      *   resource = true,
-     *   description = "Create a new Concert",
+     *   description = "Update a Concert",
      *   statusCodes = {
      *     201 = "Returned when created",
      *     400 = "Returned when the form has errors"

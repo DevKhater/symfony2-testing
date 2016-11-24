@@ -3,7 +3,6 @@
 namespace DataBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * BandRepository
@@ -14,7 +13,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 class BandRepository extends EntityRepository
 {
 
-    public function findAllBands($currentPage = 1, $limit)
+    public function findAllEntities($currentPage = 1, $limit)
     {
 
         $query = $this->createQueryBuilder('b')
@@ -25,11 +24,9 @@ class BandRepository extends EntityRepository
 
         $result = $query->getResult();
         return $result;
-//        $paginator = $this->paginate($query, $currentPage);
-        //      return $paginator;
     }
 
-    public function countAllBands()
+    public function countAllEntities()
     {
         $query = $this->getEntityManager()
                 ->createQuery(
