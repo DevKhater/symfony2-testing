@@ -39,7 +39,9 @@ security:
             guard: 
                 authenticators:
                     - mk.jwt.authenticator
-                    
+        ng:
+            pattern: ^/ng/
+            anonymous: true
             # activate different ways to authenticate
 
             # http_basic: ~
@@ -52,7 +54,9 @@ security:
     access_control:
         # require ROLE_ADMIN for /admin*
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/ng/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/token, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/, method: "GET", roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, roles: ROLE_USER }
        # - { path: ^/api, roles: ROLE_USER }

@@ -20,11 +20,14 @@ class AppKernel extends Kernel
             new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
             new JMS\SerializerBundle\JMSSerializerBundle(),
             new Bazinga\Bundle\HateoasBundle\BazingaHateoasBundle(),
+            new Nelmio\CorsBundle\NelmioCorsBundle(),
             new FOS\RestBundle\FOSRestBundle(),
+            new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
             new AppBundle\AppBundle(),
             new MK\UserBundle\MKUserBundle(),
             new MK\ApiBundle\MKApiBundle(),
             new DataBundle\DataBundle(),
+            new AngularBundle\AngularBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'), true)) {

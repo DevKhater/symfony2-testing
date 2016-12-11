@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Angular JS</title>
+        <!-- AngularJS File -->
+        <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+        <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+        <script src="{{asset("bower_components/angular/angular.min.js")}}"></script>
+        <script src="{{asset("bower_components/angular-route/angular-route.min.js")}}"></script>
+        <script src="{{asset("bundles/angular/js/ang.js")}}"></script>
+    </head>
+    <body ng-app='mainApp'>
+        <div ng-controller="welcomeCtrl">
+            {{'{{welcomeMessage}}'}}
+        </div>
+    </body>
+</html>

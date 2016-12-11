@@ -4,10 +4,13 @@ namespace MK\UserBundle\Security\Authenticator;
 
 use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticator;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class FormLoginAuthenticator extends AbstractFormLoginAuthenticator
 {
@@ -59,11 +62,28 @@ class FormLoginAuthenticator extends AbstractFormLoginAuthenticator
 
     protected function getLoginUrl()
     {
-        return $this->container->get('router')->generate('secure_login');
+        //
+        //return $this->container->get('router')->generate('secure_login');
+        return new JsonResponse('Wrong Credentials', 401);
     }
 
     protected function getDefaultSuccessRedirectUrl()
     {
-        return $this->container->get('router')->generate('homepage');
+        //return $this->container->get('router')->generate('homepage');
+        return $this->container->get('router')->generate('ng_login');
+    }
+    
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
+    {
+        $targetPath = null;
+        if ($request->getSession() instanceof SessionInterface) {
+            $targetPath = $request->getSession()->get('_security.'.$providerKey.'.target_path');
+            return new JsonResponse($targetPath, 200);
+        }
+
+        if (!$targetPath) {
+            $targetPath = $this->getDefaultSuccessRedirectUrl();
+        }
+        return new RedirectResponse($targetPath);
     }
 }
