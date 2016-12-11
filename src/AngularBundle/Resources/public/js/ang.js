@@ -1,4 +1,4 @@
-var app = angular.module('mainApp', ['ngRoute']);
+var app = angular.module('mainApp', ['ngRoute','ngMaterial', 'ngMessages', 'ngAria', 'ngAnimate']);
 
 app.config([
     '$routeProvider',
@@ -8,11 +8,20 @@ app.config([
                     templateUrl: "/bundles/angular/ng/security/login.html"
                 })
         $routeProvider
+        //must check if ligged in
                 .when('/ng-home', {
                     templateUrl: "/bundles/angular/ng/home/welcome.html"
                 })
     }]);
 
+
+app.config(['$mdThemingProvider', function($mdThemingProvider) {
+    $mdThemingProvider.theme('docs-dark', 'default')
+      .primaryPalette('red')
+      .dark();
+  }]);
+  
+  
 app.run(function ($rootScope, $window) {
     $rootScope.logOut = function () {
         $window.location.href = Routing.generate('logout');
