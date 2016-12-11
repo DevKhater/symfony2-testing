@@ -1,0 +1,8 @@
+<div ng-controller="loginCtrl">
+    <login-logout status='logedIn'></login-logout>
+    <form id="loginForm">
+        <input type="text" name="_username" id="username" placeholder="Username" ng-model="username">
+        <input type="password" name="_password" id="password" placeholder="Password" ng-model="password">
+        <button ng-click="submit()">Login</button>
+    </form>
+</div>

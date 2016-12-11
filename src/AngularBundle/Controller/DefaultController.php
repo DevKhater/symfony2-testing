@@ -14,9 +14,9 @@ class DefaultController extends Controller
     public function indexAction()
     {
         if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
-            return $this->render('AngularBundle:Default:index.html.twig');
+            return $this->render('AngularBundle:Default:index.html.twig', ['loggedIn' => 0]);
         }
-        return $this->render('AngularBundle:Default:home.html.twig');    
+        return $this->render('AngularBundle:Default:index.html.twig', ['loggedIn' => 1]);
     }
     
     /**
