@@ -3,6 +3,9 @@
     <head>
         <title>Angular JS</title>
         <link rel="stylesheet" href="{{asset("bower_components/angular-material/angular-material.css")}}">
+        <link rel="stylesheet" href="{{asset("bower_components/angular-growl-v2/build/angular-growl.min.css")}}">
+        <link rel="stylesheet" href="{{asset("bundles/angular/css/style.css")}}">
+
         <!-- AngularJS File -->
         <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
         <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
@@ -11,17 +14,13 @@
         <script src="{{asset("bower_components/angular-aria/angular-aria.js")}}"></script>
         <script src="{{asset("bower_components/angular-messages/angular-messages.js")}}"></script>
         <script src="{{asset("bower_components/angular-animate/angular-animate.js")}}"></script>
+        <script src="{{asset("bower_components/angular-growl-v2/build/angular-growl.min.js")}}"></script>
 
         <!-- Angular Material Library -->
         <script src="{{asset("bower_components/angular-material/angular-material.min.js")}}"></script>
 
-        <script src="{{asset("bundles/angular/js/ang.js")}}"></script>
-        <style>
-            .inputdemoBasicUsage {
-                text-align: center;
-                margin: 0 auto;
-            }
-        </style>
+        <script src="{{asset("bundles/angular/js/module.js")}}"></script>
+        <script src="{{asset("bundles/angular/js/controllers.js")}}"></script>
     </head>
     <body ng-app='mainApp' layout="row" ng-controller="AppCtrl">
     <md-sidenav class="md-sidenav-left" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')" md-whiteframe="4">

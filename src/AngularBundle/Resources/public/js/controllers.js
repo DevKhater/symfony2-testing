@@ -1,74 +1,40 @@
-/*
- * App Module and Conf.
- */
-
-var app = angular.module('mainApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'ngAria', 'ngAnimate']);
-
-app.config([
-    '$routeProvider',
-    function ($routeProvider) {
-        $routeProvider
-                .when('/', {
-                    templateUrl: "/bundles/angular/ng/login.html"
-                })
-        $routeProvider
-                //must check if ligged in
-                .when('/ng-home', {
-                    templateUrl: "/bundles/angular/ng/welcome.html"
-                })
-        $routeProvider
-                .when('/bands', {
-                    templateUrl: "/bundles/angular/ng/bands.html"
-                })
-        $routeProvider
-                .when('/concerts', {
-                    templateUrl: "/bundles/angular/ng/concerts.html"
-                })
-    }]);
-
-app.config(['$mdThemingProvider', function ($mdThemingProvider) {
-        $mdThemingProvider.theme('form')
-                .primaryPalette('deep-purple')
-                .accentPalette('red')
-                .dark();
-    }]);
+/*****************************************************************************************/
+/**********                 FACTORIES                                           **********/
+/*****************************************************************************************/
+app.factory('getGenres', function ($http) {
+    var genresUrl = Routing.generate('api_band_genres');
+    var getData = function () {
+        return $http({method: "GET", url: genresUrl}).then(function (result) {
+            return result.data;
+        });
+    };
 
 
-app.run(function ($rootScope, $window) {
-    $rootScope.logOut = function () {
-        $window.location.href = Routing.generate('logout');
-    }
+    return {getData: getData};
 });
+app.factory('getBands', function ($http) {
+    var bandsUrl = Routing.generate('api_bands_list');
+    var getData = function () {
+        return $http({method: "GET", url: bandsUrl}).then(function (result) {
+            return result.data;
+        });
+    };
 
-/* **********************************************************************************************
- * App Directives
- */
 
-app.directive('loginLogout', function ($rootScope) {
-    return {
-        restrict: 'EA',
-        template: '<div><p ng-if="status">You are Logged In!  || <span ng-click="logOut()">LogOut</span></p><p ng-if="!status">You are NOT Logged In!</p></div>',
-        scope: {
-            status: '='
-        },
-        link: function (scope, element, attrs) {
-            scope.logOut = function () {
-                $rootScope.logOut();
-            }
-        }
-    }
+    return {getData: getData};
 });
 
 
-/* **********************************************************************************************
- * App Controllers.
- */
+
+/*****************************************************************************************/
+/**********                 CONTROLLERS                                         **********/
+/*****************************************************************************************/
 
 /*** Index Material Controller ***/
 app.controller('AppCtrl', function ($scope, $timeout, $mdSidenav, $log, $mdMedia) {
     $scope.$mdMedia = $mdMedia;
     //$scope.toggleLeft = buildDelayedToggler('left');
-    $scope.toggleLeft = function() {
+    $scope.toggleLeft = function () {
         return debounce(function () {
             // Component lookup should always be available since we are not using `ng-if`
             $mdSidenav('left')
@@ -78,9 +44,9 @@ app.controller('AppCtrl', function ($scope, $timeout, $mdSidenav, $log, $mdMedia
                     });
         }, 200);
     }
-    
-    
-    
+
+
+
     $scope.toggleRight = buildToggler('right');
     $scope.openLeftMenu = function () {
         $mdSidenav('left').toggle();
@@ -90,7 +56,7 @@ app.controller('AppCtrl', function ($scope, $timeout, $mdSidenav, $log, $mdMedia
      * Supplies a function that will continue to operate until the
      * time is up.
      */
-     var debounce = function(func, wait, context) {
+    var debounce = function (func, wait, context) {
         var timer;
 
         return function debounced() {
@@ -140,7 +106,7 @@ app.controller('AppCtrl', function ($scope, $timeout, $mdSidenav, $log, $mdMedia
 
             };
         });
-        
+
 /*** Login Controller ***/
 app.controller('loginCtrl', function ($scope, $http, $httpParamSerializerJQLike, $rootScope, $location, $mdSidenav) {
     if ($scope.logedIn == 1) {
@@ -175,40 +141,22 @@ app.controller('welcomeCtrl', function ($scope, $rootScope, $http) {
     });
 });
 
-app.factory('getGenres', function($http) {
-    var genresUrl = Routing.generate('api_band_genres');
-    var getData = function() {
-        return $http({method:"GET", url:genresUrl}).then(function(result){
-            return result.data;
-        });
-    };
-
-
-    return { getData: getData };
-});
-app.factory('getBands', function($http) {
-    var bandsUrl = Routing.generate('api_bands_list');
-    var getData = function() {
-        return $http({method:"GET", url:bandsUrl}).then(function(result){
-            return result.data;
-        });
-    };
-
-
-    return { getData: getData };
-});
-
+/*** Band Controller ***/
 app.controller('bandsCtrl', function ($scope, getGenres, getBands, $rootScope, $mdBottomSheet, $mdToast, $mdDialog) {
-    var myGenrePromise = getGenres.getData();
-    myGenrePromise.then(function(result) {  
-        $scope.Genres= result;
-    });
-    $rootScope.updateBandsList = function(){
-        var myBandsPromise = getBands.getData();
-        myBandsPromise.then(function(result) {  
-            $scope.Bands= result;
+    $rootScope.updateBandsGenreList = function () {
+        var myGenrePromise = getGenres.getData();
+        myGenrePromise.then(function (result) {
+            $scope.Genres = result;
         });
     };
+
+    $rootScope.updateBandsList = function () {
+        var myBandsPromise = getBands.getData();
+        myBandsPromise.then(function (result) {
+            $scope.Bands = result;
+        });
+    };
+    $rootScope.updateBandsGenreList();
     $rootScope.updateBandsList();
     $scope.$watch('Genres', function (newValue, oldValue) {
         $rootScope.getGenres = $scope.Genres;
@@ -241,51 +189,45 @@ app.controller('bandsCtrl', function ($scope, getGenres, getBands, $rootScope, $
 
 });
 
-app.controller('bandFormCtrl', function ($scope, $rootScope, $mdDialog, $http, $httpParamSerializerJQLike) {
+app.controller('bandFormCtrl', function ($scope, $rootScope, $mdDialog, $http, $httpParamSerializerJQLike, growl) {
+    $scope.showSuccess = function () {
+        growl.success('Bands Added Succecfully.', {title: 'Success!'});
+    };
     $scope.band = {
         name: "",
         genre: ""
     };
+    $rootScope.updateBandsGenreList();
     $scope.allGenres = $rootScope.getGenres;
     $scope.displayInput = false;
     $scope.$watch('displayInput', function (newValue, oldValue) {
-        console.log(newValue, oldValue);
         newValue == true ? $scope.displayInputLabel = "Select From List" : $scope.displayInputLabel = "Add New Genre";
     });
     $scope.saveBand = function () {
-    $http.post(Routing.generate('api_band_create'), $httpParamSerializerJQLike({name: $scope.band.name, genre: $scope.band.genre}), {
+        $http.post(Routing.generate('api_band_create'), $httpParamSerializerJQLike({name: $scope.band.name, genre: $scope.band.genre}), {
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-            //headers: {'Content-Type': 'application/json'}
         }).then(function successCallback(response) {
             $scope.hide();
             $rootScope.updateBandsList();
+            $scope.showSuccess();
         }, function errorCallback(response) {
             console.log(response);
-            console.log('error');
         });
     };
     $scope.clearForm = function () {
         $scope.band.name = "";
         $scope.band.genre = "";
-        $scope.displayInput = false; 
+        $scope.displayInput = false;
     };
-    
-    
-    
-    
-
     $scope.hide = function () {
         $mdDialog.hide();
     };
-
     $scope.cancel = function () {
         $mdDialog.cancel();
     };
-
     $scope.answer = function (answer) {
         $mdDialog.hide(answer);
     };
-
 });
 
 app.controller('rightMenuCtrl', function ($scope) {

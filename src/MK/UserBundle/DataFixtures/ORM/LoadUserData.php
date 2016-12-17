@@ -29,7 +29,7 @@ class LoadUserData implements FixtureInterface, ContainerAwareInterface
         $user->setUsername('b');
         $user->setPassword($this->container->get('security.password_encoder')->encodePassword($userAdmin, '1'));
         $user->setEmail('b@b.com');
-        $user->setSuperAdmin(true);
+        $user->setSuperAdmin(false);
         $manager->persist($user);
         $manager->flush();
     }
