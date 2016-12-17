@@ -4,27 +4,31 @@
         <md-icon md-svg-src="/bundles/angular/img/icons/addBand.svg">From Bottom</md-icon>
     </md-button>
     <md-divider></md-divider>
-    <md-content class="md-padding" layout="row" layout-wrap layout-align="start center">
-            <md-card flex="25"  layout-padding layout-margin ng-repeat="band in Bands">
+    <!--<md-content class="md-padding" layout="row" layout-wrap layout-align="start center">-->
+    <div class='md-padding' layout="row" layout-wrap>
+            <md-card flex="25"   ng-repeat="band in Bands">
+                <md-card-title-media>
+                        <div class="md-media-md card-media">
+                            <img ng-src="http://www.gravatar.com/avatar/" class="md-avatar" alt="Description">
+                        </div>
+                    </md-card-title-media>
                 <md-card-title>
                     <md-card-title-text>
                         <span class="md-headline">{{band.name}}</span>
                         <span class="md-subhead">{{band.genre}}</span>
-                        <div layout="row" layout-align="start"><md-icon md-svg-src="/bundles/angular/img/icons/drum-3.svg" style="margin-left:0;margin-right: 10px;"></md-icon><span class="md-subhead">{{band.concerts.length}}</span></div>
                     </md-card-title-text>
-                    <md-card-title-media>
-                        <div class="md-media-md card-media">
-                            <img ng-src="http://www.gravatar.com/avatar/" class="md-avatar" alt="Description"> 
-                        </div>
-                    </md-card-title-media>
-                </md-card-title>
+
+                    <md-card-content layout-align="start center"><p>
+                        <md-icon md-svg-src="/bundles/angular/img/icons/drum-3.svg" style='margin-right: 15px;'></md-icon><span class="md-subhead">{{band.concerts.length}}</span>
+                    </p></md-card-content>
+                    </md-card-title>
                 <md-card-actions layout="row" layout-align="end center">
                     <md-button ng-show="band.concerts.length == 0" class="md-secondary md-raised" ng-click="deleteBand(band.slug)">Delete</md-button>
                 </md-card-actions>
             </md-card>
-    </md-content>
-    <!--            <md-list-item class="md-3-line" ng-repeat="band in Bands"> 
-                    <img ng-src="http://www.gravatar.com/avatar/" class="md-avatar" alt="Description"> 
+    </div>
+    <!--            <md-list-item class="md-3-line" ng-repeat="band in Bands">
+                    <img ng-src="http://www.gravatar.com/avatar/" class="md-avatar" alt="Description">
                             <img ng-src="{{item.face}}?{{$index}}" class="md-avatar" alt="{{item.who}}">
                     <div class="md-list-item-text">
                         <h3>{{band.name}}</h3>
@@ -38,13 +42,13 @@
 
 
     <div layout-align="center center" layout="row"
-         paging 
+         paging
          ng-hide="pages == 1"
          page="page"
-         page-size="limit" 
+         page-size="limit"
          total="total"
          paging-action="updateBandsList(page)">
-    </div> 
+    </div>
     <script type="text/ng-template" id="dialog1.tmpl.html">
     <md-dialog aria-label="Add New Band" md-theme="form">
     <md-toolbar >
