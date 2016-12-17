@@ -174,7 +174,7 @@ app.controller('bandsCtrl', function ($scope, getGenres, getBands, $rootScope, $
     $scope.deleteBand = function (slug) {
         $http.delete(Routing.generate('api_band_delete', {id: slug}))
                 .then(function successCallback(response) {
-                    $rootScope.updateBandsList();
+                    $rootScope.updateBandsList($scope.page);
                     $rootScope.showSuccess('Band Deleted');
                 }, function errorCallback(response) {
                     console.log(response);
