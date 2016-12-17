@@ -134,7 +134,10 @@ class BandHandler implements BandHandlerInterface
 //        $method == "PATCH" ? $form = $this->formFactory->create(new ApiBandPATCHType(), $band, array('method' => $method)) : $form = $this->formFactory->create(new ApiBandType(), $band, array('method' => $method)); 
 //        $form->submit($parameters);
         $form = $this->formFactory->create(new ApiBandType(), $band, array('method' => $method));
-        $form->submit($parameters[$form->getName()]);
+        dump($form);
+        //var_dump($form);
+        //$form->submit($parameters[$form->getName()]);
+        $form->submit($parameters);
         if ($form->isValid()) {
             $band = $form->getData();
             $this->em->persist($band);
@@ -172,6 +175,11 @@ class BandHandler implements BandHandlerInterface
     private function createBand()
     {
         return new $this->entityClass();
+    }
+    
+    public function getGenres()
+    {
+        return $this->repository->getAllGenres();
     }
 
 }

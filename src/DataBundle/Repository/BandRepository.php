@@ -25,6 +25,15 @@ class BandRepository extends EntityRepository
         $result = $query->getResult();
         return $result;
     }
+    
+    public function getAllGenres()
+    {
+        $genres = $this->getEntityManager()
+                ->createQuery(
+                'SELECT  DISTINCT a.genre FROM DataBundle:Band a')
+                ->getResult();
+        return $genres;
+    }
 
     public function countAllEntities()
     {

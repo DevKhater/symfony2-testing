@@ -29,4 +29,5 @@ class DefaultController extends Controller
             return new JsonResponse($user, 200);
         }
     }
+
 }

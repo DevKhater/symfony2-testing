@@ -17,17 +17,7 @@ use JMS\Serializer\Annotation as Serializer;
  * @ORM\Entity()
  * @ORM\Entity(repositoryClass="DataBundle\Repository\BandRepository")
  * 
- * @Hateoas\Relation("self", href = "expr('/api/bands/' ~ object.getSlug())")\
- * @Hateoas\Relation(
- *      "delete",
- *      href = @Hateoas\Route(
- *          "api_band_delete",
- *          parameters = { "slug" = "expr(object.getId())" }
- *      ),
- *      exclusion = @Hateoas\Exclusion(
- *          excludeIf = "expr(not is_granted(['ROLE_SUPER_ADMIN']))"
- *      )
- * )
+ * @Hateoas\Relation("self", href = "expr('/api/bands/' ~ object.getSlug())")
  */
 class Band implements BandInterface
 {

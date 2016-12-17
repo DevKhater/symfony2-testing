@@ -94,6 +94,21 @@ class ApiBandController extends ApiController
     }
 
     /**
+     * @Route("api/band/genres", name="api_band_genres")
+     * @Method("GET")
+     * @ApiDoc(
+     *  resource=true,
+     *  description="Get All Genres",
+     * )
+     */
+    public function getGenresAction(Request $request)
+    {
+        $genres = $this->container->get($this->serviceEntity)->getGenres();
+        $view = $this->view($genres, 200);
+        return $this->handleView($view);
+    }
+
+    /**
      * @Route("api/band/", name="api_band_create")
      * @Method("POST")
      * @ApiDoc(
@@ -110,8 +125,14 @@ class ApiBandController extends ApiController
     public function postBandAction(Request $request)
     {
         $newBand = $this->container->get($this->serviceEntity)->post($request->request->all());
-        return $this->redirect($this->generateUrl('api_band_show', array('slug' => $newBand->getSlug())));
-    }
+        
+        if ($newBand->getSlug()) {
+            $view = $this->view($newBand, 200);
+            } else {
+                $view = $this->view('Couldnt Create Band', 500);
+            }
+            return $this->handleView($view);
+        }
 
     /**
      * @Route("api/band/{slug}/edit", name="api_band_form_edit")

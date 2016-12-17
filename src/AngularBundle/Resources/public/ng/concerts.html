@@ -1,0 +1,51 @@
+<div ng-controller="concertsCtrl" layout="column" layout-padding layout-margin layout-align="top center">
+
+    <div class="alert alert-info">
+        <p>Sort Type: {{ sortType}}</p>
+        <p>Sort Reverse: {{ sortReverse}}</p>
+        <p>Search Query: {{ searchFish}}</p>
+    </div>
+
+    <form>
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-addon"><i class="fa fa-search"></i></div>
+                <input type="text" class="form-control" placeholder="Search Bands" ng-model="searchBand">
+            </div>      
+        </div>
+    </form>
+
+    <table class="table table-bordered table-striped">
+
+        <thead>
+            <tr>
+                <td>
+                    <a href="#!/concerts" ng-click="sortType = 'date';
+                                sortReverse = !sortReverse">
+                        Date 
+                        <md-icon md-svg-src="/bundles/angular/img/icons/arrowDown.svg" ng-show="sortType == 'date' && !sortReverse" ></md-icon>
+                        <md-icon md-svg-src="/bundles/angular/img/icons/arrowUp.svg" ng-show="sortType == 'date' && sortReverse" ></md-icon>
+                    </a>
+                </td>
+                <td>
+                    <a href="#!/concerts" ng-click="sortType = 'band';
+                                sortReverse = !sortReverse">
+                        Band Name
+                            <md-icon md-svg-src="/bundles/angular/img/icons/arrowDown.svg" ng-show="sortType == 'band' && !sortReverse" ></md-icon>
+                        <md-icon md-svg-src="/bundles/angular/img/icons/arrowUp.svg" ng-show="sortType == 'band' && sortReverse" ></md-icon>
+                    </a>
+                </td>
+                <td>
+                    Location
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="gig in concerts| orderBy:sortType:sortReverse | filter:searchBand">
+                <td>{{ gig.date}}</td>
+                <td>{{ gig.band}}</td>
+                <td>{{ gig.location}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
