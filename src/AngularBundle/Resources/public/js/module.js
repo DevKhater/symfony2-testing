@@ -2,7 +2,7 @@
  * App Module and Conf.
  */
 
-var app = angular.module('mainApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'ngAria', 'ngAnimate', 'angular-growl']);
+var app = angular.module('mainApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'ngAria', 'ngAnimate', 'angular-growl', 'bw.paging']);
 
 app.config([
     '$routeProvider',
@@ -34,10 +34,13 @@ app.config(['$mdThemingProvider', function ($mdThemingProvider) {
     }]);
 
 
-app.run(function ($rootScope, $window) {
+app.run(function ($rootScope, $window, growl) {
     $rootScope.logOut = function () {
         $window.location.href = Routing.generate('logout');
     }
+    $rootScope.showSuccess = function (message) {
+        growl.success(message, {title: 'Success!'});
+    };
 });
 
 /* **********************************************************************************************

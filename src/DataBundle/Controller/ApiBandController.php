@@ -11,6 +11,9 @@ use DataBundle\Controller\BaseApiController as ApiController;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Symfony\Component\HttpFoundation\Response;
+use Hateoas\Representation\PaginatedRepresentation;
+use Hateoas\Representation\CollectionRepresentation;
 
 class ApiBandController extends ApiController
 {
@@ -53,8 +56,37 @@ class ApiBandController extends ApiController
      */
     public function getBandsAction(Request $request, ParamFetcherInterface $paramFetcher)
     {
-        $response = parent::getAction($request, $paramFetcher);
-        return($response);
+        $offset = null == $paramFetcher->get('offset') ? 1 : $paramFetcher->get('offset');
+        $limit = $paramFetcher->get('limit');
+        $totalBands = $this->getDoctrine()->getRepository($this->classEntity)->countAllEntities();
+        $maxPages = ceil($totalBands / $limit);
+        $data = $this->container->get($this->serviceEntity)->all($offset, $limit);
+        $data == null ? $view = $this->view('No concerts found.', 404) : $view = $this->view($data, 200);
+        $paginatedCollection = new PaginatedRepresentation(
+                new CollectionRepresentation(
+                $data, 'bands', // embedded rel
+                'bands'  // xml element name
+                ), 'api_bands_list', // route
+                array(), // route parameters
+                $offset, // page number
+                $limit, // limit
+                $maxPages, // total pages
+                'page', // page route parameter name, optional, defaults to 'page'
+                'limit', // limit route parameter name, optional, defaults to 'limit'
+                false, // generate relative URIs, optional, defaults to `false`
+                $totalBands      // total collection size, optional, defaults to `null`
+        );
+
+
+
+//        
+//        $view->setTemplate($this->templateDirectory . "apiList.html.twig")
+//                ->setTemplateData(['maxPages' => $maxPages,
+//                    'thisPage' => $offset, 'theIndex' => 'api_concerts_list']);
+//        return $this->handleView($view);
+//    
+        //$response = parent::getAction($request, $paramFetcher);
+        return new Response($this->get('serializer')->serialize($paginatedCollection, 'json'), 200, array('Content-Type' => 'application/json'));
     }
 
     /**
@@ -125,14 +157,14 @@ class ApiBandController extends ApiController
     public function postBandAction(Request $request)
     {
         $newBand = $this->container->get($this->serviceEntity)->post($request->request->all());
-        
+
         if ($newBand->getSlug()) {
             $view = $this->view($newBand, 200);
-            } else {
-                $view = $this->view('Couldnt Create Band', 500);
-            }
-            return $this->handleView($view);
+        } else {
+            $view = $this->view('Couldnt Create Band', 500);
         }
+        return $this->handleView($view);
+    }
 
     /**
      * @Route("api/band/{slug}/edit", name="api_band_form_edit")
@@ -203,7 +235,7 @@ class ApiBandController extends ApiController
      */
     public function deleteBandAction(Request $request)
     {
-        $response = parent::deleteAction($request->get('slug'));
+        $response = parent::deleteAction($request->get('id'));
         return($response);
     }
 
@@ -230,7 +262,6 @@ class ApiBandController extends ApiController
             return $this->routeRedirectView('api_band_show', $routeOptions, Response::HTTP_OK);
         }
     }
-
 
     private function getBandForm($method, $band)
     {

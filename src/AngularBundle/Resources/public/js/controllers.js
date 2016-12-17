@@ -8,19 +8,23 @@ app.factory('getGenres', function ($http) {
             return result.data;
         });
     };
-
-
     return {getData: getData};
 });
+
 app.factory('getBands', function ($http) {
     var bandsUrl = Routing.generate('api_bands_list');
-    var getData = function () {
-        return $http({method: "GET", url: bandsUrl}).then(function (result) {
-            return result.data;
-        });
+    var getData = function (page) {
+        if (page == 0 || page == null) {
+            page = 1
+        }
+        return $http({method: "GET", url: bandsUrl,
+            headers: {'Accept': 'application/json'},
+            params: {offset: page}
+        })
+                .then(function (result) {
+                    return result.data;
+                });
     };
-
-
     return {getData: getData};
 });
 
@@ -142,33 +146,39 @@ app.controller('welcomeCtrl', function ($scope, $rootScope, $http) {
 });
 
 /*** Band Controller ***/
-app.controller('bandsCtrl', function ($scope, getGenres, getBands, $rootScope, $mdBottomSheet, $mdToast, $mdDialog) {
+app.controller('bandsCtrl', function ($scope, getGenres, getBands, $rootScope, $http, $mdBottomSheet, $mdToast, $mdDialog) {
+    $scope.page, $scope.limit, $scope.total;
     $rootScope.updateBandsGenreList = function () {
         var myGenrePromise = getGenres.getData();
         myGenrePromise.then(function (result) {
             $scope.Genres = result;
         });
     };
-
-    $rootScope.updateBandsList = function () {
-        var myBandsPromise = getBands.getData();
+    $rootScope.updateBandsList = function (page) {
+        var myBandsPromise = getBands.getData(page);
         myBandsPromise.then(function (result) {
-            $scope.Bands = result;
+            $scope.Bands = result._embedded.bands;
+            //$scope._links = result._links;
+            $scope.limit = result.limit;
+            $scope.total = result.total;
+            $scope.page = result.page;
+            $scope.pages = result.pages;
+            console.log(result);
         });
     };
     $rootScope.updateBandsGenreList();
-    $rootScope.updateBandsList();
     $scope.$watch('Genres', function (newValue, oldValue) {
         $rootScope.getGenres = $scope.Genres;
     });
-    $scope.showGridBottomSheet = function () {
-        console.log('Clicked');
-        $scope.alert = '';
-        $mdBottomSheet.show({
-            templateUrl: 'bands-add-form.html',
-            controller: 'bandFormCtrl',
-            clickOutsideToClose: true
-        });
+    $rootScope.updateBandsList();
+    $scope.deleteBand = function (slug) {
+        $http.delete(Routing.generate('api_band_delete', {id: slug}))
+                .then(function successCallback(response) {
+                    $rootScope.updateBandsList();
+                    $rootScope.showSuccess('Band Deleted');
+                }, function errorCallback(response) {
+                    console.log(response);
+                });
     };
     $scope.showBandForm = function (ev) {
         $mdDialog.show({
@@ -189,10 +199,7 @@ app.controller('bandsCtrl', function ($scope, getGenres, getBands, $rootScope, $
 
 });
 
-app.controller('bandFormCtrl', function ($scope, $rootScope, $mdDialog, $http, $httpParamSerializerJQLike, growl) {
-    $scope.showSuccess = function () {
-        growl.success('Bands Added Succecfully.', {title: 'Success!'});
-    };
+app.controller('bandFormCtrl', function ($scope, $rootScope, $mdDialog, $http, $httpParamSerializerJQLike) {
     $scope.band = {
         name: "",
         genre: ""
@@ -209,7 +216,7 @@ app.controller('bandFormCtrl', function ($scope, $rootScope, $mdDialog, $http, $
         }).then(function successCallback(response) {
             $scope.hide();
             $rootScope.updateBandsList();
-            $scope.showSuccess();
+            $rootScope.showSuccess('Band Created');
         }, function errorCallback(response) {
             console.log(response);
         });
