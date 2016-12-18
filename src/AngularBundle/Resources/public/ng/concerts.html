@@ -1,11 +1,9 @@
 <div ng-controller="concertsCtrl" layout="column" layout-padding layout-margin layout-align="top center">
-
     <div class="alert alert-info">
         <p>Sort Type: {{ sortType}}</p>
         <p>Sort Reverse: {{ sortReverse}}</p>
         <p>Search Query: {{ searchFish}}</p>
     </div>
-
     <form>
         <div class="form-group">
             <div class="input-group">
@@ -14,14 +12,18 @@
             </div>      
         </div>
     </form>
-
+    <form>
+        <input type="text" date-time ng-model="newCon.date" format="lll">
+        <input ng-model="newCon.band.name" type="text">
+        <input ng-model="newCon.location.name" type="text"><input ng-model="newCon.location.address" type="text">
+                
+    </form>
     <table class="table table-bordered table-striped">
-
         <thead>
             <tr>
                 <td>
                     <a href="#!/concerts" ng-click="sortType = 'date';
-                                sortReverse = !sortReverse">
+                            sortReverse = !sortReverse">
                         Date 
                         <md-icon md-svg-src="/bundles/angular/img/icons/arrowDown.svg" ng-show="sortType == 'date' && !sortReverse" ></md-icon>
                         <md-icon md-svg-src="/bundles/angular/img/icons/arrowUp.svg" ng-show="sortType == 'date' && sortReverse" ></md-icon>
@@ -29,9 +31,9 @@
                 </td>
                 <td>
                     <a href="#!/concerts" ng-click="sortType = 'band';
-                                sortReverse = !sortReverse">
+                            sortReverse = !sortReverse">
                         Band Name
-                            <md-icon md-svg-src="/bundles/angular/img/icons/arrowDown.svg" ng-show="sortType == 'band' && !sortReverse" ></md-icon>
+                        <md-icon md-svg-src="/bundles/angular/img/icons/arrowDown.svg" ng-show="sortType == 'band' && !sortReverse" ></md-icon>
                         <md-icon md-svg-src="/bundles/angular/img/icons/arrowUp.svg" ng-show="sortType == 'band' && sortReverse" ></md-icon>
                     </a>
                 </td>
@@ -41,10 +43,23 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="gig in concerts| orderBy:sortType:sortReverse | filter:searchBand">
-                <td>{{ gig.date}}</td>
-                <td>{{ gig.band}}</td>
-                <td>{{ gig.location}}</td>
+            <tr ng-repeat="gig in concerts | orderBy:sortType:sortReverse | filter:searchBand">
+                <td>{{ gig.date | date : 'dd, MMMM - yyyy'}}</td>
+                <td>
+                    {{ gig._embedded.band.name}}
+                    <md-button class="tooltipBtn md-no-focus">
+                        <md-tooltip>{{ gig._embedded.band.genre}}</md-tooltip>
+                        <md-icon md-svg-src="/bundles/angular/img/icons/extraInfo.svg"></md-icon>
+                    </md-button>
+                </td>
+                <td>
+                    {{ gig._embedded.location.name}}
+                    <md-button class="tooltipBtn md-no-focus">
+                        <md-tooltip>{{ gig._embedded.location.address}}</md-tooltip>
+                        <md-icon md-svg-src="/bundles/angular/img/icons/extraInfo.svg"></md-icon>
+                    </md-button>
+                        
+                </td>
             </tr>
         </tbody>
     </table>

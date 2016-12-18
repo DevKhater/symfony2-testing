@@ -97,3 +97,8 @@ button.close {
 .bandsAction button {
     margin: 0 auto;
 }
+
+.tooltipBtn{
+    min-height: 0;
+    min-width: 0;
+}

@@ -28,6 +28,23 @@ app.factory('getBands', function ($http) {
     return {getData: getData};
 });
 
+app.factory('getConcerts', function ($http) {
+    var bandsUrl = Routing.generate('api_concerts_list');
+    var getData = function (page) {
+        if (page == 0 || page == null) {
+            page = 1
+        }
+        return $http({method: "GET", url: bandsUrl,
+            headers: {'Accept': 'application/json'},
+            params: {offset: page}
+        })
+                .then(function (result) {
+                    return result.data;
+                });
+    };
+    return {getData: getData};
+});
+
 
 
 /*****************************************************************************************/
@@ -195,8 +212,58 @@ app.controller('bandsCtrl', function ($scope, getGenres, getBands, $rootScope, $
                     $scope.status = 'You cancelled the dialog.';
                 });
     };
+    $scope.editForm = function (band, ev) {
+        $mdDialog.show({
+            controller: 'bandEditCtrl',
+            templateUrl: 'dialog2.tmpl.html',
+            parent: angular.element(document.body),
+            targetEvent: ev,
+            locals : {
+                    band : band
+                },
+            clickOutsideToClose: true,
+            fullscreen: false // Only for -xs, -sm breakpoints.
+        })
+                .then(function (answer) {}, function () {});
+    };
 
 
+});
+
+app.controller('bandEditCtrl', function ($scope, $rootScope, $mdDialog, $http, $httpParamSerializerJQLike, band) {
+    $scope.band = band;
+    $rootScope.updateBandsGenreList();
+    $scope.allGenres = $rootScope.getGenres;
+    $scope.displayInput = false;
+    $scope.$watch('displayInput', function (newValue, oldValue) {
+        newValue == true ? $scope.displayInputLabel = "Select From List" : $scope.displayInputLabel = "Add New Genre";
+    });
+    $scope.saveBand = function () {
+        $http.put(Routing.generate('api_band_update'), $httpParamSerializerJQLike({name: $scope.band.name, genre: $scope.band.genre}), {
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            params: {slug: $scope.band.slug}
+        }).then(function successCallback(response) {
+            $scope.hide();
+            $rootScope.updateBandsList();
+            $rootScope.showSuccess('Band Saved');
+        }, function errorCallback(response) {
+            console.log(response);
+        });
+    };
+    $scope.clearForm = function () {
+        $scope.band.name = "";
+        $scope.band.genre = "";
+        $scope.displayInput = false;
+    };
+    $scope.hide = function () {
+        $mdDialog.hide();
+    };
+    $scope.cancel = function () {
+        $mdDialog.cancel();
+    };
+    $scope.answer = function (answer) {
+        $mdDialog.hide(answer);
+    };
 });
 
 app.controller('bandFormCtrl', function ($scope, $rootScope, $mdDialog, $http, $httpParamSerializerJQLike) {
@@ -238,6 +305,43 @@ app.controller('bandFormCtrl', function ($scope, $rootScope, $mdDialog, $http, $
 });
 
 app.controller('rightMenuCtrl', function ($scope) {
+app.controller('bandFormCtrl', function ($scope, $rootScope, $mdDialog, $http, $httpParamSerializerJQLike) {
+    $scope.band = {
+        name: "",
+        genre: ""
+    };
+    $rootScope.updateBandsGenreList();
+    $scope.allGenres = $rootScope.getGenres;
+    $scope.displayInput = false;
+    $scope.$watch('displayInput', function (newValue, oldValue) {
+        newValue == true ? $scope.displayInputLabel = "Select From List" : $scope.displayInputLabel = "Add New Genre";
+    });
+    $scope.saveBand = function () {
+        $http.post(Routing.generate('api_band_create'), $httpParamSerializerJQLike({name: $scope.band.name, genre: $scope.band.genre}), {
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+        }).then(function successCallback(response) {
+            $scope.hide();
+            $rootScope.updateBandsList();
+            $rootScope.showSuccess('Band Created');
+        }, function errorCallback(response) {
+            console.log(response);
+        });
+    };
+    $scope.clearForm = function () {
+        $scope.band.name = "";
+        $scope.band.genre = "";
+        $scope.displayInput = false;
+    };
+    $scope.hide = function () {
+        $mdDialog.hide();
+    };
+    $scope.cancel = function () {
+        $mdDialog.cancel();
+    };
+    $scope.answer = function (answer) {
+        $mdDialog.hide(answer);
+    };
+});
     $scope.menu = [
         {
             href: "#!/bands",
@@ -252,18 +356,28 @@ app.controller('rightMenuCtrl', function ($scope) {
     ];
 });
 
-app.controller('concertsCtrl', function ($scope) {
+app.controller('concertsCtrl', function ($scope, getConcerts) {
+    $scope.concerts;
+    $scope.getConcertsList = function (page) {
+        var myConPromise = getConcerts.getData(page);
+        myConPromise.then(function (result) {
+            console.log(result);
+            $scope.concerts = result;
+        });
+    };
+    $scope.newCon = {
+        date : new Date(),
+        band : {
+            name: ""
+        },
+        location: {
+            name: "",
+            address: ""
+        }
+    }
+    $scope.getConcertsList();
     $scope.sortType = 'date'; // set the default sort type
     $scope.sortReverse = true;  // set the default sort order
     $scope.searchBand = '';     // set the default search/filter term
-    $scope.concerts = [
-        {date: '2016-12-12', band: 'Ddeath', location: 'Somehwerre'},
-        {date: '2016-12-10', band: 'where the hell', location: 'Somehwerre'},
-        {date: '2015-12-01', band: 'go and die', location: 'Somehwerre'},
-        {date: '2015-12-02', band: 'deciple', location: 'Somehwerre'},
-        {date: '2014-10-12', band: 'megadeth', location: 'Somehwerre'},
-        {date: '2014-11-12', band: 'metallica', location: 'Somehwerre'}
-    ];
-
-
+    
 });

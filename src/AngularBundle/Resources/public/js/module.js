@@ -2,7 +2,7 @@
  * App Module and Conf.
  */
 
-var app = angular.module('mainApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'ngAria', 'ngAnimate', 'angular-growl', 'bw.paging']);
+var app = angular.module('mainApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'ngAria', 'ngAnimate', 'angular-growl', 'bw.paging','datePicker']);
 
 app.config([
     '$routeProvider',
