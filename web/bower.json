@@ -19,6 +19,7 @@
     "angular-route": "^1.6.0",
     "angular-material": "^1.1.1",
     "angular-growl-v2": "^0.7.9",
-    "angular-paging": "^2.2.2"
+    "angular-paging": "^2.2.2",
+    "bootstrap": "^3.3.7"
   }
 }

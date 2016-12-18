@@ -78,3 +78,22 @@ button.close {
 .gridListdemoBasicUsage md-grid-tile {
   transition: all 400ms ease-out 50ms; }
 
+
+
+.bandImageHolder{
+    text-align:center;
+     margin: 0 auto;
+}
+.bandImageHolder img {
+    width: 100%;
+    height: auto;
+   
+}
+.bandsGigsNumber{
+    vertical-align: bottom;
+    margin-right: 1%; 
+}
+
+.bandsAction button {
+    margin: 0 auto;
+}
