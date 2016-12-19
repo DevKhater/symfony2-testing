@@ -181,6 +181,7 @@ class ApiConcertController extends ApiController
      */
     public function postConcertAction(Request $request)
     {
+        dump($request->request->all());
         $newConcert = $this->container->get($this->serviceEntity)->post($request->request->all());
         return $this->redirect($this->generateUrl('api_concert_show', array('id' => $newConcert->getId())));
     }

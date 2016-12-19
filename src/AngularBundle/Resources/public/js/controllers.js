@@ -12,14 +12,14 @@ app.factory('getGenres', function ($http) {
 });
 
 app.factory('getBands', function ($http) {
-    var bandsUrl = Routing.generate('api_bands_list');
-    var getData = function (page) {
+    var url = Routing.generate('api_bands_list');
+    var getData = function (page, all) {
         if (page == 0 || page == null) {
             page = 1
         }
-        return $http({method: "GET", url: bandsUrl,
+        return $http({method: "GET", url: url,
             headers: {'Accept': 'application/json'},
-            params: {offset: page}
+            params: {offset: page, all: all}
         })
                 .then(function (result) {
                     return result.data;
@@ -29,12 +29,28 @@ app.factory('getBands', function ($http) {
 });
 
 app.factory('getConcerts', function ($http) {
-    var bandsUrl = Routing.generate('api_concerts_list');
+    var url = Routing.generate('api_concerts_list');
     var getData = function (page) {
         if (page == 0 || page == null) {
             page = 1
         }
-        return $http({method: "GET", url: bandsUrl,
+        return $http({method: "GET", url: url,
+            headers: {'Accept': 'application/json'}
+        })
+                .then(function (result) {
+                    return result.data;
+                });
+    };
+    return {getData: getData};
+});
+
+app.factory('getLocations', function ($http) {
+    var url = Routing.generate('api_locations_list');
+    var getData = function (page) {
+        if (page == 0 || page == null) {
+            page = 1
+        }
+        return $http({method: "GET", url: url,
             headers: {'Accept': 'application/json'},
             params: {offset: page}
         })
@@ -218,13 +234,15 @@ app.controller('bandsCtrl', function ($scope, getGenres, getBands, $rootScope, $
             templateUrl: 'dialog2.tmpl.html',
             parent: angular.element(document.body),
             targetEvent: ev,
-            locals : {
-                    band : band
-                },
+            locals: {
+                band: band
+            },
             clickOutsideToClose: true,
             fullscreen: false // Only for -xs, -sm breakpoints.
         })
-                .then(function (answer) {}, function () {});
+                .then(function (answer) {
+                }, function () {
+                });
     };
 
 
@@ -305,43 +323,43 @@ app.controller('bandFormCtrl', function ($scope, $rootScope, $mdDialog, $http, $
 });
 
 app.controller('rightMenuCtrl', function ($scope) {
-app.controller('bandFormCtrl', function ($scope, $rootScope, $mdDialog, $http, $httpParamSerializerJQLike) {
-    $scope.band = {
-        name: "",
-        genre: ""
-    };
-    $rootScope.updateBandsGenreList();
-    $scope.allGenres = $rootScope.getGenres;
-    $scope.displayInput = false;
-    $scope.$watch('displayInput', function (newValue, oldValue) {
-        newValue == true ? $scope.displayInputLabel = "Select From List" : $scope.displayInputLabel = "Add New Genre";
-    });
-    $scope.saveBand = function () {
-        $http.post(Routing.generate('api_band_create'), $httpParamSerializerJQLike({name: $scope.band.name, genre: $scope.band.genre}), {
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-        }).then(function successCallback(response) {
-            $scope.hide();
-            $rootScope.updateBandsList();
-            $rootScope.showSuccess('Band Created');
-        }, function errorCallback(response) {
-            console.log(response);
-        });
-    };
-    $scope.clearForm = function () {
-        $scope.band.name = "";
-        $scope.band.genre = "";
+    app.controller('bandFormCtrl', function ($scope, $rootScope, $mdDialog, $http, $httpParamSerializerJQLike) {
+        $scope.band = {
+            name: "",
+            genre: ""
+        };
+        $rootScope.updateBandsGenreList();
+        $scope.allGenres = $rootScope.getGenres;
         $scope.displayInput = false;
-    };
-    $scope.hide = function () {
-        $mdDialog.hide();
-    };
-    $scope.cancel = function () {
-        $mdDialog.cancel();
-    };
-    $scope.answer = function (answer) {
-        $mdDialog.hide(answer);
-    };
-});
+        $scope.$watch('displayInput', function (newValue, oldValue) {
+            newValue == true ? $scope.displayInputLabel = "Select From List" : $scope.displayInputLabel = "Add New Genre";
+        });
+        $scope.saveBand = function () {
+            $http.post(Routing.generate('api_band_create'), $httpParamSerializerJQLike({name: $scope.band.name, genre: $scope.band.genre}), {
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).then(function successCallback(response) {
+                $scope.hide();
+                $rootScope.updateBandsList();
+                $rootScope.showSuccess('Band Created');
+            }, function errorCallback(response) {
+                console.log(response);
+            });
+        };
+        $scope.clearForm = function () {
+            $scope.band.name = "";
+            $scope.band.genre = "";
+            $scope.displayInput = false;
+        };
+        $scope.hide = function () {
+            $mdDialog.hide();
+        };
+        $scope.cancel = function () {
+            $mdDialog.cancel();
+        };
+        $scope.answer = function (answer) {
+            $mdDialog.hide(answer);
+        };
+    });
     $scope.menu = [
         {
             href: "#!/bands",
@@ -356,28 +374,61 @@ app.controller('bandFormCtrl', function ($scope, $rootScope, $mdDialog, $http, $
     ];
 });
 
-app.controller('concertsCtrl', function ($scope, getConcerts) {
-    $scope.concerts;
+app.controller('concertsCtrl', function ($scope, $http, $httpParamSerializerJQLike, getConcerts, getBands, getLocations) {
+    $scope.concerts, $scope.limit, $scope.total , $scope.page ,$scope.pages ;
     $scope.getConcertsList = function (page) {
         var myConPromise = getConcerts.getData(page);
         myConPromise.then(function (result) {
+            console.log('concerts');
             console.log(result);
+            $scope.limit = result.limit;
+            $scope.total = result.total;
+            $scope.page = result.page;
+            $scope.pages = result.pages;
             $scope.concerts = result;
         });
     };
-    $scope.newCon = {
-        date : new Date(),
-        band : {
-            name: ""
-        },
-        location: {
-            name: "",
-            address: ""
-        }
+    $scope.bands;
+    var myBandsPromise = getBands.getData(1, 1);
+    myBandsPromise.then(function (result) {
+        console.log('bands');
+        console.log(result);
+        $scope.bands = result._embedded.bands;
+    });
+    $scope.locations;
+    var myLocPromise = getLocations.getData();
+    myLocPromise.then(function (result) {
+        $scope.locations = result;
+        console.log('locations');
+        console.log(result);
+    });
+    $scope.date = new Date();
+    
+    $scope.saveConcert = function(){
+        console.log($scope.date);
+        var date = {year: $scope.date.getFullYear(),
+            month: $scope.date.getMonth(),
+            day: $scope.date.getDay()
+        };
+        var databundle_concert = {
+            date: date,
+            band: $scope.bands[$scope.ncband].id,
+            location: $scope.locations[$scope.nclocation].id
+        };
+        $http.post(Routing.generate('api_concert_create'), $httpParamSerializerJQLike({databundle_concert: databundle_concert}), {
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).then(function successCallback(response) {
+                console.log(response);
+            }, function errorCallback(response) {
+                console.log(response);
+            });
+        console.log(databundle_concert);
+
     }
+    $scope.ncband, $scope.nclocation;
     $scope.getConcertsList();
     $scope.sortType = 'date'; // set the default sort type
     $scope.sortReverse = true;  // set the default sort order
     $scope.searchBand = '';     // set the default search/filter term
-    
+
 });

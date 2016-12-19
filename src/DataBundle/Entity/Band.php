@@ -47,8 +47,6 @@ class Band implements BandInterface
 
     /**
      * @ORM\OneToMany(targetEntity="DataBundle\Entity\Concert", mappedBy="band")
-     * @Serializer\Expose
-     * @Serializer\MaxDepth(1) 
      */
     private $concerts;
 

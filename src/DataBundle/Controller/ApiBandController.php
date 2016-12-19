@@ -50,6 +50,7 @@ class ApiBandController extends ApiController
      * )
      * @Annotations\QueryParam(name="offset", requirements="\d+", nullable=true, description="Offset from which to start listing bands.")
      * @Annotations\QueryParam(name="limit", requirements="\d+", default="10", description="How many bands to return.")
+     * @Annotations\QueryParam(name="all", requirements="\d+", default="0", description="get All Bands.")
      *
      * @Annotations\View(templateVar="bands")
      * 
@@ -57,8 +58,9 @@ class ApiBandController extends ApiController
     public function getBandsAction(Request $request, ParamFetcherInterface $paramFetcher)
     {
         $offset = null == $paramFetcher->get('offset') ? 1 : $paramFetcher->get('offset');
-        $limit = $paramFetcher->get('limit');
+        //$limit = $paramFetcher->get('limit');
         $totalBands = $this->getDoctrine()->getRepository($this->classEntity)->countAllEntities();
+        $limit = $paramFetcher->get('all') == 1 ? $totalBands : $paramFetcher->get('limit');
         $maxPages = ceil($totalBands / $limit);
         $data = $this->container->get($this->serviceEntity)->all($offset, $limit);
         $data == null ? $view = $this->view('No concerts found.', 404) : $view = $this->view($data, 200);

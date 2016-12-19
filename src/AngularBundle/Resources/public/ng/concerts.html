@@ -1,4 +1,42 @@
-<div ng-controller="concertsCtrl" layout="column" layout-padding layout-margin layout-align="top center">
+<div ng-controller="concertsCtrl" layout="column" layout-align="top center">
+    <div flex>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Add A New Concert</h2>
+                <span flex></span>
+
+            </div>
+        </md-toolbar>
+        <form name="concertForm" >
+            <div layout='row' layout-align='start top' md-whiteframe="4" layout-padding>
+                <div class='npT'><input type="text" date-time ng-model="newCon.date" format="lll"></div>
+                <div class='npT' style="width:100%;">
+                    <md-select ng-model='ncband' placeholder="Select a Band" style="width:100%;margin:0">
+                        <md-option ng-repeat="band in bands" value="{{$index}}">{{band.name}}</md-option>
+                    </md-select>
+                </div>
+                <div class='npT' style="width:100%;">
+                    <md-select ng-model='nclocation' placeholder="Select a Venue" style="width:100%;margin:0">
+                        <md-option ng-repeat="loc in locations" value="{{$index}}">{{loc.name}}</md-option>
+                    </md-select>
+                </div>
+            </div>
+
+
+            <div layout="row" md-whiteframe="2" id='concertNewAction'>
+                <span flex> </span>
+                <md-input-container>
+                    <md-button type="submit" ng-click="saveConcert()" style="margin-top: -12px;">Save</md-button>
+                    <md-button ng-click="clearForm()" style="margin-top: -12px;">Reset Form</md-button>
+                </md-input-container>
+                <md-input-container>
+                    <div layout="row" layout-sm="row" layout-align="space-around">
+                    </div>
+                </md-input-container>
+            </div>
+            </md-content>
+        </form>
+    </div>
     <div class="alert alert-info">
         <p>Sort Type: {{ sortType}}</p>
         <p>Sort Reverse: {{ sortReverse}}</p>
@@ -12,18 +50,12 @@
             </div>      
         </div>
     </form>
-    <form>
-        <input type="text" date-time ng-model="newCon.date" format="lll">
-        <input ng-model="newCon.band.name" type="text">
-        <input ng-model="newCon.location.name" type="text"><input ng-model="newCon.location.address" type="text">
-                
-    </form>
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
                 <td>
                     <a href="#!/concerts" ng-click="sortType = 'date';
-                            sortReverse = !sortReverse">
+                        sortReverse = !sortReverse">
                         Date 
                         <md-icon md-svg-src="/bundles/angular/img/icons/arrowDown.svg" ng-show="sortType == 'date' && !sortReverse" ></md-icon>
                         <md-icon md-svg-src="/bundles/angular/img/icons/arrowUp.svg" ng-show="sortType == 'date' && sortReverse" ></md-icon>
@@ -31,7 +63,7 @@
                 </td>
                 <td>
                     <a href="#!/concerts" ng-click="sortType = 'band';
-                            sortReverse = !sortReverse">
+                        sortReverse = !sortReverse">
                         Band Name
                         <md-icon md-svg-src="/bundles/angular/img/icons/arrowDown.svg" ng-show="sortType == 'band' && !sortReverse" ></md-icon>
                         <md-icon md-svg-src="/bundles/angular/img/icons/arrowUp.svg" ng-show="sortType == 'band' && sortReverse" ></md-icon>
@@ -43,24 +75,32 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="gig in concerts | orderBy:sortType:sortReverse | filter:searchBand">
+            <tr ng-repeat="gig in concerts| orderBy:sortType:sortReverse | filter:searchBand">
                 <td>{{ gig.date | date : 'dd, MMMM - yyyy'}}</td>
                 <td>
                     {{ gig._embedded.band.name}}
-                    <md-button class="tooltipBtn md-no-focus">
-                        <md-tooltip>{{ gig._embedded.band.genre}}</md-tooltip>
-                        <md-icon md-svg-src="/bundles/angular/img/icons/extraInfo.svg"></md-icon>
-                    </md-button>
-                </td>
-                <td>
-                    {{ gig._embedded.location.name}}
-                    <md-button class="tooltipBtn md-no-focus">
-                        <md-tooltip>{{ gig._embedded.location.address}}</md-tooltip>
-                        <md-icon md-svg-src="/bundles/angular/img/icons/extraInfo.svg"></md-icon>
-                    </md-button>
-                        
-                </td>
-            </tr>
+        <md-button class="tooltipBtn md-no-focus">
+            <md-tooltip>{{ gig._embedded.band.genre}}</md-tooltip>
+            <md-icon md-svg-src="/bundles/angular/img/icons/extraInfo.svg"></md-icon>
+        </md-button>
+        </td>
+        <td>
+            {{ gig._embedded.location.name}}
+        <md-button class="tooltipBtn md-no-focus">
+            <md-tooltip>{{ gig._embedded.location.address}}</md-tooltip>
+            <md-icon md-svg-src="/bundles/angular/img/icons/extraInfo.svg"></md-icon>
+        </md-button>
+
+        </td>
+        </tr>
         </tbody>
     </table>
+    <div layout-align="center center" layout="row"
+         paging
+         
+         page="page"
+         page-size="limit"
+         total="total"
+         paging-action="getConcertsList(page)">
+    </div>
 </div>
