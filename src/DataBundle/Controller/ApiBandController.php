@@ -63,7 +63,7 @@ class ApiBandController extends ApiController
         $limit = $paramFetcher->get('all') == 1 ? $totalBands : $paramFetcher->get('limit');
         $maxPages = ceil($totalBands / $limit);
         $data = $this->container->get($this->serviceEntity)->all($offset, $limit);
-        $data == null ? $view = $this->view('No concerts found.', 404) : $view = $this->view($data, 200);
+        $data == null ? $view = $this->view('No Bands found.', 404) : $view = $this->view($data, 200);
         $paginatedCollection = new PaginatedRepresentation(
                 new CollectionRepresentation(
                 $data, 'bands', // embedded rel

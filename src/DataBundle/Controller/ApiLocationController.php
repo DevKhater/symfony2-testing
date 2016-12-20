@@ -62,7 +62,7 @@ class ApiLocationController extends ApiController
     }
 
     /**
-     * @Route("api/locations/{slug}", name="api_location_show")
+     * @Route("api/locations/{id}", name="api_location_show")
      * @Method("GET")
      * @ApiDoc(
      *  resource=true,
@@ -75,7 +75,7 @@ class ApiLocationController extends ApiController
      */
     public function showLocationAction(Request $request)
     {
-        $id = $request->get('slug');
+        $id = $request->get('id');
         $response = parent::showAction($id);
         return($response);
     }
@@ -130,7 +130,7 @@ class ApiLocationController extends ApiController
     {
         $newLocation = $this->container->get($this->serviceEntity)->post($request->request->all());
 
-        if ($newLocation->getSlug()) {
+        if ($newLocation->getId()) {
             $view = $this->view($newLocation, 200);
         } else {
             $view = $this->view('Couldnt Create Location', 500);
@@ -139,7 +139,7 @@ class ApiLocationController extends ApiController
     }
 
     /**
-     * @Route("api/location/{slug}/edit", name="api_location_form_edit")
+     * @Route("api/location/{id}/edit", name="api_location_form_edit")
      * @Method("GET")
      * @ApiDoc(
      *  resource=true,
@@ -149,7 +149,7 @@ class ApiLocationController extends ApiController
     public function locationEditFormAction(Request $request)
     {
 
-        $location = $this->getOr404($request->get('slug'));
+        $location = $this->getOr404($request->get('id'));
         $form = $this->getLocationForm("PUT", $location);
         $view = $this->view($form, 200)
                 ->setTemplate($this->templateDirectory . "locationApiForm.html.twig")
@@ -172,11 +172,11 @@ class ApiLocationController extends ApiController
      */
     public function putLocationAction(Request $request)
     {
-        $locationReq = $this->container->get($this->serviceEntity)->get($request->get('slug'));
+        $locationReq = $this->container->get($this->serviceEntity)->get($request->get('id'));
         $location = $this->container->get($this->serviceEntity)->put(
                 $locationReq, $request->request->all()
         );
-        return $this->redirect($this->generateUrl('api_location_show', array('slug' => $location->getSlug())));
+        return $this->redirect($this->generateUrl('api_location_show', array('id' => $location->getId())));
     }
 
     /**
@@ -212,23 +212,23 @@ class ApiLocationController extends ApiController
     }
 
     /**
-     * @Route("api/location/{slug}/{image}", name="api_location_add_image")
+     * @Route("api/location/{id}/{image}", name="api_location_add_image")
      * @Method("PATCH")
      * @ApiDoc(
      *  resource=true,
      *  description="Add Image To Location",
      * )
      */
-    public function addLocationImageAction(Request $request, $slug, $image)
+    public function addLocationImageAction(Request $request, $id, $image)
     {
-        $location = $this->getOr404($slug);
+        $location = $this->getOr404($id);
         $mediaManager = $this->container->get('mk.music.media.handler');
         $newImage = $mediaManager->get($image);
         if ($newImage) {
             $location[0]->getImage() != NULL ? $mediaManager->delete($location[0]->getImage()) : '';
             $location = $this->container->get('data.location.handler')->setImage($location[0], $newImage);
             $routeOptions = array(
-                'slug' => $location->getSlug(),
+                'id' => $location->getId(),
                 '_format' => $request->get('_format')
             );
             return $this->routeRedirectView('api_location_show', $routeOptions, Response::HTTP_OK);
@@ -242,10 +242,10 @@ class ApiLocationController extends ApiController
                 $url = $this->generateUrl('api_location_create');
                 break;
             case "PUT":
-                $url = $this->generateUrl('api_location_update', ['slug' => $location->getSlug()]);
+                $url = $this->generateUrl('api_location_update', ['id' => $location->getId()]);
                 break;
             case "POST":
-                $url = $this->generateUrl('api_location_patch', ['slug' => $location->getSlug()]);
+                $url = $this->generateUrl('api_location_patch', ['id' => $location->getId()]);
                 break;
         }
         return $this->container->get($this->serviceEntity)->createLocationForm($method, $location, $url);

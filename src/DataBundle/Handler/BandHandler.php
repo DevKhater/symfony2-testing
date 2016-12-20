@@ -136,8 +136,8 @@ class BandHandler implements BandHandlerInterface
         $form = $this->formFactory->create(new ApiBandType(), $band, array('method' => $method));
         dump($form);
         //var_dump($form);
-        //$form->submit($parameters[$form->getName()]);
-        $form->submit($parameters);
+        $form->submit($parameters[$form->getName()]);
+        //$form->submit($parameters);
         if ($form->isValid()) {
             $band = $form->getData();
             $this->em->persist($band);

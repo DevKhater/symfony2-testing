@@ -241,181 +241,181 @@ app.controller('welcomeCtrl', function ($scope, $rootScope, $http) {
 /*** Band Controller ***/
 
 
-//app.controller('bandsCtrl', function ($scope, getGenres, getBands, $rootScope, $http, $mdBottomSheet, $mdToast, $mdDialog) {
-//    $scope.page, $scope.limit, $scope.total;
-//    $rootScope.updateBandsGenreList = function () {
-//        var myGenrePromise = getGenres.getData();
-//        myGenrePromise.then(function (result) {
-//            $scope.Genres = result;
-//        });
-//    };
-//    $rootScope.updateBandsList = function (page) {
-//        var myBandsPromise = getBands.getData(page);
-//        myBandsPromise.then(function (result) {
-//            $scope.Bands = result._embedded.bands;
-//            //$scope._links = result._links;
-//            $scope.limit = result.limit;
-//            $scope.total = result.total;
-//            $scope.page = result.page;
-//            $scope.pages = result.pages;
-//            console.log(result);
-//        });
-//    };
-//    $rootScope.updateBandsGenreList();
-//    $scope.$watch('Genres', function (newValue, oldValue) {
-//        $rootScope.getGenres = $scope.Genres;
-//    });
-//    $rootScope.updateBandsList();
-//    $scope.deleteBand = function (slug) {
-//        $http.delete(Routing.generate('api_band_delete', {id: slug}))
-//                .then(function successCallback(response) {
-//                    $rootScope.updateBandsList($scope.page);
-//                    $rootScope.showSuccess('Band Deleted');
-//                }, function errorCallback(response) {
-//                    console.log(response);
-//                });
-//    };
-//    $scope.showBandForm = function (ev) {
-//        $mdDialog.show({
-//            controller: 'bandFormCtrl',
-//            templateUrl: 'dialog1.tmpl.html',
-//            parent: angular.element(document.body),
-//            targetEvent: ev,
-//            clickOutsideToClose: true,
-//            fullscreen: false // Only for -xs, -sm breakpoints.
-//        })
-//                .then(function (answer) {
-//                    $scope.status = 'You said the information was "' + answer + '".';
-//                }, function () {
-//                    $scope.status = 'You cancelled the dialog.';
-//                });
-//    };
-//    $scope.editForm = function (band, ev) {
-//        $mdDialog.show({
-//            controller: 'bandEditCtrl',
-//            templateUrl: 'dialog2.tmpl.html',
-//            parent: angular.element(document.body),
-//            targetEvent: ev,
-//            locals: {
-//                band: band
-//            },
-//            clickOutsideToClose: true,
-//            fullscreen: false // Only for -xs, -sm breakpoints.
-//        })
-//                .then(function (answer) {
-//                }, function () {
-//                });
-//    };
-//
-//
-//});
+app.controller('bandsCtrl', function ($scope, getGenres, getBands, $rootScope, $http, $mdBottomSheet, $mdToast, $mdDialog) {
+    $scope.page, $scope.limit, $scope.total;
+    $rootScope.updateBandsGenreList = function () {
+        var myGenrePromise = getGenres.getData();
+        myGenrePromise.then(function (result) {
+            $scope.Genres = result;
+        });
+    };
+    $rootScope.updateBandsList = function (page) {
+        var myBandsPromise = getBands.getData(page);
+        myBandsPromise.then(function (result) {
+            $scope.Bands = result._embedded.bands;
+            //$scope._links = result._links;
+            $scope.limit = result.limit;
+            $scope.total = result.total;
+            $scope.page = result.page;
+            $scope.pages = result.pages;
+            console.log(result);
+        });
+    };
+    $rootScope.updateBandsGenreList();
+    $scope.$watch('Genres', function (newValue, oldValue) {
+        $rootScope.getGenres = $scope.Genres;
+    });
+    $rootScope.updateBandsList();
+    $scope.deleteBand = function (slug) {
+        $http.delete(Routing.generate('api_band_delete', {id: slug}))
+                .then(function successCallback(response) {
+                    $rootScope.updateBandsList($scope.page);
+                    $rootScope.showSuccess('Band Deleted');
+                }, function errorCallback(response) {
+                    console.log(response);
+                });
+    };
+    $scope.showBandForm = function (ev) {
+        $mdDialog.show({
+            controller: 'bandFormCtrl',
+            templateUrl: 'dialog1.tmpl.html',
+            parent: angular.element(document.body),
+            targetEvent: ev,
+            clickOutsideToClose: true,
+            fullscreen: false // Only for -xs, -sm breakpoints.
+        })
+                .then(function (answer) {
+                    $scope.status = 'You said the information was "' + answer + '".';
+                }, function () {
+                    $scope.status = 'You cancelled the dialog.';
+                });
+    };
+    $scope.editForm = function (band, ev) {
+        $mdDialog.show({
+            controller: 'bandEditCtrl',
+            templateUrl: 'dialog2.tmpl.html',
+            parent: angular.element(document.body),
+            targetEvent: ev,
+            locals: {
+                band: band
+            },
+            clickOutsideToClose: true,
+            fullscreen: false // Only for -xs, -sm breakpoints.
+        })
+                .then(function (answer) {
+                }, function () {
+                });
+    };
 
-//app.controller('bandEditCtrl', function ($scope, $rootScope, $mdDialog, $http, $httpParamSerializerJQLike, band) {
-//    $scope.band = band;
-//    $rootScope.updateBandsGenreList();
-//    $scope.allGenres = $rootScope.getGenres;
-//    $scope.displayInput = false;
-//    $scope.$watch('displayInput', function (newValue, oldValue) {
-//        newValue == true ? $scope.displayInputLabel = "Select From List" : $scope.displayInputLabel = "Add New Genre";
-//    });
-//    $scope.saveBand = function () {
-//        $http.put(Routing.generate('api_band_update'), $httpParamSerializerJQLike({name: $scope.band.name, genre: $scope.band.genre}), {
-//            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-//            params: {slug: $scope.band.slug}
-//        }).then(function successCallback(response) {
-//            $scope.hide();
-//            $rootScope.updateBandsList();
-//            $rootScope.showSuccess('Band Saved');
-//        }, function errorCallback(response) {
-//            console.log(response);
-//        });
-//    };
-//    $scope.clearForm = function () {
-//        $scope.band.name = "";
-//        $scope.band.genre = "";
-//        $scope.displayInput = false;
-//    };
-//    $scope.hide = function () {
-//        $mdDialog.hide();
-//    };
-//    $scope.cancel = function () {
-//        $mdDialog.cancel();
-//    };
-//    $scope.answer = function (answer) {
-//        $mdDialog.hide(answer);
-//    };
-//});
 
-//app.controller('rightMenuCtrl', function ($scope) {
-//    $scope.menu = [
-//        {
-//            href: "#!/bands",
-//            name: "bands",
-//            display: "Bands",
-//        },
-//        {
-//            href: "#!/concerts",
-//            name: "concerts",
-//            display: "Concerts",
-//        }
-//    ];
-//});
+});
 
-//app.controller('concertsCtrl', function ($scope, $http, $httpParamSerializerJQLike, getConcerts, getBands, getLocations) {
-//    $scope.concerts, $scope.limit, $scope.total, $scope.page, $scope.pages;
-//    $scope.getConcertsList = function (page) {
-//        var myConPromise = getConcerts.getData(page);
-//        myConPromise.then(function (result) {
-//            console.log('concerts');
-//            console.log(result);
-//            $scope.limit = result.limit;
-//            $scope.total = result.total;
-//            $scope.page = result.page;
-//            $scope.pages = result.pages;
-//            $scope.concerts = result;
-//        });
-//    };
-//    $scope.bands;
-//    var myBandsPromise = getBands.getData(1, 1);
-//    myBandsPromise.then(function (result) {
-//        console.log('bands');
-//        console.log(result);
-//        $scope.bands = result._embedded.bands;
-//    });
-//    $scope.locations;
-//    var myLocPromise = getLocations.getData();
-//    myLocPromise.then(function (result) {
-//        $scope.locations = result;
-//        console.log('locations');
-//        console.log(result);
-//    });
-//    $scope.date = new Date();
-//
-//    $scope.saveConcert = function () {
-//        console.log($scope.date);
-//        var date = {year: $scope.date.getFullYear(),
-//            month: $scope.date.getMonth(),
-//            day: $scope.date.getDay()
-//        };
-//        var databundle_concert = {
-//            date: date,
-//            band: $scope.bands[$scope.ncband].id,
-//            location: $scope.locations[$scope.nclocation].id
-//        };
-//        $http.post(Routing.generate('api_concert_create'), $httpParamSerializerJQLike({databundle_concert: databundle_concert}), {
-//            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-//        }).then(function successCallback(response) {
-//            console.log(response);
-//        }, function errorCallback(response) {
-//            console.log(response);
-//        });
-//        console.log(databundle_concert);
-//
-//    }
-//    $scope.ncband, $scope.nclocation;
-//    $scope.getConcertsList();
-//    $scope.sortType = 'date'; // set the default sort type
-//    $scope.sortReverse = true;  // set the default sort order
-//    $scope.searchBand = '';     // set the default search/filter term
-//
-//});
+app.controller('bandEditCtrl', function ($scope, $rootScope, $mdDialog, $http, $httpParamSerializerJQLike, band) {
+    $scope.band = band;
+    $rootScope.updateBandsGenreList();
+    $scope.allGenres = $rootScope.getGenres;
+    $scope.displayInput = false;
+    $scope.$watch('displayInput', function (newValue, oldValue) {
+        newValue == true ? $scope.displayInputLabel = "Select From List" : $scope.displayInputLabel = "Add New Genre";
+    });
+    $scope.saveBand = function () {
+        $http.put(Routing.generate('api_band_update'), $httpParamSerializerJQLike({name: $scope.band.name, genre: $scope.band.genre}), {
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            params: {slug: $scope.band.slug}
+        }).then(function successCallback(response) {
+            $scope.hide();
+            $rootScope.updateBandsList();
+            $rootScope.showSuccess('Band Saved');
+        }, function errorCallback(response) {
+            console.log(response);
+        });
+    };
+    $scope.clearForm = function () {
+        $scope.band.name = "";
+        $scope.band.genre = "";
+        $scope.displayInput = false;
+    };
+    $scope.hide = function () {
+        $mdDialog.hide();
+    };
+    $scope.cancel = function () {
+        $mdDialog.cancel();
+    };
+    $scope.answer = function (answer) {
+        $mdDialog.hide(answer);
+    };
+});
+
+app.controller('rightMenuCtrl', function ($scope) {
+    $scope.menu = [
+        {
+            href: "#!/bands",
+            name: "bands",
+            display: "Bands",
+        },
+        {
+            href: "#!/concerts",
+            name: "concerts",
+            display: "Concerts",
+        }
+    ];
+});
+
+app.controller('concertsCtrl', function ($scope, $http, $httpParamSerializerJQLike, getConcerts, getBands, getLocations) {
+    $scope.concerts, $scope.limit, $scope.total, $scope.page, $scope.pages;
+    $scope.getConcertsList = function (page) {
+        var myConPromise = getConcerts.getData(page);
+        myConPromise.then(function (result) {
+            console.log('concerts');
+            console.log(result);
+            $scope.limit = result.limit;
+            $scope.total = result.total;
+            $scope.page = result.page;
+            $scope.pages = result.pages;
+            $scope.concerts = result;
+        });
+    };
+    $scope.bands;
+    var myBandsPromise = getBands.getData(1, 1);
+    myBandsPromise.then(function (result) {
+        console.log('bands');
+        console.log(result);
+        $scope.bands = result._embedded.bands;
+    });
+    $scope.locations;
+    var myLocPromise = getLocations.getData();
+    myLocPromise.then(function (result) {
+        $scope.locations = result;
+        console.log('locations');
+        console.log(result);
+    });
+    $scope.date = new Date();
+
+    $scope.saveConcert = function () {
+        console.log($scope.date);
+        var date = {year: $scope.date.getFullYear(),
+            month: $scope.date.getMonth(),
+            day: $scope.date.getDay()
+        };
+        var databundle_concert = {
+            date: date,
+            band: $scope.bands[$scope.ncband].id,
+            location: $scope.locations[$scope.nclocation].id
+        };
+        $http.post(Routing.generate('api_concert_create'), $httpParamSerializerJQLike({databundle_concert: databundle_concert}), {
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+        }).then(function successCallback(response) {
+            console.log(response);
+        }, function errorCallback(response) {
+            console.log(response);
+        });
+        console.log(databundle_concert);
+
+    }
+    $scope.ncband, $scope.nclocation;
+    $scope.getConcertsList();
+    $scope.sortType = 'date'; // set the default sort type
+    $scope.sortReverse = true;  // set the default sort order
+    $scope.searchBand = '';     // set the default search/filter term
+
+});

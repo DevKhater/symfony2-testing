@@ -11,6 +11,10 @@ use DataBundle\Controller\BaseApiController as ApiController;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Symfony\Component\HttpFoundation\Response;
+use Hateoas\Representation\PaginatedRepresentation;
+use Hateoas\Representation\CollectionRepresentation;
+
 
 class ApiConcertController extends ApiController
 {
@@ -41,8 +45,29 @@ class ApiConcertController extends ApiController
      */
     public function getConcertAction(Request $request, ParamFetcherInterface $paramFetcher)
     {
-        $response = parent::getAction($request, $paramFetcher);
-        return($response);
+        $offset = null == $paramFetcher->get('offset') ? 1 : $paramFetcher->get('offset');
+        $totalBands = $this->getDoctrine()->getRepository($this->classEntity)->countAllEntities();
+        $limit = $paramFetcher->get('limit');
+        $totalConcerts = $this->getDoctrine()->getRepository($this->classEntity)->countAllEntities();
+        $maxPages = ceil($totalConcerts / $limit);
+        $data = $this->container->get($this->serviceEntity)->all($offset, $limit);
+        $data == null ? $view = $this->view('No concerts found.', 404) : $view = $this->view($data, 200);
+        $paginatedCollection = new PaginatedRepresentation(
+                new CollectionRepresentation(
+                $data, 'concerts', // embedded rel
+                'concerts'  // xml element name
+                ), 'api_concerts_list', // route
+                array(), // route parameters
+                $offset, // page number
+                $limit, // limit
+                $maxPages, // total pages
+                'page', // page route parameter name, optional, defaults to 'page'
+                'limit', // limit route parameter name, optional, defaults to 'limit'
+                false, // generate relative URIs, optional, defaults to `false`
+                $totalConcerts      // total collection size, optional, defaults to `null`
+        );
+        
+        return new Response($this->get('serializer')->serialize($paginatedCollection, 'json'), 200, array('Content-Type' => 'application/json'));
     }
 
     /**

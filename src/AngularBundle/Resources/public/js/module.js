@@ -2,7 +2,7 @@
  * App Module and Conf.
  */
 
-var app = angular.module('mainApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'ngAria', 'ngAnimate', 'angular-growl', 'bw.paging', 'datePicker']);
+var app = angular.module('mainApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'ngAria', 'ngAnimate', 'angular-growl', 'bw.paging']);
 
 app.config([
     '$routeProvider',
@@ -10,6 +10,7 @@ app.config([
         $routeProvider
                 .when('/', {
                     templateUrl: "/bundles/angular/ng/login.html",
+                    controller:'loginCtrl',
                     resolve: {
                         "check": function ($location, $rootScope) {
                             if ($rootScope.logedIn) {
@@ -20,8 +21,9 @@ app.config([
                     }
                 }),
         $routeProvider
-                .when('/ng-home', {
+                .when('/home', {
                     templateUrl: "/bundles/angular/ng/welcome.html",
+                    controller:'welcomeCtrl',
                     resolve: {
                         "check": function ($location, $rootScope) {
                             if (!$rootScope.logedIn) {
@@ -34,6 +36,7 @@ app.config([
         $routeProvider
                 .when('/bands', {
                     templateUrl: "/bundles/angular/ng/bands.html",
+                    controller: 'bandsCtrl',
                     resolve: {
                         "check": function ($location, $rootScope) {
                             if (!$rootScope.logedIn) {
@@ -65,7 +68,7 @@ app.config(['$mdThemingProvider', function ($mdThemingProvider) {
     }]);
 
 
-app.run(function ($rootScope, $window, growl) {
+app.run(function ($rootScope, $location, $window, growl) {
     $rootScope.logedIn;
     $rootScope.logOut = function () {
         $window.location.href = Routing.generate('logout');
@@ -75,6 +78,9 @@ app.run(function ($rootScope, $window, growl) {
     };
     $rootScope.showError = function (message) {
         growl.error(message, {title: 'Something Went Wrong!'});
+    };
+    $rootScope.go = function ( path ) {
+        $location.path( path );
     };
 });
 

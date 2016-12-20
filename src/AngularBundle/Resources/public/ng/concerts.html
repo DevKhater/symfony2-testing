@@ -1,7 +1,7 @@
 <ng-include src="'/bundles/angular/ng/header.html'"></ng-include>
 
-<div ng-controller="concertsCtrl" layout="column" layout-align="top center">
-    
+<div ng-controller="concertsCtrl" layout="column" layout-align="top center" class="page-concerts">
+
     <div class="alert alert-info">
         <p>Sort Type: {{ sortType}}</p>
         <p>Sort Reverse: {{ sortReverse}}</p>
@@ -20,7 +20,7 @@
             <tr>
                 <td>
                     <a href="#!/concerts" ng-click="sortType = 'date';
-                        sortReverse = !sortReverse">
+                                sortReverse = !sortReverse">
                         Date 
                         <md-icon md-svg-src="/bundles/angular/img/icons/arrowDown.svg" ng-show="sortType == 'date' && !sortReverse" ></md-icon>
                         <md-icon md-svg-src="/bundles/angular/img/icons/arrowUp.svg" ng-show="sortType == 'date' && sortReverse" ></md-icon>
@@ -28,7 +28,7 @@
                 </td>
                 <td>
                     <a href="#!/concerts" ng-click="sortType = 'band';
-                        sortReverse = !sortReverse">
+                                sortReverse = !sortReverse">
                         Band Name
                         <md-icon md-svg-src="/bundles/angular/img/icons/arrowDown.svg" ng-show="sortType == 'band' && !sortReverse" ></md-icon>
                         <md-icon md-svg-src="/bundles/angular/img/icons/arrowUp.svg" ng-show="sortType == 'band' && sortReverse" ></md-icon>
@@ -44,28 +44,18 @@
                 <td>{{ gig.date | date : 'dd, MMMM - yyyy'}}</td>
                 <td>
                     {{ gig._embedded.band.name}}
-        <md-button class="tooltipBtn md-no-focus">
-            <md-tooltip>{{ gig._embedded.band.genre}}</md-tooltip>
-            <md-icon md-svg-src="/bundles/angular/img/icons/extraInfo.svg"></md-icon>
-        </md-button>
-        </td>
-        <td>
-            {{ gig._embedded.location.name}}
-        <md-button class="tooltipBtn md-no-focus">
-            <md-tooltip>{{ gig._embedded.location.address}}</md-tooltip>
-            <md-icon md-svg-src="/bundles/angular/img/icons/extraInfo.svg"></md-icon>
-        </md-button>
-
-        </td>
-        </tr>
+                </td>
+                <td>
+                    {{ gig._embedded.location.name}}
+                </td>
+            </tr>
         </tbody>
     </table>
     <div layout-align="center center" layout="row"
          paging
-         
          page="page"
          page-size="limit"
          total="total"
-         paging-action="getConcertsList(page)">
+         paging-action="updateConcertsList(page)">
     </div>
 </div>

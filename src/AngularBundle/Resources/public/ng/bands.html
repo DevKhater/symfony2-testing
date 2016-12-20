@@ -1,5 +1,5 @@
 <ng-include src="'/bundles/angular/ng/header.html'"></ng-include>
-<div ng-controller="bandsCtrl" layout-padding layout-margin>
+<div ng-controller="bandsCtrl" layout-padding layout-margin class="page-bands" >
     <div flex layout="row" layout-wrap layout-padding layout-align='center'>
         <div md-whiteframe="13"  flex="25"  layout-padding layout-margin ng-repeat="band in Bands" >
             <div flex="50" class="bandImageHolder">
@@ -25,7 +25,7 @@
          page="page"
          page-size="limit"
          total="total"
-         paging-action="updateLocationList(page)">
+         paging-action="updateBandsList(page)">
     </div>
 
     <script type="text/ng-template" id="dialog2.tmpl.html">
