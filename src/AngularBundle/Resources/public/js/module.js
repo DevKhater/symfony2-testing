@@ -2,7 +2,7 @@
  * App Module and Conf.
  */
 
-var app = angular.module('mainApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'ngAria', 'ngAnimate', 'angular-growl', 'bw.paging']);
+var app = angular.module('mainApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'ngAria', 'ngAnimate', 'angular-growl', 'bw.paging', 'ngFileUpload']);
 
 app.config([
     '$routeProvider',
@@ -49,6 +49,19 @@ app.config([
         $routeProvider
                 .when('/concerts', {
                     templateUrl: "/bundles/angular/ng/concerts.html",
+                    resolve: {
+                        "check": function ($location, $rootScope) {
+                            if (!$rootScope.logedIn) {
+                                $location.path('/');
+
+                            }
+                        }
+                    }
+                })
+        $routeProvider
+                .when('/media', {
+                    templateUrl: "/bundles/angular/ng/media.html",
+                    controller: 'mediaCtrl',
                     resolve: {
                         "check": function ($location, $rootScope) {
                             if (!$rootScope.logedIn) {

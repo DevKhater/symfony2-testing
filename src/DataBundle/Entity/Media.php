@@ -11,7 +11,7 @@ use DataBundle\Model\MediaInterface;
  * Media
  * @ORM\HasLifecycleCallbacks 
  * @ORM\Table()
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="DataBundle\Repository\MediaRepository")
  */
 class Media implements MediaInterface
 {

@@ -157,4 +157,4 @@ nelmio_cors:
             max_age: 3600
 
 fos_js_routing:
-    routes_to_expose: [ login_check, ng_loginSuccess, ng_get_user, logout, api_band_genres, api_band_create, api_bands_list, api_band_delete, api_band_update, api_concerts_list, api_locations_list, api_concert_create, api_location_create ]
+    routes_to_expose: [ login_check, ng_loginSuccess, ng_get_user, logout, api_band_genres, api_band_create, api_bands_list, api_band_delete, api_band_update, api_concerts_list, api_locations_list, api_concert_create, api_location_create, api_media_list ]

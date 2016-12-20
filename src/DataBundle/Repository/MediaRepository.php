@@ -12,4 +12,37 @@ use Doctrine\ORM\EntityRepository;
  */
 class MediaRepository extends EntityRepository
 {
+
+    public function findAllEntities($currentPage = 1, $limit)
+    {
+
+        $query = $this->createQueryBuilder('b')
+                ->getQuery();
+
+        $query->setFirstResult($limit * ($currentPage - 1)) // Offset
+                ->setMaxResults($limit); // Limit
+
+        $result = $query->getResult();
+        return $result;
+    }
+
+    public function countAllEntities()
+    {
+        $query = $this->getEntityManager()
+                ->createQuery(
+                'SELECT  count(a) FROM DataBundle:Media a');
+        $count = $query->getSingleScalarResult();
+        return $count;
+    }
+
+    public function paginate($dql, $page = 1, $limit = 5)
+    {
+        $paginator = new Paginator($dql);
+        $paginator->getQuery()
+                ->setFirstResult($limit * ($page - 1))
+                ->setMaxResults($limit);
+
+        return $paginator;
+    }
+
 }

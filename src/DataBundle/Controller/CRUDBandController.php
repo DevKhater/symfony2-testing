@@ -18,8 +18,8 @@ class CRUDBandController extends Controller
      */
     public function indexAction($offset = 1, $limit = 10)
     {
-        $paginator = $this->getDoctrine()->getRepository('DataBundle:Band')->findAllBands($offset, $limit);
-        $counts = $this->getDoctrine()->getRepository('DataBundle:Band')->countAllBands();
+        $paginator = $this->getDoctrine()->getRepository('DataBundle:Band')->findAllEntities($offset, $limit);
+        $counts = $this->getDoctrine()->getRepository('DataBundle:Band')->countAllEntities();
         $maxPages = ceil($counts / $limit);
         $thisPage = $offset;
         return $this->render('DataBundle:Band:index.html.twig', array(

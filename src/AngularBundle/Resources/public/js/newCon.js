@@ -28,6 +28,23 @@ app.factory('getBands', function ($http) {
     return {getData: getData};
 });
 
+app.factory('getImages', function ($http) {
+    var url = Routing.generate('api_media_list');
+    var getData = function (page, all) {
+        if (page == 0 || page == null) {
+            page = 1
+        }
+        return $http({method: "GET", url: url,
+            headers: {'Accept': 'application/json'},
+            params: {offset: page, all: all}
+        })
+                .then(function (result) {
+                    return result.data;
+                });
+    };
+    return {getData: getData};
+});
+
 app.factory('getConcerts', function ($http) {
     var url = Routing.generate('api_concerts_list');
     var getData = function (page) {
@@ -363,4 +380,24 @@ app.controller('concertsCtrl', function ($scope, $http, getConcerts, getBands, g
     $scope.sortReverse = true;  // set the default sort order
     $scope.searchBand = '';     // set the default search/filter term
 
+});
+
+
+
+
+
+app.controller('mediaCtrl', function ($scope, $http, getImages) {
+    $scope.images, $scope.limit, $scope.total, $scope.page, $scope.pages;
+    $scope.getImagesList = function (page) {
+        var myImgPromise = getImages.getData(page);
+        myImgPromise.then(function (result) {
+            $scope.limit = result.limit;
+            $scope.total = result.total;
+            $scope.page = result.page;
+            $scope.pages = result.pages;
+            $scope.images= result._embedded.media;
+            console.log(result);
+        });
+    };
+    $scope.getImagesList();
 });
