@@ -1,7 +1,146 @@
-<div layout="column" layout-align="top center">
-    <div ng-controller="welcomeCtrl">
-        <login-logout status='logedIn'></login-logout>
-        {{welcomeMessage}}
-        Page 2
+<div class="md-inline-form inputdemoBasicUsage">
+    <ng-include src="'/bundles/angular/ng/header.html'"></ng-include>
+    
+    
+    <div layout="row" class="container" layout-wrap layout-padding layout-align='center center'>
+        
+        <md-whiteframe class="md-whiteframe-24dp changeWhiteFrame"  flex="100/3" layout layout-align="center center">
+            <a ng-href="#!/bands"><span>BANDS</span></a>
+        </md-whiteframe>
+        
+        <md-whiteframe class="md-whiteframe-24dp changeWhiteFrame" flex="100/3" layout layout-align="center center">
+            <a ng-href="#!/concerts"><span>Concerts</span></a>
+        </md-whiteframe>
+        
+        <md-whiteframe class="md-whiteframe-24dp changeWhiteFrame" flex="100/3" layout layout-align="center center">
+            <a ng-href="#!/bands"><span>Venues</span></a>
+        </md-whiteframe>
     </div>
+
+
+
+
+
+
+    <script type="text/ng-template" id="newBandForm.html">
+        <md-dialog aria-label="Add New Band" md-theme="form">
+        <md-toolbar >
+        <div class="md-toolbar-tools">
+        <h2>Add A New Band</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()">
+        <md-icon md-svg-src="/bundles/angular/img/icons/xClose.svg" aria-label="Cancel"></md-icon>
+        </md-button>
+        </div>
+        </md-toolbar>
+        <form name="bandForm" >
+        <md-dialog-content layout-padding layout-margin>
+        <md-input-container>
+        <label>Name</label>
+        <input ng-model="band.name" name="bandName" required>
+        </md-input-container>
+        <md-input-container ng-show="displayInput">
+        <label>Add A New Genre</label>
+        <input ng-model="band.genre" ng-required="displayInput" style="margin-top: -3px;" >
+        </md-input-container>
+        <md-input-container ng-hide="displayInput" >
+        <md-select ng-model="band.genre" placeholder="Select a Genre" style="margin-top: -29px;" ng-required="!displayInput">
+        <md-option ng-repeat="(key, value) in genres" value="{{value.genre}}">{{value.genre}}</md-option>
+        </md-select>
+        </md-input-container>
+        <md-input-container>
+        <md-tooltip>{{displayInputLabel}}</md-tooltip>
+        <md-checkbox ng-model="displayInput" aria-label="Checkbox 1"></md-checkbox>
+        </md-input-container>
+        </md-dialog-content>
+        <md-dialog-actions layout="row" md-whiteframe="2">
+        <span flex> </span>
+        <md-input-container>
+        <md-button type="submit" ng-click="saveBand()" style="margin-top: -12px;">Save</md-button>
+        <md-button ng-click="clearForm()" style="margin-top: -12px;">Reset Form</md-button>
+        </md-input-container>
+        <md-input-container>
+        <div layout="row" layout-sm="row" layout-align="space-around"></div>
+        </md-input-container>
+        </md-dialog-actions>
+        </form>
+        </md-dialog>
+    </script>
+
+    <script type="text/ng-template" id="newLocationForm.html">
+        <md-dialog aria-label="Add New Venue" md-theme="form">
+        <md-toolbar >
+        <div class="md-toolbar-tools">
+        <h2>Add A New Venue</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()">
+        <md-icon md-svg-src="/bundles/angular/img/icons/xClose.svg" aria-label="Cancel"></md-icon>
+        </md-button>
+        </div>
+        </md-toolbar>
+        <form name="locationForm" >
+        <md-dialog-content layout-padding layout-margin>
+        <md-input-container>
+        <label>Name</label>
+        <input ng-model="location.name" name="locaitonName" required>
+        </md-input-container>
+        <md-input-container>
+        <label>Address</label>
+        <input ng-model="location.address" name="locaitonAddress" required>
+        </md-input-container>
+        </md-dialog-content>
+        <md-dialog-actions layout="row" md-whiteframe="2">
+        <span flex> </span>
+        <md-input-container>
+        <md-button type="submit" ng-click="saveLocation()" style="margin-top: -12px;">Save</md-button>
+        <md-button ng-click="clearForm()" style="margin-top: -12px;">Reset Form</md-button>
+        </md-input-container>
+        <md-input-container>
+        <div layout="row" layout-sm="row" layout-align="space-around"></div>
+        </md-input-container>
+        </md-dialog-actions>
+        </form>
+        </md-dialog>
+    </script>
+
+    <script type="text/ng-template" id="newConcertForm.html">
+        <md-dialog id="concertFormDialogue" aria-label="Add New Concert" md-theme="form">
+        <md-toolbar >
+        <div class="md-toolbar-tools">
+        <h2>Add A New Concert</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()">
+        <md-icon md-svg-src="/bundles/angular/img/icons/xClose.svg" aria-label="Cancel"></md-icon>
+        </md-button>
+        </div>
+        </md-toolbar>
+        <form name="concertForm" >
+        <div id=inputCont>
+        <div layout='column' layout-align='center center' md-whiteframe="4" layout-padding>
+        <div class='npT' style="width:100%;"><input type="text" date-time ng-model="date" format="lll"></div>
+        <div class='npT' style="width:100%;">
+        <md-select ng-model='ncband' placeholder="Select a Band" style="width:100%;margin:0">
+        <md-option ng-repeat="band in bands" value="{{$index}}">{{band.name}}</md-option>
+        </md-select>
+        </div>
+        <div class='npT' style="width:100%;">
+        <md-select ng-model='nclocation' placeholder="Select a Venue" style="width:100%;margin:0">
+        <md-option ng-repeat="loc in locations" value="{{$index}}">{{loc.name}}</md-option>
+        </md-select>
+        </div>
+        </div>
+        </div>
+        <div layout="row" md-whiteframe="2" layout-align="end end">
+        <span flex> </span>
+        <md-input-container>
+        <md-button type="submit" ng-click="saveConcert()" style="margin-top: -12px;">Save</md-button>
+        <md-button ng-click="clearForm()" style="margin-top: -12px;">Reset Form</md-button>
+        </md-input-container>
+        </div>
+        </md-content>
+        </form>
+
+        </md-dialog>
+    </script>
+
 </div>

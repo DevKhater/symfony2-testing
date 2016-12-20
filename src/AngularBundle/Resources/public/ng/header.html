@@ -1,0 +1,49 @@
+<div growl></div>
+<div  ng-controller="welcomeCtrl">
+    <md-content>
+        <md-toolbar class="md-hue-2" ng-controller='navigationCtrl as ctrl'>
+            <div class="md-toolbar-tools">
+                <md-menu>
+                    <md-button class="md-icon-button" aria-label="Settings" ng-click="ctrl.openMenu($mdOpenMenu)">
+                        <md-icon md-svg-icon="/bundles/angular/img/icons/menu.svg"></md-icon>
+                    </md-button>
+                    <md-menu-content width="4">
+                        <md-menu-item>
+                            <md-button ng-click="showBandForm($event)">
+                                <md-icon md-svg-icon="/bundles/angular/img/icons/add/addBand.svg" md-menu-align-target></md-icon>
+                                New Band
+                            </md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                            <md-button ng-click="showLocationForm($event)">
+                                <md-icon md-svg-icon="/bundles/angular/img/icons/add/addLocation.svg" md-menu-align-target></md-icon>
+                                New Venue
+                            </md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                            <md-button ng-click="showConcertForm($event)">
+                                <md-icon md-svg-icon="/bundles/angular/img/icons/add/addConcert.svg" md-menu-align-target></md-icon>
+                                New Concert
+                            </md-button>
+                        </md-menu-item>
+                    </md-menu-content>
+                </md-menu>
+                <md-button class="md-icon-button" aria-label="Home">
+                    <a ng-href="#!/"> <md-icon md-svg-icon="/bundles/angular/img/icons/menu.svg"></md-icon></a>
+                </md-button>
+                <h2>
+                    <span>Toolbar with Disabled/Enabled Icon Buttons</span>
+                </h2>
+                <span flex></span>
+                <login-logout status='logedIn'></login-logout>
+            </div>
+        </md-toolbar>
+    </md-content>
+
+    <div layout-wrap layout-padding layout-align='center' class="container" >
+        {{welcomeMessage}}
+        <md-divider></md-divider>
+
+    </div>
+
+</div>

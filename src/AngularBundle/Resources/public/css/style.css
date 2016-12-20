@@ -111,3 +111,20 @@ button.close {
     
     box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12);
 }
+form #inputCont {
+    min-height: 185px;
+    min-width: 350px;
+}
+form[name="concertForm"] input {
+    background-color: #424242;
+    color:  #fff;
+}
+[date-picker] table {
+    background-color: #424242;
+    color: #fff;
+    width: 100%;
+}
+
+.changeWhiteFrame:hover {
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
+}

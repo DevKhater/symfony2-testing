@@ -1,42 +1,7 @@
+<ng-include src="'/bundles/angular/ng/header.html'"></ng-include>
+
 <div ng-controller="concertsCtrl" layout="column" layout-align="top center">
-    <div flex>
-        <md-toolbar>
-            <div class="md-toolbar-tools">
-                <h2>Add A New Concert</h2>
-                <span flex></span>
-
-            </div>
-        </md-toolbar>
-        <form name="concertForm" >
-            <div layout='row' layout-align='start top' md-whiteframe="4" layout-padding>
-                <div class='npT'><input type="text" date-time ng-model="newCon.date" format="lll"></div>
-                <div class='npT' style="width:100%;">
-                    <md-select ng-model='ncband' placeholder="Select a Band" style="width:100%;margin:0">
-                        <md-option ng-repeat="band in bands" value="{{$index}}">{{band.name}}</md-option>
-                    </md-select>
-                </div>
-                <div class='npT' style="width:100%;">
-                    <md-select ng-model='nclocation' placeholder="Select a Venue" style="width:100%;margin:0">
-                        <md-option ng-repeat="loc in locations" value="{{$index}}">{{loc.name}}</md-option>
-                    </md-select>
-                </div>
-            </div>
-
-
-            <div layout="row" md-whiteframe="2" id='concertNewAction'>
-                <span flex> </span>
-                <md-input-container>
-                    <md-button type="submit" ng-click="saveConcert()" style="margin-top: -12px;">Save</md-button>
-                    <md-button ng-click="clearForm()" style="margin-top: -12px;">Reset Form</md-button>
-                </md-input-container>
-                <md-input-container>
-                    <div layout="row" layout-sm="row" layout-align="space-around">
-                    </div>
-                </md-input-container>
-            </div>
-            </md-content>
-        </form>
-    </div>
+    
     <div class="alert alert-info">
         <p>Sort Type: {{ sortType}}</p>
         <p>Sort Reverse: {{ sortReverse}}</p>
