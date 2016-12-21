@@ -1,6 +1,4 @@
-<?php 
-
-namespace DataBundle\Controller;
+<?php namespace DataBundle\Controller;
 
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Request\ParamFetcherInterface;
@@ -9,13 +7,11 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\Annotations;
-use DataBundle\Repository\MediaRepository;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Response;
 use Hateoas\Representation\PaginatedRepresentation;
 use Hateoas\Representation\CollectionRepresentation;
-
 
 class ApiMediaController extends FOSRestController
 {
@@ -44,7 +40,7 @@ class ApiMediaController extends FOSRestController
      *
      * @Annotations\View(templateVar="media")
      */
-    public function getConcertAction(Request $request, ParamFetcherInterface $paramFetcher)
+    public function getMediaAction(Request $request, ParamFetcherInterface $paramFetcher)
     {
         $offset = null == $paramFetcher->get('offset') ? 1 : $paramFetcher->get('offset');
         $totalImages = $this->getDoctrine()->getRepository($this->classEntity)->countAllEntities();
@@ -53,20 +49,20 @@ class ApiMediaController extends FOSRestController
         $data = $this->getDoctrine()->getRepository($this->classEntity)->findAllEntities($offset, $limit);
         $data == null ? $view = $this->view('No media found.', 404) : $view = $this->view($data, 200);
         $paginatedCollection = new PaginatedRepresentation(
-                new CollectionRepresentation(
-                $data, 'media', // embedded rel
-                'media'  // xml element name
-                ), 'api_media_list', // route
-                array(), // route parameters
-                $offset, // page number
-                $limit, // limit
-                $maxPages, // total pages
-                'page', // page route parameter name, optional, defaults to 'page'
-                'limit', // limit route parameter name, optional, defaults to 'limit'
-                false, // generate relative URIs, optional, defaults to `false`
-                $totalImages      // total collection size, optional, defaults to `null`
+            new CollectionRepresentation(
+            $data, 'media', // embedded rel
+            'media'  // xml element name
+            ), 'api_media_list', // route
+            array(), // route parameters
+            $offset, // page number
+            $limit, // limit
+            $maxPages, // total pages
+            'page', // page route parameter name, optional, defaults to 'page'
+            'limit', // limit route parameter name, optional, defaults to 'limit'
+            false, // generate relative URIs, optional, defaults to `false`
+            $totalImages      // total collection size, optional, defaults to `null`
         );
-        
+
         return new Response($this->get('serializer')->serialize($paginatedCollection, 'json'), 200, array('Content-Type' => 'application/json'));
     }
 
@@ -83,11 +79,16 @@ class ApiMediaController extends FOSRestController
      * )
      *
      */
-    public function postConcertAction(Request $request)
+    public function postMediaAction(Request $request)
     {
-        dump($request->request->all());
-        $newMedia = $this->container->get($this->serviceEntity)->post($request->request->all());
-        return $this->redirect($this->generateUrl('api_concert_show', array('id' => $newConcert->getId())));
+        $newMedia = $this->container->get($this->serviceEntity)->post($request->files->get('file'));
+
+        if ($newMedia->getId()) {
+            $view = $this->view($newMedia, 200);
+        } else {
+            $view = $this->view('Couldnt Create Band', 500);
+        }
+        return $this->handleView($view);
     }
 
     /**
@@ -161,7 +162,6 @@ class ApiMediaController extends FOSRestController
     {
         $response = parent::deleteAction($request->get('id'));
         return($response);
-        
     }
 
     private function getConcertForm($method, $concert)

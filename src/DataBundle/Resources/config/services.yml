@@ -33,6 +33,6 @@ services:
         class: %data.location.handler.class%
         arguments: ['@doctrine.orm.entity_manager','%data.location.class%','@form.factory']
         
-    mk.music.media.handler:
+    data.media.handler:
         class: %data.media.handler.class%
-        arguments: ['@doctrine.orm.entity_manager','%data.media.class%']
+        arguments: ['@doctrine.orm.entity_manager','%data.media.class%', '@form.factory', '@mkcrud.file.uploader']

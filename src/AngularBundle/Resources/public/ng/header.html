@@ -1,5 +1,5 @@
 <div growl></div>
-<div  ng-controller="welcomeCtrl">
+<div>
     <md-content>
         <md-toolbar class="md-hue-2" ng-controller='navigationCtrl as ctrl'>
             <div class="md-toolbar-tools">
@@ -28,23 +28,17 @@
                         </md-menu-item>
                     </md-menu-content>
                 </md-menu>
-                <md-button class="md-icon-button" aria-label="Home">
-                     <md-icon md-svg-icon="/bundles/angular/img/icons/Home.svg" ng-click="go('/home')"></md-icon>
+                <md-button class="md-icon-button" aria-label="Home"  ng-click="go('/home')">
+                     <md-icon md-svg-icon="/bundles/angular/img/icons/Home.svg"></md-icon>
                 </md-button>
                 <h2>
                     <span>Toolbar with Disabled/Enabled Icon Buttons</span>
                 </h2>
                 <span flex></span>
-                <login-logout status='logedIn'></login-logout>
+<!--                <login-logout status='logedIn'></login-logout>-->
             </div>
         </md-toolbar>
     </md-content>
-
-    <div layout-wrap layout-padding layout-align='center' class="container" >
-        {{welcomeMessage}}
-        <md-divider></md-divider>
-
-    </div>
 
     <script type="text/ng-template" id="newBandForm.html">
         <md-dialog aria-label="Add New Band" md-theme="form">

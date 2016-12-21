@@ -175,7 +175,7 @@ app.controller('locationFormCtrl', function ($scope, $rootScope, $mdDialog, $htt
     };
     $scope.saveLocation = function () {
         var databundle_location = {
-            name: $scope.location.name, 
+            name: $scope.location.name,
             address: $scope.location.address
         };
         $http.post(Routing.generate('api_location_create'), $httpParamSerializerJQLike({databundle_location: databundle_location}), {
@@ -200,7 +200,7 @@ app.controller('locationFormCtrl', function ($scope, $rootScope, $mdDialog, $htt
 });
 app.controller('concertFormCtrl', function ($scope, $rootScope, $http, $mdDialog, $http, $httpParamSerializerJQLike, getBands, getLocations) {
     $scope.ncband, $scope.nclocation;
-    
+
     $scope.bands;
     var myBandsPromise = getBands.getData(1, 1);
     myBandsPromise.then(function (result) {
@@ -214,14 +214,20 @@ app.controller('concertFormCtrl', function ($scope, $rootScope, $http, $mdDialog
     var y = [];
     var m = [];
     var d = [];
-    for(var i=2011;i<2022;i++) { y.push(i); }
-    for(var i=1;i<=12;i++) { m.push(i); }
-    for(var i=1;i<=31;i++) { d.push(i); }
-    
+    for (var i = 2011; i < 2022; i++) {
+        y.push(i);
+    }
+    for (var i = 1; i <= 12; i++) {
+        m.push(i);
+    }
+    for (var i = 1; i <= 31; i++) {
+        d.push(i);
+    }
+
     $scope.years = y;
     $scope.months = m;
     $scope.days = d;
-    $scope.coMonth,$scope.coYear,$scope.coDay;
+    $scope.coMonth, $scope.coYear, $scope.coDay;
     $scope.saveConcert = function () {
         var date = {
             year: parseInt($scope.coYear),
@@ -257,17 +263,13 @@ app.controller('concertFormCtrl', function ($scope, $rootScope, $http, $mdDialog
 
 /* Login Controller ***/
 app.controller('loginCtrl', function ($scope, $http, $httpParamSerializerJQLike, $rootScope, $location) {
-    if ($scope.logedIn == 1) {
-        $rootScope.logedIn = true;
-        $location.path('/home');
-    }
     $scope.submit = function () {
         $http.post(Routing.generate('login_check'), $httpParamSerializerJQLike({_username: $scope.username, _password: $scope.password}), {
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         }).then(function successCallback(response) {
             $rootScope.user = $scope.username;
             $rootScope.logedIn = true;
-            $scope.logedIn = true;
+            //$scope.logedIn = true;
             $location.path('/home');
         }, function errorCallback(response) {
             console.log(response);
@@ -278,14 +280,17 @@ app.controller('loginCtrl', function ($scope, $http, $httpParamSerializerJQLike,
 
 /* Home Controller ***/
 app.controller('welcomeCtrl', function ($scope, $rootScope, $http) {
-    var userUrl = Routing.generate('ng_get_user');
-    $http.get(userUrl).then(
-            function successCallback(response) {
-                $rootScope.user = response.data;
-                $scope.welcomeMessage = "Welcome Mr. " + $rootScope.user;
-            }, function errorCallback(response) {
-        console.log(response);
-    });
+    if (angular.isUndefined($rootScope.user)) {
+        var userUrl = Routing.generate('ng_get_user');
+        $http.get(userUrl).then(
+                function successCallback(response) {
+                    $rootScope.user = response.data;
+                    $scope.welcomeMessage = "Welcome Mr. " + $rootScope.user;
+                }, function errorCallback(response) {
+            console.log(response);
+        });
+    }
+    $scope.welcomeMessage = "Welcome Mr. " + $rootScope.user;
 });
 
 /* Bands Controller ***/
@@ -335,7 +340,8 @@ app.controller('concertsCtrl', function ($scope, $http, getConcerts, getBands, g
     $scope.concerts, $scope.limit, $scope.total, $scope.page, $scope.pages;
     $scope.updateConcertsList = function (page) {
         var myConPromise = getConcerts.getData(page);
-        myConPromise.then(function (result) {$scope.limit = result.limit;
+        myConPromise.then(function (result) {
+            $scope.limit = result.limit;
             $scope.total = result.total;
             $scope.page = result.page;
             $scope.pages = result.pages;
@@ -382,11 +388,7 @@ app.controller('concertsCtrl', function ($scope, $http, getConcerts, getBands, g
 
 });
 
-
-
-
-
-app.controller('mediaCtrl', function ($scope, $http, getImages) {
+app.controller('mediaCtrl', function ($scope, $rootScope, $http, $timeout, getImages, Upload) {
     $scope.images, $scope.limit, $scope.total, $scope.page, $scope.pages;
     $scope.getImagesList = function (page) {
         var myImgPromise = getImages.getData(page);
@@ -395,9 +397,38 @@ app.controller('mediaCtrl', function ($scope, $http, getImages) {
             $scope.total = result.total;
             $scope.page = result.page;
             $scope.pages = result.pages;
-            $scope.images= result._embedded.media;
+            $scope.images = result._embedded.media;
             console.log(result);
         });
     };
     $scope.getImagesList();
+
+    $scope.uploadPic = function (file) {
+        var url = Routing.generate('api_media_create');
+        file.upload = Upload.upload({   
+            url: url,
+            data: {file: file}
+        });
+
+        file.upload.then(function (response) {
+            $timeout(function () {
+                file.result = response.data;
+                $scope.getImagesList();
+                $rootScope.showSuccess('Image Added');
+            });
+        }, function (response) {
+            console.log('response');
+            if (response.status > 0){
+                console.log('response.status > 0');
+                $scope.errorMsg = response.status + ': ' + response.data;
+            } else {
+                console.log('response.status < 0');
+                
+            }
+        }, function (evt) {
+            // Math.min is to fix IE which reports 200% sometimes
+            file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+        });
+    }
+
 });

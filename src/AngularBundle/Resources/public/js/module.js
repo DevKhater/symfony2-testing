@@ -82,7 +82,7 @@ app.config(['$mdThemingProvider', function ($mdThemingProvider) {
 
 
 app.run(function ($rootScope, $location, $window, growl) {
-    $rootScope.logedIn;
+    $rootScope.logedIn;$rootScope.user;
     $rootScope.logOut = function () {
         $window.location.href = Routing.generate('logout');
     };
