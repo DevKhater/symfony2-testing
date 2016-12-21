@@ -58,7 +58,6 @@ class ApiBandController extends ApiController
     public function getBandsAction(Request $request, ParamFetcherInterface $paramFetcher)
     {
         $offset = null == $paramFetcher->get('offset') ? 1 : $paramFetcher->get('offset');
-        //$limit = $paramFetcher->get('limit');
         $totalBands = $this->getDoctrine()->getRepository($this->classEntity)->countAllEntities();
         $limit = $paramFetcher->get('all') == 1 ? $totalBands : $paramFetcher->get('limit');
         $maxPages = ceil($totalBands / $limit);
@@ -78,16 +77,6 @@ class ApiBandController extends ApiController
                 false, // generate relative URIs, optional, defaults to `false`
                 $totalBands      // total collection size, optional, defaults to `null`
         );
-
-
-
-//        
-//        $view->setTemplate($this->templateDirectory . "apiList.html.twig")
-//                ->setTemplateData(['maxPages' => $maxPages,
-//                    'thisPage' => $offset, 'theIndex' => 'api_concerts_list']);
-//        return $this->handleView($view);
-//    
-        //$response = parent::getAction($request, $paramFetcher);
         return new Response($this->get('serializer')->serialize($paginatedCollection, 'json'), 200, array('Content-Type' => 'application/json'));
     }
 
@@ -108,23 +97,6 @@ class ApiBandController extends ApiController
         $id = $request->get('slug');
         $response = parent::showAction($id);
         return($response);
-    }
-
-    /**
-     * @Route("api/band/new", name="api_band_form_new")
-     * @Method("GET")
-     * @ApiDoc(
-     *  resource=true,
-     *  description="Show Band New Form",
-     * )
-     */
-    public function bandNewFormAction(Request $request)
-    {
-        $form = $this->getBandForm("POST", New Band());
-        $view = $this->view($form, 200)
-                ->setTemplate($this->templateDirectory . "apiForm.html.twig")
-                ->setTemplateData(['action' => 'Create']);
-        return $this->handleView($view);
     }
 
     /**
@@ -165,25 +137,6 @@ class ApiBandController extends ApiController
         } else {
             $view = $this->view('Couldnt Create Band', 500);
         }
-        return $this->handleView($view);
-    }
-
-    /**
-     * @Route("api/band/{slug}/edit", name="api_band_form_edit")
-     * @Method("GET")
-     * @ApiDoc(
-     *  resource=true,
-     *  description="Show Band Edit Form",
-     * )
-     */
-    public function bandEditFormAction(Request $request)
-    {
-
-        $band = $this->getOr404($request->get('slug'));
-        $form = $this->getBandForm("PUT", $band);
-        $view = $this->view($form, 200)
-                ->setTemplate($this->templateDirectory . "bandApiForm.html.twig")
-                ->setTemplateData(['action' => 'Edit']);
         return $this->handleView($view);
     }
 
@@ -255,27 +208,11 @@ class ApiBandController extends ApiController
         $mediaManager = $this->container->get('data.media.handler');
         $newImage = $mediaManager->get($image);
         if ($newImage) {
-            $band->getImage() != NULL ? $mediaManager->delete($band->getImage()) : '';
+            //$band->getImage() != NULL ? $mediaManager->delete($band->getImage()) : '';
             $band = $this->container->get('data.band.handler')->setImage($band, $newImage);
             return new Response($this->get('serializer')->serialize('Image Added To Band', 'json'), 200, array('Content-Type' => 'application/json'));
         }
         return new Response($this->get('serializer')->serialize('Error', 'json'), 500, array('Content-Type' => 'application/json'));
-    }
-
-    private function getBandForm($method, $band)
-    {
-        switch ($method) {
-            case "POST":
-                $url = $this->generateUrl('api_band_create');
-                break;
-            case "PUT":
-                $url = $this->generateUrl('api_band_update', ['slug' => $band->getSlug()]);
-                break;
-            case "POST":
-                $url = $this->generateUrl('api_band_patch', ['slug' => $band->getSlug()]);
-                break;
-        }
-        return $this->container->get($this->serviceEntity)->createBandForm($method, $band, $url);
     }
 
 }

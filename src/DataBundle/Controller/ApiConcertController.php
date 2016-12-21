@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace DataBundle\Controller;
 
@@ -14,7 +14,6 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Response;
 use Hateoas\Representation\PaginatedRepresentation;
 use Hateoas\Representation\CollectionRepresentation;
-
 
 class ApiConcertController extends ApiController
 {
@@ -66,7 +65,7 @@ class ApiConcertController extends ApiController
                 false, // generate relative URIs, optional, defaults to `false`
                 $totalConcerts      // total collection size, optional, defaults to `null`
         );
-        
+
         return new Response($this->get('serializer')->serialize($paginatedCollection, 'json'), 200, array('Content-Type' => 'application/json'));
     }
 
@@ -98,11 +97,11 @@ class ApiConcertController extends ApiController
     {
         $data = $this->getOr404($request->get('id'))->getBand()->getName();
         $view = $this->view($data, 200)
-            ->setTemplate($this->templateDirectory . "concertApiShowFields.html.twig")
-            ->setTemplateData(['element' => 'Band Name']);
+                ->setTemplate($this->templateDirectory . "concertApiShowFields.html.twig")
+                ->setTemplateData(['element' => 'Band Name']);
         return $this->handleView($view);
     }
-    
+
     /**
      * @Route("api/concert/{id}/band/{name}", name="api_concert_patch_band")
      * @Method("PATCH")
@@ -131,8 +130,8 @@ class ApiConcertController extends ApiController
     {
         $data = $this->getOr404($request->get('id'))->getBand()->getGenre();
         $view = $this->view($data, 200)
-            ->setTemplate($this->templateDirectory . "concertApiShowFields.html.twig")
-            ->setTemplateData(['element' => 'Band Genre']);
+                ->setTemplate($this->templateDirectory . "concertApiShowFields.html.twig")
+                ->setTemplateData(['element' => 'Band Genre']);
 
         return $this->handleView($view);
     }
@@ -150,8 +149,8 @@ class ApiConcertController extends ApiController
         $location = $this->getOr404($request->get('id'))->getLocation();
         $data = ['data' => ['name' => $location->getName(), 'address' => $location->getAddress()]];
         $view = $this->view($data, 200)
-            ->setTemplate($this->templateDirectory . "concertApiShowFields.html.twig")
-            ->setTemplateData(['element' => 'Location']);
+                ->setTemplate($this->templateDirectory . "concertApiShowFields.html.twig")
+                ->setTemplateData(['element' => 'Location']);
 
         return $this->handleView($view);
     }
@@ -168,26 +167,9 @@ class ApiConcertController extends ApiController
     {
         $data = $this->getOr404($request->get('id'))->getDate();
         $view = $this->view($data, 200)
-            ->setTemplate($this->templateDirectory . "concertApiShowFields.html.twig")
-            ->setTemplateData(['element' => 'Date']);
+                ->setTemplate($this->templateDirectory . "concertApiShowFields.html.twig")
+                ->setTemplateData(['element' => 'Date']);
 
-        return $this->handleView($view);
-    }
-
-    /**
-     * @Route("api/concert/new", name="api_concert_form_new")
-     * @Method("GET")
-     * @ApiDoc(
-     *  resource=true,
-     *  description="Show Concert New Form",
-     * )
-     */
-    public function concertNewFormAction(Request $request)
-    {
-        $form = $this->getConcertForm("POST", New Concert());
-        $view = $this->view($form, 200)
-            ->setTemplate($this->templateDirectory . "apiForm.html.twig")
-            ->setTemplateData(['action' => 'Create']);
         return $this->handleView($view);
     }
 
@@ -212,25 +194,6 @@ class ApiConcertController extends ApiController
     }
 
     /**
-     * @Route("api/concert/{id}/edit", name="api_concert_form_edit")
-     * @Method("GET")
-     * @ApiDoc(
-     *  resource=true,
-     *  description="Show Concert Edit Form",
-     * )
-     */
-    public function concertEditFormAction(Request $request)
-    {
-
-        $concert = $this->getOr404($request->get('id'));
-        $form = $this->getConcertForm("PUT", $concert);
-        $view = $this->view($form, 200)
-            ->setTemplate($this->templateDirectory . "concertApiForm.html.twig")
-            ->setTemplateData(['action' => 'Edit']);
-        return $this->handleView($view);
-    }
-
-    /**
      * @Route("api/concert/", name="api_concert_update")
      * @Method("PUT")
      * @ApiDoc(
@@ -247,7 +210,7 @@ class ApiConcertController extends ApiController
     {
         $conRequest = $this->container->get($this->serviceEntity)->get($request->get('id'));
         $concert = $this->container->get($this->serviceEntity)->put(
-            $conRequest, $request->request->all()
+                $conRequest, $request->request->all()
         );
         return $this->redirect($this->generateUrl('api_concert_show', array('id' => $concert->getId())));
     }
@@ -282,22 +245,6 @@ class ApiConcertController extends ApiController
     {
         $response = parent::deleteAction($request->get('id'));
         return($response);
-        
     }
 
-    private function getConcertForm($method, $concert)
-    {
-        switch ($method) {
-            case "POST":
-                $url = $this->generateUrl('api_concert_create');
-                break;
-            case "PUT":
-                $url = $this->generateUrl('api_concert_update', ['id' => $concert->getId()]);
-                break;
-            case "POST":
-                $url = $this->generateUrl('api_concert_patch', ['id' => $concert->getId()]);
-                break;
-        }
-        return $this->container->get($this->serviceEntity)->createConcertForm($method, $concert, $url);
-    }
 }

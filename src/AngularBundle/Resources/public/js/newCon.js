@@ -1,87 +1,4 @@
 /*****************************************************************************************/
-/**********                 FACTORIES                                           **********/
-/*****************************************************************************************/
-app.factory('getGenres', function ($http) {
-    var genresUrl = Routing.generate('api_band_genres');
-    var getData = function () {
-        return $http({method: "GET", url: genresUrl}).then(function (result) {
-            return result.data;
-        });
-    };
-    return {getData: getData};
-});
-
-app.factory('getBands', function ($http) {
-    var url = Routing.generate('api_bands_list');
-    var getData = function (page, all) {
-        if (page == 0 || page == null) {
-            page = 1
-        }
-        return $http({method: "GET", url: url,
-            headers: {'Accept': 'application/json'},
-            params: {offset: page, all: all}
-        })
-                .then(function (result) {
-                    return result.data;
-                });
-    };
-    return {getData: getData};
-});
-
-app.factory('getImages', function ($http) {
-    var url = Routing.generate('api_media_list');
-    var getData = function (page, all) {
-        if (page == 0 || page == null) {
-            page = 1
-        }
-        return $http({method: "GET", url: url,
-            headers: {'Accept': 'application/json'},
-            params: {offset: page, all: all}
-        })
-                .then(function (result) {
-                    return result.data;
-                });
-    };
-    return {getData: getData};
-});
-
-app.factory('getConcerts', function ($http) {
-    var url = Routing.generate('api_concerts_list');
-    var getData = function (page) {
-        if (page === 0 || page === null) {
-            page = 1;
-        }
-        return $http({method: "GET", url: url,
-            headers: {'Accept': 'application/json'},
-            params: {offset: page}
-        })
-                .then(function (result) {
-                    return result.data;
-                });
-    };
-    return {getData: getData};
-});
-
-app.factory('getLocations', function ($http) {
-    var url = Routing.generate('api_locations_list');
-    var getData = function (page) {
-        if (page == 0 || page == null) {
-            page = 1
-        }
-        return $http({method: "GET", url: url,
-            headers: {'Accept': 'application/json'},
-            params: {offset: page}
-        })
-                .then(function (result) {
-                    return result.data;
-                });
-    };
-    return {getData: getData};
-});
-
-
-
-/*****************************************************************************************/
 /**********                 CONTROLLERS                                         **********/
 /*****************************************************************************************/
 
@@ -294,9 +211,9 @@ app.controller('welcomeCtrl', function ($scope, $rootScope, $http) {
 });
 
 /* Bands Controller ***/
-app.controller('bandsCtrl', function ($scope, getGenres, getBands, $rootScope, $http, $mdBottomSheet, $mdToast, $mdDialog) {
+app.controller('bandsCtrl', function ($scope, getGenres, getBands, $rootScope, $http,$mdDialog) {
     $scope.page, $scope.limit, $scope.total;
-    $rootScope.updateBandsList = function (page) {
+    $scope.updateBandsList = function (page) {
         var myBandsPromise = getBands.getData(page);
         myBandsPromise.then(function (result) {
             $scope.Bands = result._embedded.bands;
@@ -306,11 +223,11 @@ app.controller('bandsCtrl', function ($scope, getGenres, getBands, $rootScope, $
             $scope.pages = result.pages;
         });
     };
-    $rootScope.updateBandsList();
+    $scope.updateBandsList();
     $scope.deleteBand = function (slug) {
         $http.delete(Routing.generate('api_band_delete', {id: slug}))
                 .then(function successCallback(response) {
-                    $rootScope.updateBandsList($scope.page);
+                    $scope.updateBandsList($scope.page);
                     $rootScope.showSuccess('Band Deleted');
                 }, function errorCallback(response) {
                     console.log(response);
@@ -346,7 +263,7 @@ app.controller('bandsCtrl', function ($scope, getGenres, getBands, $rootScope, $
             fullscreen: true
         })
                 .then(function () {
-                    $rootScope.updateBandsList();
+                    $scope.updateBandsList();
                 }, function () {
                 });
     };

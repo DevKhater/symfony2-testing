@@ -1,8 +1,9 @@
-<?php namespace DataBundle\Controller;
+<?php
+
+namespace DataBundle\Controller;
 
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Request\ParamFetcherInterface;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,20 +50,19 @@ class ApiMediaController extends FOSRestController
         $data = $this->getDoctrine()->getRepository($this->classEntity)->findAllEntities($offset, $limit);
         $data == null ? $view = $this->view('No media found.', 404) : $view = $this->view($data, 200);
         $paginatedCollection = new PaginatedRepresentation(
-            new CollectionRepresentation(
-            $data, 'media', // embedded rel
-            'media'  // xml element name
-            ), 'api_media_list', // route
-            array(), // route parameters
-            $offset, // page number
-            $limit, // limit
-            $maxPages, // total pages
-            'page', // page route parameter name, optional, defaults to 'page'
-            'limit', // limit route parameter name, optional, defaults to 'limit'
-            false, // generate relative URIs, optional, defaults to `false`
-            $totalImages      // total collection size, optional, defaults to `null`
+                new CollectionRepresentation(
+                $data, 'media', // embedded rel
+                'media'  // xml element name
+                ), 'api_media_list', // route
+                array(), // route parameters
+                $offset, // page number
+                $limit, // limit
+                $maxPages, // total pages
+                'page', // page route parameter name, optional, defaults to 'page'
+                'limit', // limit route parameter name, optional, defaults to 'limit'
+                false, // generate relative URIs, optional, defaults to `false`
+                $totalImages      // total collection size, optional, defaults to `null`
         );
-
         return new Response($this->get('serializer')->serialize($paginatedCollection, 'json'), 200, array('Content-Type' => 'application/json'));
     }
 
@@ -92,65 +92,6 @@ class ApiMediaController extends FOSRestController
     }
 
     /**
-     * @Route("api/concert/{id}/edit", name="api_concert_form_edit")
-     * @Method("GET")
-     * @ApiDoc(
-     *  resource=true,
-     *  description="Show Concert Edit Form",
-     * )
-     */
-    public function concertEditFormAction(Request $request)
-    {
-
-        $concert = $this->getOr404($request->get('id'));
-        $form = $this->getConcertForm("PUT", $concert);
-        $view = $this->view($form, 200)
-            ->setTemplate($this->templateDirectory . "concertApiForm.html.twig")
-            ->setTemplateData(['action' => 'Edit']);
-        return $this->handleView($view);
-    }
-
-    /**
-     * @Route("api/concert/", name="api_concert_update")
-     * @Method("PUT")
-     * @ApiDoc(
-     *   resource = true,
-     *   description = "Update a Concert",
-     *   statusCodes = {
-     *     201 = "Returned when created",
-     *     400 = "Returned when the form has errors"
-     *   }
-     * )
-     *
-     */
-    public function putConcertAction(Request $request)
-    {
-        $conRequest = $this->container->get($this->serviceEntity)->get($request->get('id'));
-        $concert = $this->container->get($this->serviceEntity)->put(
-            $conRequest, $request->request->all()
-        );
-        return $this->redirect($this->generateUrl('api_concert_show', array('id' => $concert->getId())));
-    }
-
-    /**
-     * @Route("api/concert/", name="api_concert_patch")
-     * @Method("PATCH")
-     * @ApiDoc(
-     *   resource = true,
-     *   description = "Create a new Concert",
-     *   statusCodes = {
-     *     201 = "Returned when created",
-     *     400 = "Returned when the form has errors"
-     *   }
-     * )
-     *
-     */
-    public function patchConcertAction(Request $request)
-    {
-        
-    }
-
-    /**
      * @Route("api/concert/{id}", name="api_concert_delete")
      * @Method("DELETE")
      * @ApiDoc(
@@ -158,25 +99,20 @@ class ApiMediaController extends FOSRestController
      *  description="Delete Band resource",
      * )
      */
-    public function deleteConcertAction(Request $request)
+    public function deleteImageAction(Request $request)
     {
-        $response = parent::deleteAction($request->get('id'));
-        return($response);
+        $entity = $this->getOr404($request->get('id'));
+        $this->container->get($this->serviceEntity)->delete($entity);
+        $view = $this->view(null, 204);
+        return $this->handleView($view);
     }
 
-    private function getConcertForm($method, $concert)
+    private function getOr404($id)
     {
-        switch ($method) {
-            case "POST":
-                $url = $this->generateUrl('api_concert_create');
-                break;
-            case "PUT":
-                $url = $this->generateUrl('api_concert_update', ['id' => $concert->getId()]);
-                break;
-            case "POST":
-                $url = $this->generateUrl('api_concert_patch', ['id' => $concert->getId()]);
-                break;
+        if (!($entity = $this->container->get($this->serviceEntity)->get($id))) {
+            throw new NotFoundHttpException($this->classEntity . ' Not Found');
         }
-        return $this->container->get($this->serviceEntity)->createConcertForm($method, $concert, $url);
+        return $entity;
     }
+
 }
