@@ -328,14 +328,59 @@ app.controller('bandsCtrl', function ($scope, getGenres, getBands, $rootScope, $
             clickOutsideToClose: true,
             fullscreen: false // Only for -xs, -sm breakpoints.
         })
-                .then(function (answer) {
+                .then(function () {
+
+                }, function () {
+                });
+    };
+    $scope.addMedia = function (band, ev) {
+        $mdDialog.show({
+            controller: 'bandImageCtrl',
+            templateUrl: 'dialog3.tmpl.html',
+            parent: angular.element(document.body),
+            targetEvent: ev,
+            locals: {
+                band: band
+            },
+            clickOutsideToClose: true,
+            fullscreen: true
+        })
+                .then(function () {
+                    $rootScope.updateBandsList();
                 }, function () {
                 });
     };
 
+});
+app.controller('bandImageCtrl', function ($scope, $http, $rootScope, $mdDialog, band, getImages) {
+    $scope.images;
+    getImagesList = function () {
+        var myImgPromise = getImages.getData(1);
+        myImgPromise.then(function (result) {
+            $scope.images = result._embedded.media;
+        });
+    };
+    getImagesList();
+    $scope.selected;
+    $scope.select = function (item) {
+        $scope.selected = item;
+    };
+
+    $scope.isActive = function (item) {
+        return $scope.selected === item;
+    };
+    $scope.saveBand = function () {
+        $http.patch(Routing.generate('api_band_add_image', {slug: band.slug + '/' + $scope.selected.id}), {
+            headers: {'Accept': 'application/json'},
+        }).then(function successCallback(response) {
+            $mdDialog.hide();
+            $rootScope.showSuccess('Preview Image Saved');
+        }, function errorCallback(response) {
+            $rootScope.showError(response.data.message);
+        });
+    };
 
 });
-
 app.controller('concertsCtrl', function ($scope, $http, getConcerts, getBands, getLocations) {
     $scope.concerts, $scope.limit, $scope.total, $scope.page, $scope.pages;
     $scope.updateConcertsList = function (page) {
@@ -388,7 +433,7 @@ app.controller('concertsCtrl', function ($scope, $http, getConcerts, getBands, g
 
 });
 
-app.controller('mediaCtrl', function ($scope, $rootScope, $http, $timeout, getImages, Upload) {
+app.controller('mediaCtrl', function ($scope, $rootScope, $timeout, getImages, Upload) {
     $scope.images, $scope.limit, $scope.total, $scope.page, $scope.pages;
     $scope.getImagesList = function (page) {
         var myImgPromise = getImages.getData(page);
@@ -405,7 +450,7 @@ app.controller('mediaCtrl', function ($scope, $rootScope, $http, $timeout, getIm
 
     $scope.uploadPic = function (file) {
         var url = Routing.generate('api_media_create');
-        file.upload = Upload.upload({   
+        file.upload = Upload.upload({
             url: url,
             data: {file: file}
         });
@@ -418,12 +463,12 @@ app.controller('mediaCtrl', function ($scope, $rootScope, $http, $timeout, getIm
             });
         }, function (response) {
             console.log('response');
-            if (response.status > 0){
+            if (response.status > 0) {
                 console.log('response.status > 0');
                 $scope.errorMsg = response.status + ': ' + response.data;
             } else {
                 console.log('response.status < 0');
-                
+
             }
         }, function (evt) {
             // Math.min is to fix IE which reports 200% sometimes

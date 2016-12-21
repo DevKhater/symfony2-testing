@@ -92,7 +92,7 @@ class Media implements MediaInterface
      */
     public function deleteImage()
     {
-        $path = __DIR__ . "/../../../../web/" . $this->getImageUrl();
+        $path = __DIR__ . "/../../../web/" . $this->getImageUrl();
         if ($path) {
             unlink($path);
         }

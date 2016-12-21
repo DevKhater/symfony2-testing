@@ -132,4 +132,3 @@ app.directive('loginStatus', function ($rootScope) {
         }
     }
 });
-

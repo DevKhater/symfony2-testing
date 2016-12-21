@@ -3,7 +3,7 @@
     <div flex layout="row" layout-wrap layout-padding layout-align='center'>
         <div md-whiteframe="13"  flex="25"  layout-padding layout-margin ng-repeat="band in Bands" >
             <div flex="50" class="bandImageHolder">
-                <img ng-src="http://www.gravatar.com/avatar/">
+                <img ng-src="{{band.image.image_url}}">
             </div>
             <div flex layout="column" layout-align='space-around center'>
                 <span class="md-headline">{{band.name}}</span><br/>
@@ -15,6 +15,8 @@
             </div>
             <div class='bandsAction' layout="row">
                 <md-button class="md-secondary md-raised" ng-click="editForm(band)">Edit</md-button>
+                <md-button class="md-secondary md-raised" ng-click="addMedia(band)">Set Preview</md-button>
+                
                 <md-button ng-show="band.concerts.length == 0" class="md-secondary md-raised" ng-click="deleteBand(band.slug)">Delete</md-button>
             </div>
         </div>
@@ -64,6 +66,37 @@
         <md-input-container>
         <md-button type="submit" ng-click="saveBand()" style="margin-top: -12px;">Save</md-button>
         <md-button ng-click="clearForm()" style="margin-top: -12px;">Reset Form</md-button>
+        </md-input-container>
+        <md-input-container>
+        <div layout="row" layout-sm="row" layout-align="space-around">
+        </div>
+        </md-input-container>
+        </md-dialog-actions>
+        </form>
+        </md-dialog>
+    </script>
+    <script type="text/ng-template" id="dialog3.tmpl.html">
+        <md-dialog aria-label="Add Image" md-theme="form">
+        <md-toolbar >
+        <div class="md-toolbar-tools">
+        <h2>Add Image To Band</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()">
+        <md-icon md-svg-src="/bundles/angular/img/icons/xClose.svg" aria-label="Cancel"></md-icon>
+        </md-button>
+        </div>
+        </md-toolbar>
+        <form name="bandForm" >
+        <md-dialog-content layout-padding layout-margin layout='row'>
+            <div flex='30' ng-repeat="image in images" ng-click="select(image)" ng-class="{active: isActive(image)}" >
+                <img ng-src="{{image.image_url}}" height="50" width="50">
+        </div>
+
+        </md-dialog-content>
+        <md-dialog-actions layout="row" md-whiteframe="2">
+        <span flex> </span>
+        <md-input-container>
+        <md-button type="submit" ng-click="saveBand()">Save</md-button>
         </md-input-container>
         <md-input-container>
         <div layout="row" layout-sm="row" layout-align="space-around">

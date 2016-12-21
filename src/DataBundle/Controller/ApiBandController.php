@@ -252,17 +252,14 @@ class ApiBandController extends ApiController
     public function addBandImageAction(Request $request, $slug, $image)
     {
         $band = $this->getOr404($slug);
-        $mediaManager = $this->container->get('mk.music.media.handler');
+        $mediaManager = $this->container->get('data.media.handler');
         $newImage = $mediaManager->get($image);
         if ($newImage) {
-            $band[0]->getImage() != NULL ? $mediaManager->delete($band[0]->getImage()) : '';
-            $band = $this->container->get('data.band.handler')->setImage($band[0], $newImage);
-            $routeOptions = array(
-                'slug' => $band->getSlug(),
-                '_format' => $request->get('_format')
-            );
-            return $this->routeRedirectView('api_band_show', $routeOptions, Response::HTTP_OK);
+            $band->getImage() != NULL ? $mediaManager->delete($band->getImage()) : '';
+            $band = $this->container->get('data.band.handler')->setImage($band, $newImage);
+            return new Response($this->get('serializer')->serialize('Image Added To Band', 'json'), 200, array('Content-Type' => 'application/json'));
         }
+        return new Response($this->get('serializer')->serialize('Error', 'json'), 500, array('Content-Type' => 'application/json'));
     }
 
     private function getBandForm($method, $band)
