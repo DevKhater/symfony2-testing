@@ -7,7 +7,46 @@
                     <md-button class="md-icon-button" aria-label="Settings" ng-click="ctrl.openMenu($mdOpenMenu)">
                         <md-icon md-svg-icon="/bundles/angular/img/icons/menu.svg"></md-icon>
                     </md-button>
-                    <md-menu-content width="4">
+                    <md-menu-content width="4" class="backWhite">
+                        <md-menu-item>
+                            <md-button  ng-click="go('/bands')">
+                                <md-icon md-svg-icon="/bundles/angular/img/icons/band.svg" md-menu-align-target></md-icon>
+                                Bands
+                            </md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                            <md-button ng-click="go('/locations')">
+                                <md-icon md-svg-icon="/bundles/angular/img/icons/add/addLocation.svg" md-menu-align-target></md-icon>
+                                Venues
+                            </md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                            <md-button ng-click="go('/concerts')">
+                                <md-icon md-svg-icon="/bundles/angular/img/icons/add/addConcert.svg" md-menu-align-target></md-icon>
+                                Concerts
+                            </md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                            <md-button ng-click="go('/media')">
+                                <md-icon md-svg-icon="/bundles/angular/img/icons/add/addConcert.svg" md-menu-align-target></md-icon>
+                                Media
+                            </md-button>
+                        </md-menu-item>
+                    </md-menu-content>
+                </md-menu>
+                <md-button class="md-icon-button" aria-label="Home"  ng-click="go('/home')">
+                    <md-icon md-svg-icon="/bundles/angular/img/icons/Home.svg"></md-icon>
+                </md-button>
+                <h2>
+                    <span>Toolbar with Disabled/Enabled Icon Buttons</span>
+                </h2>
+                <span flex></span>
+
+                <md-menu>
+                    <md-button class="md-icon-button" aria-label="Settings" ng-click="ctrl.openMenu($mdOpenMenu)">
+                        <md-icon md-svg-icon="/bundles/angular/img/icons/add/add.svg"></md-icon>
+                    </md-button>
+                    <md-menu-content width="4" class="backWhite">
                         <md-menu-item>
                             <md-button ng-click="showBandForm($event)">
                                 <md-icon md-svg-icon="/bundles/angular/img/icons/add/addBand.svg" md-menu-align-target></md-icon>
@@ -28,14 +67,11 @@
                         </md-menu-item>
                     </md-menu-content>
                 </md-menu>
-                <md-button class="md-icon-button" aria-label="Home"  ng-click="go('/home')">
-                     <md-icon md-svg-icon="/bundles/angular/img/icons/Home.svg"></md-icon>
-                </md-button>
-                <h2>
-                    <span>Toolbar with Disabled/Enabled Icon Buttons</span>
-                </h2>
-                <span flex></span>
-<!--                <login-logout status='logedIn'></login-logout>-->
+
+
+
+
+                <!--                <login-logout status='logedIn'></login-logout>-->
             </div>
         </md-toolbar>
     </md-content>
@@ -154,12 +190,12 @@
                 <div layout='row' layout-align='center center' md-whiteframe="4" layout-padding>
                     <div class='npT' style="width:100%;">
                         <md-select ng-model='ncband' placeholder="Select a Band" style="width:100%;margin:0">
-                            <md-option ng-repeat="band in bands" value="{{$index}}">{{band.name}}</md-option>
+                            <md-option ng-repeat="band in fbands" value="{{$index}}">{{band.name}}</md-option>
                         </md-select>
                     </div>
                     <div class='npT' style="width:100%;">
                         <md-select ng-model='nclocation' placeholder="Select a Venue" style="width:100%;margin:0">
-                            <md-option ng-repeat="loc in locations" value="{{$index}}">{{loc.name}}</md-option>
+                            <md-option ng-repeat="loc in flocations" value="{{$index}}">{{loc.name}}</md-option>
                         </md-select>
                     </div>
                 </div>

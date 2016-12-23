@@ -1,5 +1,5 @@
 <ng-include src="'/bundles/angular/ng/header.html'"></ng-include>
-<div ng-controller="mediaCtrl" layout-padding layout-margin class="page-bands" >
+<div md-theme="default" ng-controller="mediaCtrl" layout-padding layout-margin class="page-bands" >
     
  <form name="myForm">
     <fieldset>
@@ -30,7 +30,7 @@
     
     
     <div flex layout="row" layout-wrap layout-padding layout-align='center'>
-        <div md-whiteframe="13"  flex="25"  layout-padding layout-margin ng-repeat="image in images" >
+        <div md-whiteframe="13"  flex="25"  layout-padding layout-margin ng-repeat="image in images" class="backWhite">
             <div flex="50" class="bandImageHolder">
                 <img ng-src="{{image.image_url}}">
             </div>

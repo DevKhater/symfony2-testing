@@ -1,7 +1,7 @@
 <ng-include src="'/bundles/angular/ng/header.html'"></ng-include>
-<div ng-controller="bandsCtrl" layout-padding layout-margin class="page-bands" >
+<div md-theme="default" ng-controller="bandsCtrl" layout-padding layout-margin class="page-bands" >
     <div flex layout="row" layout-wrap layout-padding layout-align='center'>
-        <div md-whiteframe="13"  flex="25"  layout-padding layout-margin ng-repeat="band in Bands" >
+        <div md-whiteframe="13"  flex="25"  layout-padding layout-margin ng-repeat="band in Bands" class="backWhite">
             <div flex="50" class="bandImageHolder">
                 <img ng-src="{{band.image.image_url}}">
             </div>
@@ -16,7 +16,7 @@
             <div class='bandsAction' layout="row">
                 <md-button class="md-secondary md-raised" ng-click="editForm(band)">Edit</md-button>
                 <md-button class="md-secondary md-raised" ng-click="addMedia(band)">Set Preview</md-button>
-                
+
                 <md-button ng-show="band.concerts.length == 0" class="md-secondary md-raised" ng-click="deleteBand(band.slug)">Delete</md-button>
             </div>
         </div>
@@ -27,7 +27,7 @@
          page="page"
          page-size="limit"
          total="total"
-         paging-action="updateBandsList(page)">
+         paging-action="changePage(page)">
     </div>
 
     <script type="text/ng-template" id="dialog2.tmpl.html">
@@ -88,8 +88,8 @@
         </md-toolbar>
         <form name="bandForm" >
         <md-dialog-content layout-padding layout-margin layout='row'>
-            <div flex='30' ng-repeat="image in images" ng-click="select(image)" ng-class="{active: isActive(image)}" >
-                <img ng-src="{{image.image_url}}" height="50" width="50">
+        <div flex='30' ng-repeat="image in images" ng-click="select(image)" ng-class="{active: isActive(image)}" >
+        <img ng-src="{{image.image_url}}" height="50" width="50">
         </div>
 
         </md-dialog-content>

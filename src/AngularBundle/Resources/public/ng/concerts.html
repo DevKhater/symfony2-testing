@@ -1,6 +1,6 @@
 <ng-include src="'/bundles/angular/ng/header.html'"></ng-include>
 
-<div ng-controller="concertsCtrl" layout="column" layout-align="top center" class="page-concerts">
+<div md-theme="default" ng-controller="concertsCtrl" layout="column" layout-align="top center" class="page-concerts">
 
     <div class="alert alert-info">
         <p>Sort Type: {{ sortType}}</p>
@@ -15,7 +15,7 @@
             </div>      
         </div>
     </form>
-    <table class="table table-bordered table-striped">
+    <table class="table table-bordered table-striped backWhite">
         <thead>
             <tr>
                 <td>
@@ -56,6 +56,6 @@
          page="page"
          page-size="limit"
          total="total"
-         paging-action="updateConcertsList(page)">
+         paging-action="changePage(page)">
     </div>
 </div>

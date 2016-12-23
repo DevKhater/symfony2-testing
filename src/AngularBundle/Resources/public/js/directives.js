@@ -26,11 +26,12 @@ app.directive('loginStatus', function ($rootScope) {
             status: '='
         },
         link: function (scope, element, attrs) {
-            if (attrs['status'] == 1) { 
-                $rootScope.logedIn = true; 
-            } else { 
+            if (attrs['status'] == 1) {
+                $rootScope.logedIn = true;
+            } else {
                 $rootScope.logedIn = false;
-            };
+            }
+            ;
         }
     }
 });

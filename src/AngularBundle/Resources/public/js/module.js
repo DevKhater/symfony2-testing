@@ -10,7 +10,7 @@ app.config([
         $routeProvider
                 .when('/', {
                     templateUrl: "/bundles/angular/ng/login.html",
-                    controller:'loginCtrl',
+                    controller: 'loginCtrl',
                     resolve: {
                         "check": function ($location, $rootScope) {
                             if ($rootScope.logedIn) {
@@ -20,10 +20,10 @@ app.config([
                         }
                     }
                 }),
-        $routeProvider
+                $routeProvider
                 .when('/home', {
                     templateUrl: "/bundles/angular/ng/welcome.html",
-                    controller:'welcomeCtrl',
+                    controller: 'welcomeCtrl',
                     resolve: {
                         "check": function ($location, $rootScope) {
                             if (!$rootScope.logedIn) {
@@ -33,7 +33,7 @@ app.config([
                         }
                     }
                 }),
-        $routeProvider
+                $routeProvider
                 .when('/bands', {
                     templateUrl: "/bundles/angular/ng/bands.html",
                     controller: 'bandsCtrl',
@@ -46,7 +46,7 @@ app.config([
                         }
                     }
                 }),
-        $routeProvider
+                $routeProvider
                 .when('/concerts', {
                     templateUrl: "/bundles/angular/ng/concerts.html",
                     resolve: {
@@ -74,15 +74,18 @@ app.config([
     }]);
 
 app.config(['$mdThemingProvider', function ($mdThemingProvider) {
-        $mdThemingProvider.theme('form')
-                .primaryPalette('deep-purple')
-                .accentPalette('red')
+        $mdThemingProvider.theme('default')
+                .primaryPalette('red')
+                .accentPalette('deep-purple')
+                .warnPalette('grey')
+                .backgroundPalette('blue-grey')
                 .dark();
     }]);
 
 
 app.run(function ($rootScope, $location, $window, growl) {
-    $rootScope.logedIn;$rootScope.user;
+    $rootScope.logedIn;
+    $rootScope.user;
     $rootScope.logOut = function () {
         $window.location.href = Routing.generate('logout');
     };
@@ -92,7 +95,7 @@ app.run(function ($rootScope, $location, $window, growl) {
     $rootScope.showError = function (message) {
         growl.error(message, {title: 'Something Went Wrong!'});
     };
-    $rootScope.go = function ( path ) {
-        $location.path( path );
+    $rootScope.go = function (path) {
+        $location.path(path);
     };
 });
