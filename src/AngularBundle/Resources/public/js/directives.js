@@ -35,3 +35,31 @@ app.directive('loginStatus', function ($rootScope) {
         }
     }
 });
+
+
+app.directive('band', function () {
+    return {
+        restrict: 'EA',
+        transclude: true,
+        replace: true,
+        template:   '<div layout-sm="row" layout-xs="row">' +
+                        '<div flex-sm="50" flex-xs="50" class="bandImageHolder img-responsive">' + 
+                            '<img ng-src="{{aband.image.image_url}}">' + 
+                        '</div>' + 
+                        '<div flex flex-sm="50" flex-xs="50"  layout="column" layout-align="center center">' + 
+                            '<span class="md-headline">{{aband.name}}</span><br/>' + 
+                            '<span class="md-subhead">{{aband.genre}}</span>' + 
+                            '<p layout="row" layout-align="space-around center">' + 
+                                '<md-icon md-svg-src="/bundles/angular/img/icons/drum-3.svg" class="bandsGigsNumber"></md-icon>' + 
+                                '<span class="md-subhead">{{aband.concerts.length}}</span>' + 
+                            '</p>' + 
+                            '<ng-transclude/>'+
+                        '</div>'+
+                    '</div>'
+            ,
+        scope: {
+            aband: '=',
+            
+        }
+    }
+});

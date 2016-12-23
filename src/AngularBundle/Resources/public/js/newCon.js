@@ -204,6 +204,9 @@ app.controller('mediaCtrl', function ($scope, $rootScope, $timeout, Images, Uplo
                     console.log(error.message);
                 });
     }
+    $scope.changePage = function (page) {
+        getImagesList(page, $scope.limit);
+    }
     $scope.uploadPic = function (file) {
         var url = Routing.generate('api_media_create');
         file.upload = Upload.upload({
@@ -215,6 +218,7 @@ app.controller('mediaCtrl', function ($scope, $rootScope, $timeout, Images, Uplo
             $timeout(function () {
                 file.result = response.data;
                 getImagesList();
+                $scope.picFile = null;
                 $rootScope.showSuccess('Image Added');
             });
         }, function (response) {

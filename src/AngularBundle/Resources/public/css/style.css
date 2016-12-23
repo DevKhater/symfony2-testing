@@ -91,6 +91,8 @@ button.close {
 .bandImageHolder img {
     width: 100%;
     height: auto;
+    max-height: 250px;
+    min-width: 250px;
    
 }
 .bandsGigsNumber{
@@ -128,4 +130,13 @@ md-menu-content .backWhite {
 }
 .changeWhiteFrame:hover {
     box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
+}
+
+
+#main.ng-enter {
+    transition: 0.5s linear all;
+    opacity: 0;
+}
+#main.ng-enter.ng-active {
+    opacity: 1;
 }
