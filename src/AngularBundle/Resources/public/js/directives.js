@@ -42,11 +42,12 @@ app.directive('band', function () {
         restrict: 'EA',
         transclude: true,
         replace: true,
-        template:   '<div layout-sm="row" layout-xs="row">' +
+        template:   '<div layout-gt-md="row" layout-margin class="widget-border">' +
+                    '<div layout="column" layout-padding>'+
                         '<div flex-sm="50" flex-xs="50" class="bandImageHolder img-responsive">' + 
                             '<img ng-src="{{aband.image.image_url}}">' + 
                         '</div>' + 
-                        '<div flex flex-sm="50" flex-xs="50"  layout="column" layout-align="center center">' + 
+                        '<div flex flex-sm="50" flex-xs="50"  class="fiex-widger-height" layout="column" layout-pading layout-align="end center">' + 
                             '<span class="md-headline">{{aband.name}}</span><br/>' + 
                             '<span class="md-subhead">{{aband.genre}}</span>' + 
                             '<p layout="row" layout-align="space-around center">' + 
@@ -55,7 +56,22 @@ app.directive('band', function () {
                             '</p>' + 
                             '<ng-transclude/>'+
                         '</div>'+
+                        '</div>'+
                     '</div>'
+//        template:   '<div layout-sm="row" layout-xs="row">' +
+//                        '<div flex-sm="50" flex-xs="50" class="bandImageHolder img-responsive">' + 
+//                            '<img ng-src="{{aband.image.image_url}}">' + 
+//                        '</div>' + 
+//                        '<div flex flex-sm="50" flex-xs="50"  layout="column" layout-align="center center">' + 
+//                            '<span class="md-headline">{{aband.name}}</span><br/>' + 
+//                            '<span class="md-subhead">{{aband.genre}}</span>' + 
+//                            '<p layout="row" layout-align="space-around center">' + 
+//                                '<md-icon md-svg-src="/bundles/angular/img/icons/drum-3.svg" class="bandsGigsNumber"></md-icon>' + 
+//                                '<span class="md-subhead">{{aband.concerts.length}}</span>' + 
+//                            '</p>' + 
+//                            '<ng-transclude/>'+
+//                        '</div>'+
+//                    '</div>'
             ,
         scope: {
             aband: '=',
