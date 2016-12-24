@@ -2,17 +2,16 @@
 
 namespace DataBundle\Controller;
 
-use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
+use Hateoas\Representation\PaginatedRepresentation;
+use Hateoas\Representation\CollectionRepresentation;
+use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Symfony\Component\HttpFoundation\Response;
-use Hateoas\Representation\PaginatedRepresentation;
-use Hateoas\Representation\CollectionRepresentation;
 
 class ApiMediaController extends FOSRestController
 {
@@ -63,7 +62,8 @@ class ApiMediaController extends FOSRestController
                 false, // generate relative URIs, optional, defaults to `false`
                 $totalImages      // total collection size, optional, defaults to `null`
         );
-        return new Response($this->get('serializer')->serialize($paginatedCollection, 'json'), 200, array('Content-Type' => 'application/json'));
+        $view = $this->view($paginatedCollection, 200);
+        return $this->handleView($view);
     }
 
     /**

@@ -6,72 +6,27 @@ var app = angular.module('mainApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'ngA
 
 app.config([
     '$routeProvider',
-    function ($routeProvider, $rootScope) {
+    function ($routeProvider) {
         $routeProvider
                 .when('/', {
                     templateUrl: "/bundles/angular/ng/login.html",
                     controller: 'loginCtrl',
-                    resolve: {
-                        "check": function ($location, $rootScope) {
-                            if ($rootScope.logedIn) {
-                                $location.path('/ng-home');
-
-                            }
-                        }
-                    }
-                }),
-                $routeProvider
-                .when('/home', {
+                }).when('/home', {
                     templateUrl: "/bundles/angular/ng/welcome.html",
                     controller: 'welcomeCtrl',
-                    resolve: {
-                        "check": function ($location, $rootScope) {
-                            if (!$rootScope.logedIn) {
-                                $location.path('/');
-
-                            }
-                        }
-                    }
-                }),
-                $routeProvider
-                .when('/bands', {
+                }).when('/bands', {
                     templateUrl: "/bundles/angular/ng/bands.html",
                     controller: 'bandsCtrl',
-                    resolve: {
-                        "check": function ($location, $rootScope) {
-                            if (!$rootScope.logedIn) {
-                                $location.path('/');
-
-                            }
-                        }
-                    }
-                }),
-                $routeProvider
-                .when('/concerts', {
+                }).when('/concerts', {
                     templateUrl: "/bundles/angular/ng/concerts.html",
-                    resolve: {
-                        "check": function ($location, $rootScope) {
-                            if (!$rootScope.logedIn) {
-                                $location.path('/');
-
-                            }
-                        }
-                    }
-                })
-        $routeProvider
-                .when('/media', {
+                }).when('/venues', {
+                    templateUrl: "/bundles/angular/ng/locations.html",
+                }).when('/media', {
                     templateUrl: "/bundles/angular/ng/media.html",
-                    controller: 'mediaCtrl',
-                    resolve: {
-                        "check": function ($location, $rootScope) {
-                            if (!$rootScope.logedIn) {
-                                $location.path('/');
-
-                            }
-                        }
-                    }
+                    controller: 'mediaCtrl'
                 })
-    }]);
+            }
+        ]);
 
 app.config(['$mdThemingProvider', function ($mdThemingProvider) {
         $mdThemingProvider.theme('default')
@@ -80,8 +35,8 @@ app.config(['$mdThemingProvider', function ($mdThemingProvider) {
                 .warnPalette('grey')
                 .backgroundPalette('blue-grey')
                 .dark();
-    }]);
-
+    }
+]);
 
 app.run(function ($rootScope, $location, $window, growl) {
     $rootScope.logedIn;
@@ -98,4 +53,12 @@ app.run(function ($rootScope, $location, $window, growl) {
     $rootScope.go = function (path) {
         $location.path(path);
     };
+    $rootScope.$on("$routeChangeStart", function (event, next, current) {
+        if (!$rootScope.logedIn) {
+            if (next.templateUrl == "/bundles/angular/ng/login.html") {
+            } else {
+                $rootScope.go('/');
+            }
+        }
+    });
 });

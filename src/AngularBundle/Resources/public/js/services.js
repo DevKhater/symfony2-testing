@@ -1,6 +1,40 @@
 /*****************************************************************************************/
 /**********                 FACTORIES                                           **********/
 /*****************************************************************************************/
+app.factory('checkAuth', ['$rootScope', 'Users', function ($rootScope, Users) {
+        var dataFactory = {};
+         dataFactory.check  = function () {
+             Users.getUser().then(function (response) {
+                $rootScope.logedIn = 1;
+                return true;
+            }, function (error) {
+                console.log(error.data.title);
+                $rootScope.logedIn = 0;
+                return false;
+            });
+        };
+       return dataFactory;
+    }]);
+
+app.factory('Users', ['$http', '$httpParamSerializerJQLike', function ($http, $httpParamSerializerJQLike) {
+        var url = Routing.generate('ng_get_user');
+        var url2 = Routing.generate('new_token');
+        var dataFactory = {};
+        dataFactory.getUser = function () {
+            return $http({method: "GET", url: url, headers: {'Accept': 'application/json'}});
+        };
+        
+        dataFactory.loginUser = function (username, password) {
+            return $http.post(Routing.generate('login_check'), $httpParamSerializerJQLike({_username: username, _password: password}), {
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'}});
+        };
+        
+        dataFactory.getToken = function (user, pass) {
+            return $http.post( url2, {headers: {'Authorization': 'Basic'}, params: {'username': user, 'password':pass}})
+                    ;
+        };
+        return dataFactory;
+    }]);
 app.factory('Bands', ['$http', '$httpParamSerializerJQLike', function ($http, $httpParamSerializerJQLike) {
         var url = Routing.generate('api_bands_list');
         var dataFactory = {};
@@ -92,3 +126,16 @@ app.factory('Locations', ['$http', '$httpParamSerializerJQLike', function ($http
         };
         return dataFactory;
     }]);
+
+
+
+
+/************************************************************************************************************************************************************************************/
+/************************************************************************************************************************************************************************************/
+/************************************************************************************************************************************************************************************/
+
+app.filter('num', function() {
+    return function(input) {
+      return parseInt(input, 10);
+    };
+});

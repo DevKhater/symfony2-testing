@@ -2,18 +2,16 @@
 
 namespace DataBundle\Controller;
 
-use FOS\RestBundle\Request\ParamFetcherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
-use DataBundle\Entity\Location;
-use DataBundle\Controller\BaseApiController as ApiController;
+use Hateoas\Representation\PaginatedRepresentation;
+use Hateoas\Representation\CollectionRepresentation;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Symfony\Component\HttpFoundation\Response;
-use Hateoas\Representation\PaginatedRepresentation;
-use Hateoas\Representation\CollectionRepresentation;
+use DataBundle\Controller\BaseApiController as ApiController;
 
 class ApiLocationController extends ApiController
 {
@@ -58,7 +56,8 @@ class ApiLocationController extends ApiController
     public function getLocationAction(Request $request, ParamFetcherInterface $paramFetcher)
     {
         $data = $this->getDoctrine()->getRepository($this->classEntity)->findAll();
-        return new Response($this->get('serializer')->serialize($data, 'json'), 200, array('Content-Type' => 'application/json'));
+        $view = $this->view($data, 200);
+        return $this->handleView($view);
     }
 
     /**
@@ -79,22 +78,7 @@ class ApiLocationController extends ApiController
         $response = parent::showAction($id);
         return($response);
     }
-
-    /**
-     * @Route("api/location/genres", name="api_location_genres")
-     * @Method("GET")
-     * @ApiDoc(
-     *  resource=true,
-     *  description="Get All Genres",
-     * )
-     */
-    public function getGenresAction(Request $request)
-    {
-        $genres = $this->container->get($this->serviceEntity)->getGenres();
-        $view = $this->view($genres, 200);
-        return $this->handleView($view);
-    }
-
+    
     /**
      * @Route("api/location/", name="api_location_create")
      * @Method("POST")
@@ -142,25 +126,7 @@ class ApiLocationController extends ApiController
         );
         return $this->redirect($this->generateUrl('api_location_show', array('id' => $location->getId())));
     }
-
-    /**
-     * @Route("api/location/", name="api_location_patch")
-     * @Method("PATCH")
-     * @ApiDoc(
-     *   resource = true,
-     *   description = "Create a new Location",
-     *   statusCodes = {
-     *     201 = "Returned when created",
-     *     400 = "Returned when the form has errors"
-     *   }
-     * )
-     *
-     */
-    public function patchLocationAction(Request $request)
-    {
-        
-    }
-
+    
     /**
      * @Route("api/location/{id}", name="api_location_delete")
      * @Method("DELETE")

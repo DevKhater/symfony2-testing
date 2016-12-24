@@ -2,18 +2,17 @@
 
 namespace DataBundle\Controller;
 
-use FOS\RestBundle\Request\ParamFetcherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
-use DataBundle\Entity\Band;
-use DataBundle\Controller\BaseApiController as ApiController;
+use Hateoas\Representation\PaginatedRepresentation;
+use Hateoas\Representation\CollectionRepresentation;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Symfony\Component\HttpFoundation\Response;
-use Hateoas\Representation\PaginatedRepresentation;
-use Hateoas\Representation\CollectionRepresentation;
+use DataBundle\Controller\BaseApiController as ApiController;
+use MK\ApiBundle\Api\ApiProblem;
 
 class ApiBandController extends ApiController
 {
@@ -77,7 +76,8 @@ class ApiBandController extends ApiController
                 false, // generate relative URIs, optional, defaults to `false`
                 $totalBands      // total collection size, optional, defaults to `null`
         );
-        return new Response($this->get('serializer')->serialize($paginatedCollection, 'json'), 200, array('Content-Type' => 'application/json'));
+        $view = $this->view($paginatedCollection, 200);
+        return $this->handleView($view);
     }
 
     /**
@@ -135,7 +135,8 @@ class ApiBandController extends ApiController
         if ($newBand->getSlug()) {
             $view = $this->view($newBand, 200);
         } else {
-            $view = $this->view('Couldnt Create Band', 500);
+            $problem = new ApiProblem(500, 'Error', 'Can\'t create Band');
+            $view = $this->view($problem, 500);
         }
         return $this->handleView($view);
     }
@@ -159,25 +160,8 @@ class ApiBandController extends ApiController
         $band = $this->container->get($this->serviceEntity)->put(
                 $bandReq, $request->request->all()
         );
-        return $this->redirect($this->generateUrl('api_band_show', array('slug' => $band->getSlug())));
-    }
-
-    /**
-     * @Route("api/band/", name="api_band_patch")
-     * @Method("PATCH")
-     * @ApiDoc(
-     *   resource = true,
-     *   description = "Create a new Band",
-     *   statusCodes = {
-     *     201 = "Returned when created",
-     *     400 = "Returned when the form has errors"
-     *   }
-     * )
-     *
-     */
-    public function patchBandAction(Request $request)
-    {
-        
+        $view = $this->view($band, 200);
+        return $this->handleView($view);
     }
 
     /**
@@ -210,9 +194,11 @@ class ApiBandController extends ApiController
         if ($newImage) {
             //$band->getImage() != NULL ? $mediaManager->delete($band->getImage()) : '';
             $band = $this->container->get('data.band.handler')->setImage($band, $newImage);
-            return new Response($this->get('serializer')->serialize('Image Added To Band', 'json'), 200, array('Content-Type' => 'application/json'));
+            $view = $this->view('Image Added To Band', 200);
+        } else {
+            $view = $this->view('Error', 500);
         }
-        return new Response($this->get('serializer')->serialize('Error', 'json'), 500, array('Content-Type' => 'application/json'));
+        return $this->handleView($view);
     }
 
 }

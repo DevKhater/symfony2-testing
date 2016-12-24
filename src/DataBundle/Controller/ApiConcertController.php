@@ -2,18 +2,16 @@
 
 namespace DataBundle\Controller;
 
-use FOS\RestBundle\Request\ParamFetcherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
-use DataBundle\Entity\Concert;
-use DataBundle\Controller\BaseApiController as ApiController;
+use Hateoas\Representation\PaginatedRepresentation;
+use Hateoas\Representation\CollectionRepresentation;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Symfony\Component\HttpFoundation\Response;
-use Hateoas\Representation\PaginatedRepresentation;
-use Hateoas\Representation\CollectionRepresentation;
+use DataBundle\Controller\BaseApiController as ApiController;
 
 class ApiConcertController extends ApiController
 {
@@ -65,8 +63,8 @@ class ApiConcertController extends ApiController
                 false, // generate relative URIs, optional, defaults to `false`
                 $totalConcerts      // total collection size, optional, defaults to `null`
         );
-
-        return new Response($this->get('serializer')->serialize($paginatedCollection, 'json'), 200, array('Content-Type' => 'application/json'));
+        $view = $this->view($paginatedCollection, 200);
+        return $this->handleView($view);
     }
 
     /**
@@ -188,9 +186,13 @@ class ApiConcertController extends ApiController
      */
     public function postConcertAction(Request $request)
     {
-        dump($request->request->all());
         $newConcert = $this->container->get($this->serviceEntity)->post($request->request->all());
-        return $this->redirect($this->generateUrl('api_concert_show', array('id' => $newConcert->getId())));
+        if ($newConcert) {
+            $view = $this->view('Concert Created', 200);
+        } else {
+            $view = $this->view('Error Can\'t Create Concert', 500);
+        }
+        return $this->handleView($view);
     }
 
     /**
@@ -212,25 +214,12 @@ class ApiConcertController extends ApiController
         $concert = $this->container->get($this->serviceEntity)->put(
                 $conRequest, $request->request->all()
         );
-        return $this->redirect($this->generateUrl('api_concert_show', array('id' => $concert->getId())));
-    }
-
-    /**
-     * @Route("api/concert/", name="api_concert_patch")
-     * @Method("PATCH")
-     * @ApiDoc(
-     *   resource = true,
-     *   description = "Create a new Concert",
-     *   statusCodes = {
-     *     201 = "Returned when created",
-     *     400 = "Returned when the form has errors"
-     *   }
-     * )
-     *
-     */
-    public function patchConcertAction(Request $request)
-    {
-        
+        if ($concert) {
+            $view = $this->view('Concert Created', 200);
+        } else {
+            $view = $this->view('Error Can\'t Create Concert', 500);
+        }
+        return $this->handleView($view);
     }
 
     /**

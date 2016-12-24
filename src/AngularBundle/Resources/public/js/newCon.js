@@ -43,33 +43,38 @@ app.controller('navigationCtrl', function ($mdDialog, $scope) {
 });
 
 /* Login Controller ***/
-app.controller('loginCtrl', function ($scope, $http, $httpParamSerializerJQLike, $rootScope, $location) {
+app.controller('loginCtrl', function ($scope, $http, $httpParamSerializerJQLike, $rootScope, checkAuth) {
+    checkAuth.check();
     $scope.submit = function () {
         $http.post(Routing.generate('login_check'), $httpParamSerializerJQLike({_username: $scope.username, _password: $scope.password}), {
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         }).then(function successCallback(response) {
             $rootScope.user = $scope.username;
             $rootScope.logedIn = true;
-            //$scope.logedIn = true;
-            $location.path('/home');
+            $rootScope.go('/home');
         }, function errorCallback(response) {
             console.log(response);
             $rootScope.User = '';
         });
     };
+    if ($rootScope.logedIn) {
+        $rootScope.go('/home');
+    }
 });
 
 /* Home Controller ***/
-app.controller('welcomeCtrl', function ($scope, $rootScope, $http) {
-    if (angular.isUndefined($rootScope.user)) {
-        var userUrl = Routing.generate('ng_get_user');
-        $http.get(userUrl).then(
+app.controller('welcomeCtrl', function ($scope, $rootScope, Users) {
+    getUser = function () {
+        Users.getUser().then(
                 function successCallback(response) {
                     $rootScope.user = response.data;
                     $scope.welcomeMessage = "Welcome Mr. " + $rootScope.user;
                 }, function errorCallback(response) {
             console.log(response);
         });
+    }
+    if (angular.isUndefined($rootScope.user)) {
+        getUser();
     }
     $scope.welcomeMessage = "Welcome Mr. " + $rootScope.user;
 });
@@ -142,10 +147,10 @@ app.controller('bandImageCtrl', function ($scope, $rootScope, $mdDialog, band, B
     getImagesList($scope.page, $scope.limit);
     function getImagesList(page, limit) {
         Images.getAllImages().then(function (response) {
-                    $scope.images = response.data._embedded.media;
-                }, function (error) {
-                    console.log(error.message);
-                });
+            $scope.images = response.data._embedded.media;
+        }, function (error) {
+            console.log(error.message);
+        });
     }
     $scope.selected;
     $scope.select = function (item) {
@@ -187,6 +192,32 @@ app.controller('concertsCtrl', function ($scope, Concerts) {
     $scope.changePage = function (page) {
         updateConcertsList(page, $scope.limit);
     }
+});
+app.controller('locationsCtrl', function ($scope, Locations) {
+    $scope.locations;
+    getLocationsList = function (page) {
+        Locations.getLocations(page).then(function (result) {
+            $scope.locations = result.data;
+            console.log(result);
+        });
+    }
+    getLocationsList();
+    $scope.sortType = 'name'; // set the default sort type
+    $scope.sortReverse = true;  // set the default sort order
+    $scope.searchVenue = '';     // set the default search/filter term
+    
+    $scope.SetSort = function (objName , isNumber) {
+        $scope.predicate = objName;
+        $scope.reverse = !$scope.reverse;
+        angular.forEach($scope.names, function (obj) {
+            for(var i in obj )
+            {
+               if(i == objName && obj[i] != '') 
+                  obj[i] =  parseFloat(obj[i]);       
+            }
+           });
+}
+
 });
 
 app.controller('mediaCtrl', function ($scope, $rootScope, $timeout, Images, Upload) {
@@ -340,7 +371,7 @@ app.controller('concertFormCtrl', function ($scope, $rootScope, $mdDialog, Bands
     getLocations();
 
     var y = [];
-    var m= [];
+    var m = [];
     var d = [];
     for (var i = 2011; i < 2022; i++) {
         y.push(i);
@@ -378,7 +409,7 @@ app.controller('concertFormCtrl', function ($scope, $rootScope, $mdDialog, Bands
         });
     }
     $scope.clearForm = function () {
-        
+
     };
     $scope.hide = function () {
         $mdDialog.hide();
