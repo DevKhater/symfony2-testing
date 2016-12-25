@@ -1,42 +1,50 @@
 <ng-include src="'/bundles/angular/ng/header.html'"></ng-include>
 
-<div md-theme="default" ng-controller="locationsCtrl" layout="column" layout-align="top center" class="page-concerts">
-    <form>
-        <div class="form-group">
-            <div class="input-group">
-                <div class="input-group-addon"><i class="fa fa-search"></i></div>
-                <input type="text" class="form-control" placeholder="Search Venue" ng-model="searchVenue">
-            </div>      
-        </div>
-    </form>
-    <table class="table table-bordered table-striped backWhite">
-        <thead>
-            <tr>
-                <td>
-                    <a href="#!/venues" ng-click="sortType = 'name';
-                                sortReverse = !sortReverse">
-                        Name
-                        <md-icon md-svg-src="/bundles/angular/img/icons/arrowDown.svg" ng-show="sortType == 'name' && !sortReverse" ></md-icon>
-                        <md-icon md-svg-src="/bundles/angular/img/icons/arrowUp.svg" ng-show="sortType == 'name' && sortReverse" ></md-icon>
-                    </a>
-                </td>
-                <td>
-                    <a href="#!/venues" ng-click="sortType = 'concerts.length';
-                                sortReverse = !sortReverse">
-                        Number of Concerts
-                        <md-icon md-svg-src="/bundles/angular/img/icons/arrowDown.svg" ng-show="sortType == 'concerts.length' && !sortReverse" ></md-icon>
-                        <md-icon md-svg-src="/bundles/angular/img/icons/arrowUp.svg" ng-show="sortType == 'concerts.length' && sortReverse" ></md-icon>
-                    </a>
-                </td>
-                <td>Address</td>
-            </tr>
-        </thead>
-        <tbody>
-            <tr ng-repeat="loc in locations| orderBy:sortType:sortReverse | filter:searchVenue">
-                <td>{{ loc.name}}</td>
-                <td>{{ loc.concerts.length |number }}</td>
-                <td>{{ loc.address}}</td>
-            </tr>
-        </tbody>
-    </table>
+<div flex ng-show="noFound">
+  <div class="alert alert-info">
+    <h1>No Venues ... Is Empty !</h1></div>
+    </div>
+
+
+<div md-theme="default" layout="column" layout-padding layout-margin layout-align="center center" class="container" ng-hide="noFound">
+  <form>
+    <div class="form-group">
+      <div class="input-group">
+        <div class="input-group-addon"><i class="fa fa-search"></i></div>
+        <input type="text" class="form-control" placeholder="Search Venue" ng-model="searchVenue">
+      </div>
+    </div>
+  </form>
+  <table class="table table-bordered table-striped backWhite" >
+    <thead>
+      <tr>
+        <td></td>
+        <td>
+          <a href="#!/venues" ng-click="sortType = 'name';
+          sortReverse = !sortReverse">
+          Name
+          <md-icon md-svg-src="filter:down" ng-show="sortType == 'name' && !sortReverse" ></md-icon>
+          <md-icon md-svg-src="filter:up" ng-show="sortType == 'name' && sortReverse" ></md-icon>
+        </a>
+      </td>
+      <td>
+        <a href="#!/venues" ng-click="sortType = 'concerts.length';
+        sortReverse = !sortReverse">
+        Number of Concerts
+        <md-icon md-svg-src="filter:down" ng-show="sortType == 'concerts.length' && !sortReverse" ></md-icon>
+        <md-icon md-svg-src="filter:up" ng-show="sortType == 'concerts.length' && sortReverse" ></md-icon>
+      </a>
+    </td>
+    <td>Address</td>
+  </tr>
+</thead>
+<tbody>
+  <tr ng-repeat="loc in locations| orderBy:sortType:sortReverse | filter:searchVenue">
+    <td flex><md-button aria-label="DeleteBand" ng-click="deleteLocation(loc)"><md-icon md-svg-icon="crud:delete" style="fill:red"></md-icon></md-button></td>
+    <td>{{ loc.name}}</td>
+    <td>{{ loc.concerts.length |number }}</td>
+    <td>{{ loc.address}}</td>
+  </tr>
+</tbody>
+</table>
 </div>

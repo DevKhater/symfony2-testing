@@ -61,7 +61,7 @@ class Concert implements ConcertInterface
      * @var location
      * 
      * @ORM\ManyToOne(targetEntity="DataBundle\Entity\Location", inversedBy="concerts")
-     * @ORM\JoinColumn(name="location_id", referencedColumnName="id")     
+     * @ORM\JoinColumn(name="location_id", referencedColumnName="id", onDelete="SET NULL")     
      * @Serializer\Exclude 
      * 
      */
@@ -69,7 +69,7 @@ class Concert implements ConcertInterface
 
     /**
      * @ORM\ManyToOne(targetEntity="DataBundle\Entity\Band", inversedBy="concerts")
-     * @ORM\JoinColumn(name="band_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="band_id", referencedColumnName="id", onDelete="SET NULL")
      * @Serializer\Exclude 
      */
     protected $band;

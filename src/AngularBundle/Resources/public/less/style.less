@@ -3,9 +3,9 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 */
-/* 
-    Created on : Dec 24, 2016, 5:12:42 PM
-    Author     : Michel
+/*
+Created on : Dec 24, 2016, 5:12:42 PM
+Author     : Michel
 */
 
 @widget-height: 500px;
@@ -15,17 +15,31 @@ and open the template in the editor.
 
 @widget-img-height: 250px;
 @widget-img-width: 250px;
-@widget-img-max-height: 250px;
+@widget-img-max-height: 200px;
 @widget-img-max-width: 250px;
 
 @widget-action-height: 250px;
 @widget-action-width: 250px;
 @widget-action-max-height: 250px;
 @widget-action-max-width: 250px;
+md-icon {
+  fill: black;
+  svg {
+    fill: inherit;
+  }
+}
+.smallImageHolder() {
+  flex: 1;
+  align-items: center;
+  img {
+    max-height: @widget-img-max-height;
+    max-width: @widget-img-max-width;
+  }
+}
 
 fiex-widget-height{
-    height: @widget-action-height;
-    max-height: @widget-action-max-height;
+  height: @widget-action-height;
+  max-height: @widget-action-max-height;
 }
 .fixed-width-height {
   height: @widget-height;
@@ -35,117 +49,163 @@ fiex-widget-height{
 }
 
 .widget-border {
-    border: 1px solid black;
+  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
 }
-
-body {
-        background-color: rgb(120,144,156);
-}
-
-.inputdemoBasicUsage {
-    text-align: center;
-    margin: 0 auto;
-}
-
-.alert-dismissable .close, .alert-dismissible .close {
-    position: relative;
-    top: -2px;
-    right: -21px;
-    color: inherit;
-}
-
-button.close {
-    -webkit-appearance: none;
-    padding: 0;
-    cursor: pointer;
-    background: 0 0;
-    border: 0;
-}
-
-.close {
-    float: right;
-    font-size: 21px;
-    font-weight: 700;
-    line-height: 1;
-    color: #000;
-    text-shadow: 0 1px 0 #fff;
-    filter: alpha(opacity=20);
-    opacity: .2;
-}
-
-.alert-success {
-    background-image: -webkit-linear-gradient(top,#dff0d8 0,#c8e5bc 1
-        00%);
-    background-image: -o-linear-gradient(top,#dff0d8 0,#c8e5bc 100%);
-    background-image: -webkit-gradient(linear,left top,left bottom,from(#dff0d8),to(#c8e5bc));
-    background-image: linear-gradient(to bottom,#dff0d8 0,#c8e5bc 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffdff0d8', endColorstr='#ffc8e5bc', GradientType=0);
-    background-repeat: repeat-x;
-    border-color: #b2dba1;
-    color: #3c763d;
-    //background-color: #dff0d8;
-    border-color: #d6e9c6;
-
-}
-
-.alert {
-    text-shadow: 0 1px 0 rgba(255,255,255,.2);
-    -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.25),0 1px 2px rgba(0,0,0,.05);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.25),0 1px 2px rgba(0,0,0,.05);
-}
-.bandImageHolder{
-    text-align:center;
-     margin: 0 auto;
-    img {
-        width: 100%;
-        height: auto;
-        max-height: @widget-img-max-height;
-        min-width: 225px;   
+.pageBands{
+  display: flex;
+  align-items: center;
+  flex:1;
+  justify-content: space-around;
+  flex-direction: column;
+  .data-holder  {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: stretch;
+    flex-wrap: wrap;
+    @media screen and (max-width: 600px) {
+      flex-direction: column;
     }
+    .elementContent {
+      display: flex;
+      justify-content: center;
+      flex-basis: 30%;
+      .elementCard {
+        display: flex;
+        justify-content: space-around;
+        flex-direction: row;
+        .bandImageHolder {
+          .smallImageHolder;
+        }
+        .elementCardContent  {
+          display: flex;
+          flex:3;
+          flex-direction: column;
+          align-items: center;
+          .bandsAction {
+            flex-direction: row;
+            justify-content: space-between;
+          }
+        }
+      }
+    }
+  }
 }
 
-.bandsGigsNumber{
-    vertical-align: bottom;
-    margin-right: 1%; 
+.extraElementContent {
+  display: flex;
+  justify-content: space-around;
+  &:hover {
+    box-shadow: 0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12);
+  }
 }
-
-.bandsAction button {
-    margin: 0 auto;
-}
-
-.tooltipBtn{
-    min-height: 0;
-    min-width: 0;
-}
-
-.npT {
-    padding-top: 0;
-}
-
-#concertNewAction:hover {
-    
-    box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12);
-}
-form #inputCont {
-    //min-height: 185px;
-    min-width: 350px;
-}
-
-md-menu-content .backWhite {
-    background-color: #fff;
-}
-.changeWhiteFrame{
-    background-color: #fff;
-}
-.changeWhiteFrame:hover {
-    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
+.mediaImageHolder {
+  .smallImageHolder;
 }
 
 
-#main.ng-enter {
-    transition: 0.5s linear all;
-    opacity: 0;
-}
-#main.ng-enter.ng-active {
-    opacity: 1;
-}
+
+    .inputdemoBasicUsage {
+      text-align: center;
+      margin: 0 auto;
+    }
+
+    .alert-dismissable .close, .alert-dismissible .close {
+      position: relative;
+      top: -2px;
+      right: -21px;
+      color: inherit;
+    }
+
+    button.close {
+      -webkit-appearance: none;
+      padding: 0;
+      cursor: pointer;
+      background: 0 0;
+      border: 0;
+    }
+
+    .close {
+      float: right;
+      font-size: 21px;
+      font-weight: 700;
+      line-height: 1;
+      color: #000;
+      text-shadow: 0 1px 0 #fff;
+      filter: alpha(opacity=20);
+      opacity: .2;
+    }
+
+    .alert-success {
+      background-image: -webkit-linear-gradient(top,#dff0d8 0,#c8e5bc 1
+        00%);
+        background-image: -o-linear-gradient(top,#dff0d8 0,#c8e5bc 100%);
+        background-image: -webkit-gradient(linear,left top,left bottom,from(#dff0d8),to(#c8e5bc));
+        background-image: linear-gradient(to bottom,#dff0d8 0,#c8e5bc 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffdff0d8', endColorstr='#ffc8e5bc', GradientType=0);
+        background-repeat: repeat-x;
+        border-color: #b2dba1;
+        color: #3c763d;
+        //background-color: #dff0d8;
+        border-color: #d6e9c6;
+
+      }
+
+      .alert {
+        text-shadow: 0 1px 0 rgba(255,255,255,.2);
+        -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.25),0 1px 2px rgba(0,0,0,.05);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.25),0 1px 2px rgba(0,0,0,.05);
+      }
+      /*.bandImageHolder{
+        text-align:center;
+        margin: 0 auto;
+        img {
+          width: 100%;
+          height: auto;
+          max-height: @widget-img-max-height;
+          min-width: 225px;
+        }
+      }*/
+
+      .bandsGigsNumber{
+        vertical-align: bottom;
+        margin-right: 1%;
+      }
+
+
+      .tooltipBtn{
+        min-height: 0;
+        min-width: 0;
+      }
+
+      .npT {
+        padding-top: 0;
+      }
+
+      #concertNewAction:hover {
+
+        box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12);
+      }
+      form #inputCont {
+        //min-height: 185px;
+        min-width: 350px;
+      }
+
+      md-menu-content .backWhite {
+        background-color: #fff;
+      }
+      .changeWhiteFrame{
+        background-color: #fff;
+      }
+      .changeWhiteFrame:hover {
+        box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
+      }
+
+
+      #main.ng-enter {
+        transition: 0.5s linear all;
+        opacity: 0;
+      }
+      #main.ng-enter.ng-active {
+        opacity: 1;
+      }
