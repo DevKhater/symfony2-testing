@@ -113,6 +113,7 @@ fos_rest:
             - { path: ^/api, priorities: [ json, xml ], fallback_format: ~, prefer_extension: true }
             - { path: '^/', priorities: [ 'html', '*/*'], fallback_format: html, prefer_extension: true }
             - { path: '^/', priorities: [ 'html', '*/*'], fallback_format: html, prefer_extension: true }
+            - { path: '^/doc/api', priorities: [ 'html', '*/*'], fallback_format: html, prefer_extension: true }
     versioning:
         enabled: true
         resolvers:

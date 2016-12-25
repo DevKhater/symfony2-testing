@@ -18,7 +18,7 @@ app.factory('checkAuth', ['$rootScope', 'Users', function ($rootScope, Users) {
 
 app.factory('Users', ['$http', '$httpParamSerializerJQLike', function ($http, $httpParamSerializerJQLike) {
   var url = Routing.generate('ng_get_user');
-  var url2 = Routing.generate('new_token');
+  
   var dataFactory = {};
   dataFactory.getUser = function () {
     return $http({method: "GET", url: url, headers: {'Accept': 'application/json'}});
@@ -27,11 +27,6 @@ app.factory('Users', ['$http', '$httpParamSerializerJQLike', function ($http, $h
   dataFactory.loginUser = function (username, password) {
     return $http.post(Routing.generate('login_check'), $httpParamSerializerJQLike({_username: username, _password: password}), {
       headers: {'Content-Type': 'application/x-www-form-urlencoded'}});
-    };
-
-    dataFactory.getToken = function (user, pass) {
-      return $http.post( url2, {headers: {'Authorization': 'Basic'}, params: {'username': user, 'password':pass}})
-      ;
     };
     return dataFactory;
   }]);
