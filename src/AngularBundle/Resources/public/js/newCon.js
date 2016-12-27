@@ -224,6 +224,25 @@ app.controller('welcomeCtrl', function ($scope, $rootScope, Users) {
     }
   });
   app.controller('locationsCtrl', function ($scope, Locations, $rootScope) {
+     $scope.mapOptions = {
+      center: new google.maps.LatLng(35.784, -78.670),
+      zoom: 15,
+     // mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    
+      $scope.myMarker = null;
+    $scope.addMarker = function($event, $params) {
+          //$scope.myMarkers.push(new google.maps.Marker({
+            if ($scope.myMarker) $scope.myMarker.setMap(null);
+        $scope.myMarker = new google.maps.Marker({
+            map: $scope.myMap,
+            position: $params[0].latLng,
+            draggable: true
+          });
+          console.log($params[0].latLng.toString());
+        };
+    
+    
     $scope.locations;
     $scope.noFound = false;
     function getLocationsList(page) {

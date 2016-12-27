@@ -5,6 +5,14 @@
     <h1>No Venues ... Is Empty !</h1></div>
     </div>
 
+<input id="pac-input" ng-model="someLocation" type="text" placeholder="Search Box">
+  <div id="theMap" ui-map="myMap" 
+       ui-options="mapOptions" 
+       class="map-canvas"
+       ui-event="{'map-click': 'addMarker($event, $params)', 'map-zoom_changed': 'setZoomMessage(myMap.getZoom())' }">
+           
+  </div>
+
 
 <div md-theme="default" layout="column" layout-padding layout-margin layout-align="center center" class="container" ng-hide="noFound">
   <form>

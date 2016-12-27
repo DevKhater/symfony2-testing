@@ -1,8 +1,12 @@
 /*
 * App Module and Conf.
 */
+//
+//function onGoogleReady(){
+//    angular.bootstrap(document.getElementsByTagName('body')[0], ['mainApp']);
+//}
 
-var app = angular.module('mainApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'ngAria', 'ngAnimate', 'angular-growl', 'bw.paging', 'ngFileUpload']);
+var app = angular.module('mainApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'ngAria', 'ngAnimate', 'angular-growl', 'bw.paging', 'ngFileUpload', 'ui.map']);
 
 app.config([
   '$routeProvider',
