@@ -9,6 +9,8 @@ parameters:
     data.location.handler.class: 'DataBundle\Handler\LocationHandler'
     data.media.class:           'DataBundle\Entity\Media'
     data.media.handler.class:   'DataBundle\Handler\MediaHandler'
+    data.gallery.class:           'DataBundle\Entity\Gallery'
+    data.gallery.handler.class:   'DataBundle\Handler\GalleryHandler'
 
 services:
     mkcrud.file.uploader:
@@ -36,3 +38,7 @@ services:
     data.media.handler:
         class: %data.media.handler.class%
         arguments: ['@doctrine.orm.entity_manager','%data.media.class%', '@form.factory', '@mkcrud.file.uploader']
+
+    data.gallery.handler:
+        class: %data.gallery.handler.class%
+        arguments: ['@doctrine.orm.entity_manager','%data.gallery.class%', '@form.factory', '@data.media.handler']

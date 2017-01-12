@@ -7,6 +7,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use DataBundle\Model\BandInterface;
 use Doctrine\Common\Collections\ArrayCollection;
+use Hateoas\Configuration\Annotation as Hateoas;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * Band
@@ -14,6 +16,8 @@ use Doctrine\Common\Collections\ArrayCollection;
  * @ORM\Table()
  * @ORM\Entity()
  * @ORM\Entity(repositoryClass="DataBundle\Repository\BandRepository")
+ * 
+ * @Hateoas\Relation("self", href = "expr('/api/bands/' ~ object.getSlug())")
  */
 class Band implements BandInterface
 {
@@ -43,7 +47,6 @@ class Band implements BandInterface
 
     /**
      * @ORM\OneToMany(targetEntity="DataBundle\Entity\Concert", mappedBy="band")
-     * 
      */
     private $concerts;
 
@@ -164,7 +167,6 @@ class Band implements BandInterface
         return $this->slug;
     }
 
-
     /**
      * Add concerts
      *
@@ -197,4 +199,15 @@ class Band implements BandInterface
     {
         return $this->concerts;
     }
+
+    /*
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("band")
+     */
+
+    public function getBandInformation()
+    {
+        return ['name' => $this->name, 'genre' => $this->genre, 'concerts' => count($this->getConcerts())];
+    }
+
 }

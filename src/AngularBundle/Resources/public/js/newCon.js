@@ -63,7 +63,7 @@ app.controller('loginCtrl', function ($scope, $http, $httpParamSerializerJQLike,
 });
 
 /* Home Controller ***/
-app.controller('welcomeCtrl', function ($scope, $rootScope, Users) {
+app.controller('welcomeCtrl', function ($scope, $rootScope, Users, Galleries) {
   getUser = function () {
     Users.getUser().then(
       function successCallback(response) {
@@ -77,6 +77,12 @@ app.controller('welcomeCtrl', function ($scope, $rootScope, Users) {
       getUser();
     }
     $scope.welcomeMessage = "Welcome Mr. " + $rootScope.user;
+    Galleries.addImageToGallery(1,1).then(
+        function successCallback(response) {
+          $rootScope.showSuccess('Image Added');
+        }, function errorCallback(response) {
+          console.log(response);
+        });
   });
 
   /* Bands Controller ***/

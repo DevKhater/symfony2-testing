@@ -114,4 +114,32 @@ class Location
     {
         return $this->concerts;
     }
+
+    /**
+     * Set address
+     *
+     * @param string $address
+     * @return Location
+     */
+    public function setAddress($address)
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * Get address
+     *
+     * @return string 
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+    
+    public function getLocationInformation()
+    {
+        return ['name' => $this->name, 'address' => $this->address, 'concerts' => count($this->getConcerts())];
+    }
 }
