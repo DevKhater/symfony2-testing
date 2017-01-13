@@ -5,6 +5,7 @@ namespace DataBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Hateoas\Representation\PaginatedRepresentation;
 use Hateoas\Representation\CollectionRepresentation;
 use FOS\RestBundle\Request\ParamFetcherInterface;
@@ -113,6 +114,7 @@ class ApiConcertController extends ApiController
      */
     public function patchConcertBandAction(Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
         $newName = $request->get('name');
         $concert = $this->getOr404($request->get('id'));
         $updatedConcert = $this->container->get($this->serviceEntity)->patchBand($concert, $newName);
@@ -189,6 +191,7 @@ class ApiConcertController extends ApiController
      */
     public function postConcertAction(Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
         $newConcert = $this->container->get($this->serviceEntity)->post($request->request->all());
         if ($newConcert) {
             $view = $this->view('Concert Created', 200);
@@ -213,6 +216,7 @@ class ApiConcertController extends ApiController
      */
     public function putConcertAction(Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
         $conRequest = $this->container->get($this->serviceEntity)->get($request->get('id'));
         $concert = $this->container->get($this->serviceEntity)->put(
                 $conRequest, $request->request->all()
@@ -235,6 +239,7 @@ class ApiConcertController extends ApiController
      */
     public function deleteConcertAction(Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
         $response = parent::deleteAction($request->get('id'));
         return($response);
     }

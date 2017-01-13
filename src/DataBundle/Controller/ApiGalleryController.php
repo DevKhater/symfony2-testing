@@ -6,6 +6,7 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Hateoas\Representation\PaginatedRepresentation;
 use Hateoas\Representation\CollectionRepresentation;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -38,8 +39,9 @@ class ApiGalleryController extends FOSRestController
      * )
      *
      */
-    public function postBandAction(Request $request)
+    public function postGalleryAction(Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
         $newGallery = $this->container->get($this->serviceEntity)->post($request->request->all());
 
         if ($newGallery->getId()) {
@@ -61,6 +63,7 @@ class ApiGalleryController extends FOSRestController
      */
     public function addGalleryImageAction(Request $request, $id, $image)
     {
+        $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
         $gallery = $this->getOr404($id);
         $mediaManager = $this->container->get('data.media.handler');
         $newImage = $mediaManager->get($image);
@@ -83,6 +86,7 @@ class ApiGalleryController extends FOSRestController
      */
     public function removeGalleryImageAction(Request $request, $id, $image)
     {
+        $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
         $gallery = $this->getOr404($id);
         $mediaManager = $this->container->get('data.media.handler');
         $newImage = $mediaManager->get($image);

@@ -6,6 +6,7 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Hateoas\Representation\PaginatedRepresentation;
 use Hateoas\Representation\CollectionRepresentation;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -85,6 +86,7 @@ class ApiMediaController extends FOSRestController
      */
     public function postMediaAction(Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
         $newMedia = $this->container->get($this->serviceEntity)->post($request->files->get('file'));
 
         if ($newMedia->getId()) {
@@ -105,6 +107,7 @@ class ApiMediaController extends FOSRestController
      */
     public function deleteImageAction(Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
         $entity = $this->getOr404($request->get('id'));
         $this->container->get($this->serviceEntity)->delete($entity);
         $view = $this->view(null, 204);

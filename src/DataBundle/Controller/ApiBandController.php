@@ -5,6 +5,7 @@ namespace DataBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Hateoas\Representation\PaginatedRepresentation;
 use Hateoas\Representation\CollectionRepresentation;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -63,7 +64,7 @@ class ApiBandController extends ApiController
         $maxPages = ceil($totalBands / $limit);
         $data = $this->container->get($this->serviceEntity)->all($offset, $limit);
         if ($data == null) {
-            $view = $this->view('No Bands found.', 404);
+            $view = $this->view(["error" => 'No Bands found.'], 404);
         } else {
             $paginatedCollection = new PaginatedRepresentation(
                     new CollectionRepresentation(
@@ -135,6 +136,7 @@ class ApiBandController extends ApiController
      */
     public function postBandAction(Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
         $newBand = $this->container->get($this->serviceEntity)->post($request->request->all());
 
         if ($newBand->getSlug()) {
@@ -161,6 +163,7 @@ class ApiBandController extends ApiController
      */
     public function putBandAction(Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
         $bandReq = $this->container->get($this->serviceEntity)->get($request->get('slug'));
         $band = $this->container->get($this->serviceEntity)->put(
                 $bandReq, $request->request->all()
@@ -180,6 +183,7 @@ class ApiBandController extends ApiController
      */
     public function deleteBandAction(Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
         $response = parent::deleteAction($request->get('id'));
         return($response);
     }
@@ -194,6 +198,7 @@ class ApiBandController extends ApiController
      */
     public function addBandImageAction(Request $request, $slug, $image)
     {
+        $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
         $band = $this->getOr404($slug);
         $mediaManager = $this->container->get('data.media.handler');
         $newImage = $mediaManager->get($image);

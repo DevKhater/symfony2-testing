@@ -5,6 +5,7 @@ namespace DataBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Hateoas\Representation\PaginatedRepresentation;
 use Hateoas\Representation\CollectionRepresentation;
 use FOS\RestBundle\Request\ParamFetcherInterface;
@@ -95,6 +96,7 @@ class ApiLocationController extends ApiController
      */
     public function postLocationAction(Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
         $newLocation = $this->container->get($this->serviceEntity)->post($request->request->all());
 
         if ($newLocation->getId()) {
@@ -120,6 +122,7 @@ class ApiLocationController extends ApiController
      */
     public function putLocationAction(Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
         $locationReq = $this->container->get($this->serviceEntity)->get($request->get('id'));
         $location = $this->container->get($this->serviceEntity)->put(
                 $locationReq, $request->request->all()
@@ -137,6 +140,7 @@ class ApiLocationController extends ApiController
      */
     public function deleteLocationAction(Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
         $response = parent::deleteAction($request->get('id'));
         return($response);
     }
