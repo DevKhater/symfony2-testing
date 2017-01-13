@@ -1,0 +1,16 @@
+<div class="widget-border">
+  <div class="elementCard">
+    <div class="bandImageHolder img-responsive" layout-padding ng-show="aband.image.image_url">
+      <img ng-src="{{aband.image.image_url}}">
+    </div>
+    <div class="elementCardContent fiex-widget-height"   layout-padding>
+      <span class="md-headline">{{aband.name}}</span><br/>
+      <span class="md-subhead">{{aband.genre}}</span>
+      <p layout="row" layout-align="space-around center">
+        <md-icon md-svg-icon="drums" class="bandsGigsNumber"></md-icon>
+        <span class="md-subhead">{{aband.concerts.length}}</span>
+      </p>
+      <ng-transclude/>
+    </div>
+  </div>
+</div>

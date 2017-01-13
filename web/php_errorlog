@@ -1,0 +1,2 @@
+[13-Jan-2017 03:59:25 CST6CDT] PHP Fatal error:  Call to undefined function DataBundle\Handler\dump() in /home/michelk9/public_html/myBackEnd/src/DataBundle/Handler/BandHandler.php on line 137
+[13-Jan-2017 04:12:01 CST6CDT] PHP Fatal error:  Call to undefined function DataBundle\Handler\dump() in /home/michelk9/public_html/myBackEnd/src/DataBundle/Handler/BandHandler.php on line 137

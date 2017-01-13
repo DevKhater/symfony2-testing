@@ -1,0 +1,18 @@
+parameters:
+    user.user.class: MK\UserBundle\Entity\User
+
+services:
+    mk.user.password_encoder:
+        class: MK\UserBundle\Security\Encoder\PasswordEncoder
+    
+    mk.user.manager:
+        class: MK\UserBundle\Handler\UserHandler
+        arguments: ['@doctrine.orm.entity_manager','%user.user.class%', '@security.password_encoder']
+            
+    mk.user.provider:
+        class: MK\UserBundle\Security\Provider\UserProvider
+        arguments: ["@doctrine.orm.entity_manager"]        
+    
+    mk.login.form_authenticator:
+        class: MK\UserBundle\Security\Authenticator\FormLoginAuthenticator
+        autowire: true

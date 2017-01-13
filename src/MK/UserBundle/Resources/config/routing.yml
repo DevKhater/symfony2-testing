@@ -1,0 +1,22 @@
+mk_user_homepage:
+    path:     /
+    defaults: { _controller: MKUserBundle:Default:index }
+
+mk_user_admin:
+    path:     /admin
+    defaults: { _controller: MKUserBundle:Default:admin }
+
+user_registration:
+    path:     /register
+    defaults: { _controller: MKUserBundle:Registration:register }
+
+secure_login:
+    path:     /login
+    defaults: { _controller: MKUserBundle:Security:login }
+
+login_check:
+    path:     /login_check
+    defaults: { _controller: MKUserBundle:Security:loginCheck }
+    
+logout:
+    path: /logout

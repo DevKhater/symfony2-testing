@@ -1,0 +1,30 @@
+angular:
+    resource: "@AngularBundle/Controller/"
+    type:     annotation
+    prefix:   /ng
+
+data:
+    resource: "@DataBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+mk_api:
+    resource: "@MKApiBundle/Controller/"
+    type:     annotation
+    prefix:   /api
+
+mk_user:
+    resource: "@MKUserBundle/Resources/config/routing.yml"
+    prefix:   /
+
+app:
+    resource: "@AppBundle/Controller/"
+    type:     annotation
+
+NelmioApiDocBundle:
+    resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
+    prefix:   /doc
+    
+fos_js_routing:
+    resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml"
+

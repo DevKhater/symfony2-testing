@@ -1,0 +1,22 @@
+{% extends 'DataBundle::base.html.twig' %}
+{% block title %} - List Bands{% endblock %}
+{% block body %}
+    <h1>API: List Bands</h1>
+
+    <ul id="bands-list">
+        {% for band in data %}
+            <li>
+                <a href="{{ path('api_band_show', {'slug': band.slug}) }}">{{ band.name }}</a> - <strong>{{ band.genre }}</strong>
+                {#[<a href="{{ path('api_band_form_edit', {'slug': band.slug}) }}">Edit</a>]#}
+                {#[<a href="{{ path('api_band_delete', {'slug': band.slug}) }}">Delete</a>]#}
+            </li>
+        {% else %}
+            <li>No Bands</li>
+            {% endfor %}
+    </ul>
+    <p>
+        {#<a href="{{ path('api_band_form_new') }}">New Concert</a>#}
+    </p>
+
+    {% include '@DataBundle/views/Template/paginator.html.twig' %}
+{% endblock %}

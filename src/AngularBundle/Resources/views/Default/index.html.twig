@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Angular JS</title>
+        <link rel="stylesheet" href="{{asset("bower_components/angular-material/angular-material.css")}}">
+        <link rel="stylesheet" href="{{asset("bower_components/angular-growl-v2/build/angular-growl.min.css")}}">
+        <link rel="stylesheet" href="{{asset("bower_components/bootstrap/dist/css/bootstrap.min.css")}}">
+        <link rel="stylesheet" href="{{asset("bundles/angular/css/style.css")}}">
+
+        <!-- AngularJS File -->
+        <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+        <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+        <script src="{{asset("bower_components/angular/angular.js")}}"></script>
+        <script src="{{asset("bower_components/angular-route/angular-route.min.js")}}"></script>
+        <script src="{{asset("bower_components/angular-aria/angular-aria.js")}}"></script>
+        <script src="{{asset("bower_components/angular-messages/angular-messages.js")}}"></script>
+        <script src="{{asset("bower_components/angular-animate/angular-animate.js")}}"></script>
+        <script src="{{asset("bower_components/angular-growl-v2/build/angular-growl.min.js")}}"></script>
+        <script src="{{asset("bower_components/angular-paging/dist/paging.js")}}"></script>
+        <script src="{{asset("bower_components/ng-file-upload/ng-file-upload.js")}}"></script>
+        <script src="{{asset("/bower_components/angular-ui-utils/ui-utils.min.js")}}"></script>
+        <script src="{{asset("/bower_components/angular-ui-map/ui-map.js")}}"></script>
+        <!-- Angular Material Library -->
+        <script src="{{asset("bower_components/angular-material/angular-material.min.js")}}"></script>
+
+        <script src="{{asset("bundles/angular/js/module.js")}}"></script>
+        <script src="{{asset("bundles/angular/js/directives.js")}}"></script>
+        <script src="{{asset("bundles/angular/js/services.js")}}"></script>
+        <script src="{{asset("bundles/angular/js/newCon.js")}}"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?libraries=places&sensor=false"></script>
+{#
+        <script src="http://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&callback=onGoogleReady"></script> 
+#}
+        <style>
+            .map-canvas { height: 400px; }
+        </style>
+    </head>
+    <body ng-app='mainApp'>
+        <login-status status={{loggedIn}}></login-status>
+        <div id="main" ng-view md-theme="default"></div>
+        
+        
+    </body>
+</html> 

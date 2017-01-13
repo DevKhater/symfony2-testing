@@ -1,0 +1,38 @@
+parameters:
+    upload_directory:           '%kernel.root_dir%/../web/uploads/images'
+    upload_prefix_directory:    'uploads/images'
+    data.band.class:            'DataBundle\Entity\Band'
+    data.band.handler.class:    'DataBundle\Handler\BandHandler'
+    data.concert.class:         'DataBundle\Entity\Concert'
+    data.concert.handler.class: 'DataBundle\Handler\ConcertHandler'
+    data.location.class:         'DataBundle\Entity\Location'
+    data.location.handler.class: 'DataBundle\Handler\LocationHandler'
+    data.media.class:           'DataBundle\Entity\Media'
+    data.media.handler.class:   'DataBundle\Handler\MediaHandler'
+
+services:
+    mkcrud.file.uploader:
+        class: DataBundle\Service\FileUploader
+        arguments: [%upload_directory%, %upload_prefix_directory%]
+    mk.doctrine_media_listener:
+        class: DataBundle\EventListener\MediaUploadListener
+        arguments: ['@mkcrud.file.uploader']
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: preUpdate }
+            - { name: doctrine.event_listener, event: postLoad }
+    
+    data.band.handler:
+        class: %data.band.handler.class%
+        arguments: ['@doctrine.orm.entity_manager','%data.band.class%','@form.factory']
+
+    data.concert.handler:
+        class: %data.concert.handler.class%
+        arguments: ['@doctrine.orm.entity_manager','%data.concert.class%','@form.factory', '@data.band.handler']
+    data.location.handler:
+        class: %data.location.handler.class%
+        arguments: ['@doctrine.orm.entity_manager','%data.location.class%','@form.factory']
+        
+    data.media.handler:
+        class: %data.media.handler.class%
+        arguments: ['@doctrine.orm.entity_manager','%data.media.class%', '@form.factory', '@mkcrud.file.uploader']

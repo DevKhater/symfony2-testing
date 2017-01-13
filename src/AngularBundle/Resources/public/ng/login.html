@@ -1,0 +1,18 @@
+<div class="md-inline-form inputdemoBasicUsage" layout='row' layout-align="center center" layout-margin layout-padding>
+  <div layout='column'>
+    <login-logout status="logedIn"></login-logout>
+    <md-content  layout-wrap layout-margin layout-padding>
+      <form id="loginForm">
+        <md-input-container>
+          <input type="text" name="_username" id="username" placeholder="Username" ng-model="username">
+        </md-input-container>
+        <md-input-container>
+          <input type="password" name="_password" id="password" placeholder="Password" ng-model="password">
+        </md-input-container>
+        <md-input-container>
+          <md-button class="md-raised md-primary" ng-click="submit()">Login</md-button>
+        </md-input-container>
+      </form>
+    </md-content>
+  </div>
+</div>

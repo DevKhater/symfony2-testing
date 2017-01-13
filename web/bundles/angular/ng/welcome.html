@@ -1,0 +1,29 @@
+<div md-theme="default" class="md-inline-form inputdemoBasicUsage">
+  <ng-include src="'/bundles/angular/ng/header.html'"></ng-include>
+
+  <div layout-wrap layout-padding layout-align='center' class="container" >
+    {{welcomeMessage}}
+    <md-divider></md-divider>
+
+  </div>
+
+
+  <div layout="row" class="container" layout-wrap layout-padding layout-align='center center' class="page-home">
+
+    <md-whiteframe class="md-whiteframe-24dp changeWhiteFrame"  flex="100/3" layout layout-align="center center" ng-click="go('/bands')">
+      <span>BANDS</span>
+    </md-whiteframe>
+
+    <md-whiteframe class="md-whiteframe-24dp changeWhiteFrame" flex="100/3" layout layout-align="center center" ng-click="go('/concerts')">
+      <span>Concerts</span>
+    </md-whiteframe>
+
+    <md-whiteframe class="md-whiteframe-24dp changeWhiteFrame" flex="100/3" layout layout-align="center center" ng-click="go('/media')">
+      <span>Media</span>
+    </md-whiteframe>
+
+    <md-whiteframe class="md-whiteframe-24dp changeWhiteFrame" flex="100/3" layout layout-align="center center"  ng-click="go('/venues')">
+      <span>Venues</span>
+    </md-whiteframe>
+  </div>
+</div>

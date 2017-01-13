@@ -1,0 +1,61 @@
+<ng-include src="'/bundles/angular/ng/header.html'"></ng-include>
+<div flex ng-show="noFound">
+  <div class="alert alert-info">
+    <h1>No Concerts ... Is Empty !</h1></div>
+    </div>
+<div md-theme="default" layout="column" layout-align="top center" class="page-concerts">
+  <div class="alert alert-info">
+    <p>Sort Type: {{ sortType}}</p>
+    <p>Sort Reverse: {{ sortReverse}}</p>
+    <p>Search Query: {{ searchFish}}</p>
+  </div>
+  <form>
+    <div class="form-group">
+      <div class="input-group">
+        <div class="input-group-addon"><i class="fa fa-search"></i></div>
+        <input type="text" class="form-control" placeholder="Search Bands" ng-model="searchBand">
+      </div>
+    </div>
+  </form>
+  <table class="table table-bordered table-striped backWhite" ng-hide="noFound">
+    <thead>
+      <tr>
+        <td></td>
+        <td>
+          <a href="#!/concerts" ng-click="sortType = 'date';
+          sortReverse = !sortReverse">
+          Date
+          <md-icon md-svg-src="filter:down" ng-show="sortType == 'date' && !sortReverse" ></md-icon>
+          <md-icon md-svg-src="filter:up" ng-show="sortType == 'date' && sortReverse" ></md-icon>
+        </a>
+      </td>
+      <td>
+        <a href="#!/concerts" ng-click="sortType = 'band';
+        sortReverse = !sortReverse">
+        Band Name
+        <md-icon md-svg-src="filter:down" ng-show="sortType == 'band' && !sortReverse" ></md-icon>
+        <md-icon md-svg-src="filter:up" ng-show="sortType == 'band' && sortReverse" ></md-icon>
+      </a>
+      </td>
+      <td>
+        Location
+      </td>
+     </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="gig in concerts| orderBy:sortType:sortReverse | filter:searchBand">
+        <td flex><md-button aria-label="DeleteBand" ng-click="deleteConcert(gig)"><md-icon md-svg-icon="crud:delete" style="fill:red"></md-icon></md-button></td>
+        <td>{{ gig.date | date : 'dd, MMMM - yyyy'}}</td>
+        <td>{{ gig._embedded.band.name}}</td>
+        <td>{{ gig._embedded.location.name}}</td>
+      </tr>
+     </tbody>
+   </table>
+  <div layout-align="center center" layout="row"
+  paging
+  page="page"
+  page-size="limit"
+  total="total"
+  paging-action="changePage(page)">
+  </div>
+</div>
