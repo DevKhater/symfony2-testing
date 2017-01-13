@@ -322,6 +322,42 @@ class appDevDebugProjectContainerUrlMatcher extends Symfony\Bundle\FrameworkBund
 
             }
 
+            if (0 === strpos($pathinfo, '/api/gallery')) {
+                // api_gallery_create
+                if ($pathinfo === '/api/gallery/') {
+                    if ($this->context->getMethod() != 'POST') {
+                        $allow[] = 'POST';
+                        goto not_api_gallery_create;
+                    }
+
+                    return array (  '_controller' => 'DataBundle\\Controller\\ApiGalleryController::postBandAction',  '_route' => 'api_gallery_create',);
+                }
+                not_api_gallery_create:
+
+                // api_gallery_add_image
+                if (preg_match('#^/api/gallery/(?P<id>[^/]++)/(?P<image>[^/]++)$#s', $pathinfo, $matches)) {
+                    if ($this->context->getMethod() != 'PATCH') {
+                        $allow[] = 'PATCH';
+                        goto not_api_gallery_add_image;
+                    }
+
+                    return $this->mergeDefaults(array_replace($matches, array('_route' => 'api_gallery_add_image')), array (  '_controller' => 'DataBundle\\Controller\\ApiGalleryController::addGalleryImageAction',));
+                }
+                not_api_gallery_add_image:
+
+                // api_gallery_remove_image
+                if (preg_match('#^/api/gallery/(?P<id>[^/]++)/(?P<image>[^/]++)$#s', $pathinfo, $matches)) {
+                    if ($this->context->getMethod() != 'DELETE') {
+                        $allow[] = 'DELETE';
+                        goto not_api_gallery_remove_image;
+                    }
+
+                    return $this->mergeDefaults(array_replace($matches, array('_route' => 'api_gallery_remove_image')), array (  '_controller' => 'DataBundle\\Controller\\ApiGalleryController::removeGalleryImageAction',));
+                }
+                not_api_gallery_remove_image:
+
+            }
+
             if (0 === strpos($pathinfo, '/api/location')) {
                 if (0 === strpos($pathinfo, '/api/locations')) {
                     // api_locations_list

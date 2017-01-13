@@ -71,6 +71,20 @@
   array (
     0 => 'DELETE',
   ),
+  'api_gallery_create' => 
+  array (
+    0 => 'POST',
+  ),
+  'api_gallery_add_image' => 
+  array (
+    0 => 'PATCH',
+    1 => 'DELETE',
+  ),
+  'api_gallery_remove_image' => 
+  array (
+    0 => 'PATCH',
+    1 => 'DELETE',
+  ),
   'api_locations_list' => 
   array (
     0 => 'GET',

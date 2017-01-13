@@ -46,6 +46,7 @@ class appDevDebugProjectContainer extends Container
             'controller_name_converter' => 'getControllerNameConverterService',
             'data.band.handler' => 'getData_Band_HandlerService',
             'data.concert.handler' => 'getData_Concert_HandlerService',
+            'data.gallery.handler' => 'getData_Gallery_HandlerService',
             'data.location.handler' => 'getData_Location_HandlerService',
             'data.media.handler' => 'getData_Media_HandlerService',
             'data_collector.dump' => 'getDataCollector_DumpService',
@@ -526,6 +527,19 @@ class appDevDebugProjectContainer extends Container
     protected function getData_Concert_HandlerService()
     {
         return $this->services['data.concert.handler'] = new \DataBundle\Handler\ConcertHandler($this->get('doctrine.orm.default_entity_manager'), 'DataBundle\\Entity\\Concert', $this->get('form.factory'), $this->get('data.band.handler'));
+    }
+
+    /**
+     * Gets the 'data.gallery.handler' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return \DataBundle\Handler\GalleryHandler A DataBundle\Handler\GalleryHandler instance
+     */
+    protected function getData_Gallery_HandlerService()
+    {
+        return $this->services['data.gallery.handler'] = new \DataBundle\Handler\GalleryHandler($this->get('doctrine.orm.default_entity_manager'), 'DataBundle\\Entity\\Gallery', $this->get('form.factory'), $this->get('data.media.handler'));
     }
 
     /**
@@ -1571,7 +1585,7 @@ class appDevDebugProjectContainer extends Container
      */
     protected function getFosJsRouting_ExtractorService()
     {
-        return $this->services['fos_js_routing.extractor'] = new \FOS\JsRoutingBundle\Extractor\ExposedRoutesExtractor($this->get('router'), array(0 => 'login_check', 1 => 'ng_loginSuccess', 2 => 'ng_get_user', 3 => 'logout', 4 => 'api_band_genres', 5 => 'api_band_create', 6 => 'api_bands_list', 7 => 'api_band_delete', 8 => 'api_band_update', 9 => 'api_concerts_list', 10 => 'api_locations_list', 11 => 'api_concert_create', 12 => 'api_location_create', 13 => 'api_media_list', 14 => 'api_media_create', 15 => 'api_band_add_image', 16 => 'api_location_delete', 17 => 'api_concert_delete', 18 => 'api_media_delete'), __DIR__, array('FrameworkBundle' => 'Symfony\\Bundle\\FrameworkBundle\\FrameworkBundle', 'SecurityBundle' => 'Symfony\\Bundle\\SecurityBundle\\SecurityBundle', 'TwigBundle' => 'Symfony\\Bundle\\TwigBundle\\TwigBundle', 'MonologBundle' => 'Symfony\\Bundle\\MonologBundle\\MonologBundle', 'SwiftmailerBundle' => 'Symfony\\Bundle\\SwiftmailerBundle\\SwiftmailerBundle', 'DoctrineBundle' => 'Doctrine\\Bundle\\DoctrineBundle\\DoctrineBundle', 'SensioFrameworkExtraBundle' => 'Sensio\\Bundle\\FrameworkExtraBundle\\SensioFrameworkExtraBundle', 'LexikJWTAuthenticationBundle' => 'Lexik\\Bundle\\JWTAuthenticationBundle\\LexikJWTAuthenticationBundle', 'StofDoctrineExtensionsBundle' => 'Stof\\DoctrineExtensionsBundle\\StofDoctrineExtensionsBundle', 'NelmioApiDocBundle' => 'Nelmio\\ApiDocBundle\\NelmioApiDocBundle', 'JMSSerializerBundle' => 'JMS\\SerializerBundle\\JMSSerializerBundle', 'BazingaHateoasBundle' => 'Bazinga\\Bundle\\HateoasBundle\\BazingaHateoasBundle', 'NelmioCorsBundle' => 'Nelmio\\CorsBundle\\NelmioCorsBundle', 'FOSRestBundle' => 'FOS\\RestBundle\\FOSRestBundle', 'FOSJsRoutingBundle' => 'FOS\\JsRoutingBundle\\FOSJsRoutingBundle', 'AppBundle' => 'AppBundle\\AppBundle', 'MKUserBundle' => 'MK\\UserBundle\\MKUserBundle', 'MKApiBundle' => 'MK\\ApiBundle\\MKApiBundle', 'DataBundle' => 'DataBundle\\DataBundle', 'AngularBundle' => 'AngularBundle\\AngularBundle', 'DebugBundle' => 'Symfony\\Bundle\\DebugBundle\\DebugBundle', 'WebProfilerBundle' => 'Symfony\\Bundle\\WebProfilerBundle\\WebProfilerBundle', 'SensioDistributionBundle' => 'Sensio\\Bundle\\DistributionBundle\\SensioDistributionBundle', 'SensioGeneratorBundle' => 'Sensio\\Bundle\\GeneratorBundle\\SensioGeneratorBundle', 'DoctrineFixturesBundle' => 'Doctrine\\Bundle\\FixturesBundle\\DoctrineFixturesBundle'));
+        return $this->services['fos_js_routing.extractor'] = new \FOS\JsRoutingBundle\Extractor\ExposedRoutesExtractor($this->get('router'), array(0 => 'login_check', 1 => 'ng_loginSuccess', 2 => 'ng_get_user', 3 => 'logout', 4 => 'api_band_genres', 5 => 'api_band_create', 6 => 'api_bands_list', 7 => 'api_band_delete', 8 => 'api_band_update', 9 => 'api_concerts_list', 10 => 'api_locations_list', 11 => 'api_concert_create', 12 => 'api_location_create', 13 => 'api_media_list', 14 => 'api_media_create', 15 => 'api_band_add_image', 16 => 'api_location_delete', 17 => 'api_concert_delete', 18 => 'api_media_delete', 19 => 'api_gallery_create', 20 => 'api_gallery_remove_image', 21 => 'api_gallery_add_image'), __DIR__, array('FrameworkBundle' => 'Symfony\\Bundle\\FrameworkBundle\\FrameworkBundle', 'SecurityBundle' => 'Symfony\\Bundle\\SecurityBundle\\SecurityBundle', 'TwigBundle' => 'Symfony\\Bundle\\TwigBundle\\TwigBundle', 'MonologBundle' => 'Symfony\\Bundle\\MonologBundle\\MonologBundle', 'SwiftmailerBundle' => 'Symfony\\Bundle\\SwiftmailerBundle\\SwiftmailerBundle', 'DoctrineBundle' => 'Doctrine\\Bundle\\DoctrineBundle\\DoctrineBundle', 'SensioFrameworkExtraBundle' => 'Sensio\\Bundle\\FrameworkExtraBundle\\SensioFrameworkExtraBundle', 'LexikJWTAuthenticationBundle' => 'Lexik\\Bundle\\JWTAuthenticationBundle\\LexikJWTAuthenticationBundle', 'StofDoctrineExtensionsBundle' => 'Stof\\DoctrineExtensionsBundle\\StofDoctrineExtensionsBundle', 'NelmioApiDocBundle' => 'Nelmio\\ApiDocBundle\\NelmioApiDocBundle', 'JMSSerializerBundle' => 'JMS\\SerializerBundle\\JMSSerializerBundle', 'BazingaHateoasBundle' => 'Bazinga\\Bundle\\HateoasBundle\\BazingaHateoasBundle', 'NelmioCorsBundle' => 'Nelmio\\CorsBundle\\NelmioCorsBundle', 'FOSRestBundle' => 'FOS\\RestBundle\\FOSRestBundle', 'FOSJsRoutingBundle' => 'FOS\\JsRoutingBundle\\FOSJsRoutingBundle', 'AppBundle' => 'AppBundle\\AppBundle', 'MKUserBundle' => 'MK\\UserBundle\\MKUserBundle', 'MKApiBundle' => 'MK\\ApiBundle\\MKApiBundle', 'DataBundle' => 'DataBundle\\DataBundle', 'AngularBundle' => 'AngularBundle\\AngularBundle', 'DebugBundle' => 'Symfony\\Bundle\\DebugBundle\\DebugBundle', 'WebProfilerBundle' => 'Symfony\\Bundle\\WebProfilerBundle\\WebProfilerBundle', 'SensioDistributionBundle' => 'Sensio\\Bundle\\DistributionBundle\\SensioDistributionBundle', 'SensioGeneratorBundle' => 'Sensio\\Bundle\\GeneratorBundle\\SensioGeneratorBundle', 'DoctrineFixturesBundle' => 'Doctrine\\Bundle\\FixturesBundle\\DoctrineFixturesBundle'));
     }
 
     /**
@@ -3471,7 +3485,7 @@ class appDevDebugProjectContainer extends Container
         $c = $this->get('monolog.logger.security', ContainerInterface::NULL_ON_INVALID_REFERENCE);
         $d = $this->get('security.token_storage');
 
-        return $this->services['security.firewall.map.context.api'] = new \Symfony\Bundle\SecurityBundle\Security\FirewallContext(array(0 => $this->get('security.channel_listener'), 1 => new \Symfony\Component\Security\Guard\Firewall\GuardAuthenticationListener($this->get('security.authentication.guard_handler'), $a, 'api', array(0 => $b), $c), 2 => new \Symfony\Component\Security\Http\Firewall\AnonymousAuthenticationListener($d, '5877c3108cc898.23613488', $c, $a), 3 => $this->get('security.access_listener')), new \Symfony\Component\Security\Http\Firewall\ExceptionListener($d, $this->get('security.authentication.trust_resolver'), $this->get('security.http_utils'), 'api', $b, NULL, NULL, $c, true));
+        return $this->services['security.firewall.map.context.api'] = new \Symfony\Bundle\SecurityBundle\Security\FirewallContext(array(0 => $this->get('security.channel_listener'), 1 => new \Symfony\Component\Security\Guard\Firewall\GuardAuthenticationListener($this->get('security.authentication.guard_handler'), $a, 'api', array(0 => $b), $c), 2 => new \Symfony\Component\Security\Http\Firewall\AnonymousAuthenticationListener($d, '5878f142d18e32.85742149', $c, $a), 3 => $this->get('security.access_listener')), new \Symfony\Component\Security\Http\Firewall\ExceptionListener($d, $this->get('security.authentication.trust_resolver'), $this->get('security.http_utils'), 'api', $b, NULL, NULL, $c, true));
     }
 
     /**
@@ -3506,7 +3520,7 @@ class appDevDebugProjectContainer extends Container
         $f = new \Symfony\Component\Security\Http\Firewall\LogoutListener($a, $c, new \Symfony\Component\Security\Http\Logout\DefaultLogoutSuccessHandler($c, '/'), array('csrf_parameter' => '_csrf_token', 'csrf_token_id' => 'logout', 'logout_path' => '/logout'));
         $f->addHandler(new \Symfony\Component\Security\Http\Logout\SessionLogoutHandler());
 
-        return $this->services['security.firewall.map.context.main'] = new \Symfony\Bundle\SecurityBundle\Security\FirewallContext(array(0 => $this->get('security.channel_listener'), 1 => new \Symfony\Component\Security\Http\Firewall\ContextListener($a, array(0 => $this->get('mk.user.provider'), 1 => $this->get('security.user.provider.concrete.in_memory')), 'main', $b, $this->get('debug.event_dispatcher', ContainerInterface::NULL_ON_INVALID_REFERENCE)), 2 => $f, 3 => new \Symfony\Component\Security\Guard\Firewall\GuardAuthenticationListener($this->get('security.authentication.guard_handler'), $d, 'main', array(0 => $e, 1 => $this->get('mk.jwt.authenticator')), $b), 4 => new \Symfony\Component\Security\Http\Firewall\AnonymousAuthenticationListener($a, '5877c3108cc898.23613488', $b, $d), 5 => $this->get('security.access_listener')), new \Symfony\Component\Security\Http\Firewall\ExceptionListener($a, $this->get('security.authentication.trust_resolver'), $c, 'main', $e, NULL, NULL, $b, false));
+        return $this->services['security.firewall.map.context.main'] = new \Symfony\Bundle\SecurityBundle\Security\FirewallContext(array(0 => $this->get('security.channel_listener'), 1 => new \Symfony\Component\Security\Http\Firewall\ContextListener($a, array(0 => $this->get('mk.user.provider'), 1 => $this->get('security.user.provider.concrete.in_memory')), 'main', $b, $this->get('debug.event_dispatcher', ContainerInterface::NULL_ON_INVALID_REFERENCE)), 2 => $f, 3 => new \Symfony\Component\Security\Guard\Firewall\GuardAuthenticationListener($this->get('security.authentication.guard_handler'), $d, 'main', array(0 => $e, 1 => $this->get('mk.jwt.authenticator')), $b), 4 => new \Symfony\Component\Security\Http\Firewall\AnonymousAuthenticationListener($a, '5878f142d18e32.85742149', $b, $d), 5 => $this->get('security.access_listener')), new \Symfony\Component\Security\Http\Firewall\ExceptionListener($a, $this->get('security.authentication.trust_resolver'), $c, 'main', $e, NULL, NULL, $b, false));
     }
 
     /**
@@ -3522,7 +3536,7 @@ class appDevDebugProjectContainer extends Container
         $a = $this->get('security.token_storage');
         $b = $this->get('monolog.logger.security', ContainerInterface::NULL_ON_INVALID_REFERENCE);
 
-        return $this->services['security.firewall.map.context.ng'] = new \Symfony\Bundle\SecurityBundle\Security\FirewallContext(array(0 => $this->get('security.channel_listener'), 1 => new \Symfony\Component\Security\Http\Firewall\ContextListener($a, array(0 => $this->get('mk.user.provider'), 1 => $this->get('security.user.provider.concrete.in_memory')), 'ng', $b, $this->get('debug.event_dispatcher', ContainerInterface::NULL_ON_INVALID_REFERENCE)), 2 => new \Symfony\Component\Security\Http\Firewall\AnonymousAuthenticationListener($a, '5877c3108cc898.23613488', $b, $this->get('security.authentication.manager')), 3 => $this->get('security.access_listener')), new \Symfony\Component\Security\Http\Firewall\ExceptionListener($a, $this->get('security.authentication.trust_resolver'), $this->get('security.http_utils'), 'ng', NULL, NULL, NULL, $b, false));
+        return $this->services['security.firewall.map.context.ng'] = new \Symfony\Bundle\SecurityBundle\Security\FirewallContext(array(0 => $this->get('security.channel_listener'), 1 => new \Symfony\Component\Security\Http\Firewall\ContextListener($a, array(0 => $this->get('mk.user.provider'), 1 => $this->get('security.user.provider.concrete.in_memory')), 'ng', $b, $this->get('debug.event_dispatcher', ContainerInterface::NULL_ON_INVALID_REFERENCE)), 2 => new \Symfony\Component\Security\Http\Firewall\AnonymousAuthenticationListener($a, '5878f142d18e32.85742149', $b, $this->get('security.authentication.manager')), 3 => $this->get('security.access_listener')), new \Symfony\Component\Security\Http\Firewall\ExceptionListener($a, $this->get('security.authentication.trust_resolver'), $this->get('security.http_utils'), 'ng', NULL, NULL, NULL, $b, false));
     }
 
     /**
@@ -5164,7 +5178,7 @@ class appDevDebugProjectContainer extends Container
         $b = $this->get('mk.user.provider');
         $c = $this->get('security.user_checker.main');
 
-        $this->services['security.authentication.manager'] = $instance = new \Symfony\Component\Security\Core\Authentication\AuthenticationProviderManager(array(0 => new \Symfony\Component\Security\Guard\Provider\GuardAuthenticationProvider(array(0 => $this->get('mk.login.form_authenticator'), 1 => $a), $b, 'main', $c), 1 => new \Symfony\Component\Security\Core\Authentication\Provider\AnonymousAuthenticationProvider('5877c3108cc898.23613488'), 2 => new \Symfony\Component\Security\Guard\Provider\GuardAuthenticationProvider(array(0 => $a), $b, 'api', $c), 3 => new \Symfony\Component\Security\Core\Authentication\Provider\AnonymousAuthenticationProvider('5877c3108cc898.23613488'), 4 => new \Symfony\Component\Security\Core\Authentication\Provider\AnonymousAuthenticationProvider('5877c3108cc898.23613488')), true);
+        $this->services['security.authentication.manager'] = $instance = new \Symfony\Component\Security\Core\Authentication\AuthenticationProviderManager(array(0 => new \Symfony\Component\Security\Guard\Provider\GuardAuthenticationProvider(array(0 => $this->get('mk.login.form_authenticator'), 1 => $a), $b, 'main', $c), 1 => new \Symfony\Component\Security\Core\Authentication\Provider\AnonymousAuthenticationProvider('5878f142d18e32.85742149'), 2 => new \Symfony\Component\Security\Guard\Provider\GuardAuthenticationProvider(array(0 => $a), $b, 'api', $c), 3 => new \Symfony\Component\Security\Core\Authentication\Provider\AnonymousAuthenticationProvider('5878f142d18e32.85742149'), 4 => new \Symfony\Component\Security\Core\Authentication\Provider\AnonymousAuthenticationProvider('5878f142d18e32.85742149')), true);
 
         $instance->setEventDispatcher($this->get('debug.event_dispatcher'));
 
@@ -5454,6 +5468,8 @@ class appDevDebugProjectContainer extends Container
             'data.location.handler.class' => 'DataBundle\\Handler\\LocationHandler',
             'data.media.class' => 'DataBundle\\Entity\\Media',
             'data.media.handler.class' => 'DataBundle\\Handler\\MediaHandler',
+            'data.gallery.class' => 'DataBundle\\Entity\\Gallery',
+            'data.gallery.handler.class' => 'DataBundle\\Handler\\GalleryHandler',
             'locale' => 'en',
             'jwt_private_key_path' => ($this->targetDirs[2].'/../var/jwt/private.pem'),
             'jwt_public_key_path' => ($this->targetDirs[2].'/../var/jwt/public.pem'),

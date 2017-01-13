@@ -9,11 +9,8 @@ parameters:
     data.location.handler.class: 'DataBundle\Handler\LocationHandler'
     data.media.class:           'DataBundle\Entity\Media'
     data.media.handler.class:   'DataBundle\Handler\MediaHandler'
-<<<<<<< HEAD
-=======
     data.gallery.class:           'DataBundle\Entity\Gallery'
     data.gallery.handler.class:   'DataBundle\Handler\GalleryHandler'
->>>>>>> ba093632385595688f4a8086394e5b24bb7f2cde
 
 services:
     mkcrud.file.uploader:
@@ -26,7 +23,7 @@ services:
             - { name: doctrine.event_listener, event: prePersist }
             - { name: doctrine.event_listener, event: preUpdate }
             - { name: doctrine.event_listener, event: postLoad }
-    
+
     data.band.handler:
         class: %data.band.handler.class%
         arguments: ['@doctrine.orm.entity_manager','%data.band.class%','@form.factory']
@@ -37,15 +34,11 @@ services:
     data.location.handler:
         class: %data.location.handler.class%
         arguments: ['@doctrine.orm.entity_manager','%data.location.class%','@form.factory']
-        
+
     data.media.handler:
         class: %data.media.handler.class%
-<<<<<<< HEAD
-        arguments: ['@doctrine.orm.entity_manager','%data.media.class%', '@form.factory', '@mkcrud.file.uploader']
-=======
         arguments: ['@doctrine.orm.entity_manager','%data.media.class%', '@form.factory', '@mkcrud.file.uploader']
 
     data.gallery.handler:
         class: %data.gallery.handler.class%
         arguments: ['@doctrine.orm.entity_manager','%data.gallery.class%', '@form.factory', '@data.media.handler']
->>>>>>> ba093632385595688f4a8086394e5b24bb7f2cde
