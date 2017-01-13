@@ -59,11 +59,7 @@ class Media implements MediaInterface
     }
 
     /**
-<<<<<<< HEAD
-     * @ORM\PostLoad
-=======
      * @ORM\postLoad
->>>>>>> ba093632385595688f4a8086394e5b24bb7f2cde
      */
     public function setImageUrl()
     {

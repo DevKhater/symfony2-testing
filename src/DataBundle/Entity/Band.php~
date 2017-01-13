@@ -1,0 +1,213 @@
+<?php
+
+namespace DataBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Gedmo\Mapping\Annotation as Gedmo;
+use DataBundle\Model\BandInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Hateoas\Configuration\Annotation as Hateoas;
+use JMS\Serializer\Annotation as Serializer;
+
+/**
+ * Band
+ *
+ * @ORM\Table()
+ * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="DataBundle\Repository\BandRepository")
+ * 
+ * @Hateoas\Relation("self", href = "expr('/api/bands/' ~ object.getSlug())")
+ */
+class Band implements BandInterface
+{
+
+    /**
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(name="name", type="string", length=255)
+     */
+    private $name;
+
+    /**
+     * @ORM\Column(name="genre", type="string", length=255)
+     */
+    private $genre;
+
+    /**
+     * @ORM\OneToOne(targetEntity="DataBundle\Entity\Media", cascade={"persist"}, fetch="LAZY")
+     * @ORM\JoinColumn(name="media_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
+     */
+    protected $image;
+
+    /**
+     * @ORM\OneToMany(targetEntity="DataBundle\Entity\Concert", mappedBy="band")
+     */
+    private $concerts;
+
+    /**
+     * @ORM\Column(type="string") 
+     * @Gedmo\Translatable
+     * @Gedmo\Slug(fields={"name"})
+     * @ORM\Column(length=64, unique=true)
+     */
+    protected $slug;
+
+    public function __construct()
+    {
+        $this->concert = new ArrayCollection();
+    }
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     *
+     * @return Band
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set genre
+     *
+     * @param string $genre
+     *
+     * @return Band
+     */
+    public function setGenre($genre)
+    {
+        $this->genre = $genre;
+
+        return $this;
+    }
+
+    /**
+     * Get genre
+     *
+     * @return string
+     */
+    public function getGenre()
+    {
+        return $this->genre;
+    }
+
+    /**
+     * Set image
+     *
+     * @param string $image
+     * @return Media
+     */
+    public function setImage($image)
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * Get image
+     *
+     * @return Media 
+     */
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    /**
+     * Set slug
+     *
+     * @param string $slug
+     * @return slug
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * Get slug
+     *
+     * @return string 
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    /**
+     * Add concerts
+     *
+     * @param \DataBundle\Entity\Concert $concerts
+     * @return Band
+     */
+    public function addConcert(\DataBundle\Entity\Concert $concerts)
+    {
+        $this->concerts[] = $concerts;
+
+        return $this;
+    }
+
+    /**
+     * Remove concerts
+     *
+     * @param \DataBundle\Entity\Concert $concerts
+     */
+    public function removeConcert(\DataBundle\Entity\Concert $concerts)
+    {
+        $this->concerts->removeElement($concerts);
+    }
+
+    /**
+     * Get concerts
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getConcerts()
+    {
+        return $this->concerts;
+    }
+
+    /*
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("band")
+     */
+
+    public function getBandInformation()
+    {
+        return ['name' => $this->name, 'genre' => $this->genre, 'concerts' => count($this->getConcerts())];
+    }
+
+}

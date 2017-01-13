@@ -63,7 +63,11 @@ app.controller('loginCtrl', function ($scope, $http, $httpParamSerializerJQLike,
 });
 
 /* Home Controller ***/
+<<<<<<< HEAD
 app.controller('welcomeCtrl', function ($scope, $rootScope, Users) {
+=======
+app.controller('welcomeCtrl', function ($scope, $rootScope, Users, Galleries) {
+>>>>>>> ba093632385595688f4a8086394e5b24bb7f2cde
   getUser = function () {
     Users.getUser().then(
       function successCallback(response) {
@@ -77,6 +81,15 @@ app.controller('welcomeCtrl', function ($scope, $rootScope, Users) {
       getUser();
     }
     $scope.welcomeMessage = "Welcome Mr. " + $rootScope.user;
+<<<<<<< HEAD
+=======
+    Galleries.addImageToGallery(1,1).then(
+        function successCallback(response) {
+          $rootScope.showSuccess('Image Added');
+        }, function errorCallback(response) {
+          console.log(response);
+        });
+>>>>>>> ba093632385595688f4a8086394e5b24bb7f2cde
   });
 
   /* Bands Controller ***/
@@ -445,7 +458,11 @@ app.controller('welcomeCtrl', function ($scope, $rootScope, Users) {
       var y = [];
       var m = [];
       var d = [];
+<<<<<<< HEAD
       for (var i = 2003; i < 2022; i++) {
+=======
+      for (var i = 2011; i < 2022; i++) {
+>>>>>>> ba093632385595688f4a8086394e5b24bb7f2cde
         y.push(i);
       }
       for (var i = 1; i <= 12; i++) {
