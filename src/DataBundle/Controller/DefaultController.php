@@ -12,9 +12,6 @@ use DataBundle\Form\ConcertType;
 class DefaultController extends Controller
 {
 
-    /**
-     * @Route("/test")
-     */
     public function indexAction()
     {
         $paginator = $this->getDoctrine()->getRepository('DataBundle:Concert')->find(4);
@@ -22,12 +19,13 @@ class DefaultController extends Controller
         $context->setSerializeNull(true);
         //$context->setGroups(array('list'));
         $json = $this->container->get('jms_serializer')->serialize($paginator, 'json', $context);
-        
+
         echo "<pre>";
-        dump($json)  ;
+        dump($json);
         exit;
-        return new Response($json, 200, array('application/json'));exit;
-        
+        return new Response($json, 200, array('application/json'));
+        exit;
+
         return $this->render('DataBundle:Concert:newConcert.html.twig', array(
                     'form' => $form->createView()
         ));

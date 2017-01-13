@@ -48,22 +48,25 @@ class ApiMediaController extends FOSRestController
         $limit = $paramFetcher->get('all') == 1 ? $totalImages : $paramFetcher->get('limit');
         $maxPages = ceil($totalImages / $limit);
         $data = $this->getDoctrine()->getRepository($this->classEntity)->findAllEntities($offset, $limit);
-        $data == null ? $view = $this->view('No media found.', 404) : $view = $this->view($data, 200);
-        $paginatedCollection = new PaginatedRepresentation(
-                new CollectionRepresentation(
-                $data, 'media', // embedded rel
-                'media'  // xml element name
-                ), 'api_media_list', // route
-                array(), // route parameters
-                $offset, // page number
-                $limit, // limit
-                $maxPages, // total pages
-                'page', // page route parameter name, optional, defaults to 'page'
-                'limit', // limit route parameter name, optional, defaults to 'limit'
-                false, // generate relative URIs, optional, defaults to `false`
-                $totalImages      // total collection size, optional, defaults to `null`
-        );
-        $view = $this->view($paginatedCollection, 200);
+        if ($data == null) {
+            $view = $this->view('No media found.', 404);
+        } else {
+            $paginatedCollection = new PaginatedRepresentation(
+                    new CollectionRepresentation(
+                    $data, 'media', // embedded rel
+                    'media'  // xml element name
+                    ), 'api_media_list', // route
+                    array(), // route parameters
+                    $offset, // page number
+                    $limit, // limit
+                    $maxPages, // total pages
+                    'page', // page route parameter name, optional, defaults to 'page'
+                    'limit', // limit route parameter name, optional, defaults to 'limit'
+                    false, // generate relative URIs, optional, defaults to `false`
+                    $totalImages      // total collection size, optional, defaults to `null`
+            );
+            $view = $this->view($paginatedCollection, 200);
+        }
         return $this->handleView($view);
     }
 

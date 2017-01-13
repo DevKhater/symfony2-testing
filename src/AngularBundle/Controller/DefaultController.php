@@ -11,7 +11,7 @@ use MK\ApiBundle\Api\ApiProblem;
 class DefaultController extends Controller
 {
     /**
-     * @Route("/", name="ng_login")
+     * @Route("/", name="backend_login")
      */
     public function indexAction()
     {

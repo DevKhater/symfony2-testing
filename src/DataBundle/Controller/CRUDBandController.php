@@ -13,9 +13,6 @@ use DataBundle\Form\UpdateBandType;
 class CRUDBandController extends Controller
 {
 
-    /**
-     * @Route("/bands/all/{offset}/{limit}", name="data_bandcrud_index")
-     */
     public function indexAction($offset = 1, $limit = 10)
     {
         $paginator = $this->getDoctrine()->getRepository('DataBundle:Band')->findAllEntities($offset, $limit);
@@ -30,18 +27,12 @@ class CRUDBandController extends Controller
         ));
     }
 
-    /**
-     * @Route("/bands/{slug}", name="data_bandcrud_show")
-     */
     public function showAction(Request $request)
     {
         $band = $this->getOr404($request->get('slug'));
         return $this->render('DataBundle:Band:show.html.twig', array('data' => $band));
     }
 
-    /**
-     * @Route("/band/new", name="data_bandcrud_new")
-     */
     public function newAction(Request $request)
     {
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
@@ -66,9 +57,6 @@ class CRUDBandController extends Controller
         ));
     }
 
-    /**
-     * @Route("/band/edit/{slug}", name="data_bandcrud_edit")
-     */
     public function editAction(Request $request)
     {
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
@@ -97,9 +85,6 @@ class CRUDBandController extends Controller
         ));
     }
 
-    /**
-     * @Route("/band/delete/{slug}", name="data_bandcrud_delete")
-     */
     public function deleteAction(Request $request)
     {
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {

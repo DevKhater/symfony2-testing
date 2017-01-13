@@ -1,6 +1,11 @@
 # To get started with security, check out the documentation:
 # http://symfony.com/doc/current/book/security.html
 security:
+    role_hierarchy:
+        ROLE_ADMIN:       ROLE_USER
+        ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+
+
     encoders:
         MK\UserBundle\Entity\User: 
             id: mk.user.password_encoder
@@ -39,9 +44,6 @@ security:
             guard: 
                 authenticators:
                     - mk.jwt.authenticator
-        ng:
-            pattern: ^/ng/
-            anonymous: true
             # activate different ways to authenticate
 
             # http_basic: ~
@@ -54,9 +56,9 @@ security:
     access_control:
         # require ROLE_ADMIN for /admin*
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/ng/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/token, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/, method: "GET", roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/, roles: ROLE_USER }
+        - { path: ^/api, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET] }
+        - { path: ^/api, roles: ROLE_SUPER_ADMIN, methods: [POST, PUT, PUSH, DELETE] }
        # - { path: ^/api, roles: ROLE_USER }

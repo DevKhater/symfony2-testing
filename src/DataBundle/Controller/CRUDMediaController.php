@@ -12,9 +12,6 @@ use DataBundle\Form\MediaType;
 class CRUDMediaController extends Controller
 {
 
-    /**
-     * @Route("/media/all/{offset}/{limit}", name="data_mediacrud_index")
-     */
     public function indexAction($offset = 1, $limit = 10)
     {
         $paginator = $this->getDoctrine()->getRepository('DataBundle:Media')->findAllEntities($offset, $limit);
@@ -29,18 +26,12 @@ class CRUDMediaController extends Controller
         ));
     }
 
-    /**
-     * @Route("/media/{id}", name="data_mediacrud_show")
-     */
     public function showAction(Request $request)
     {
         $location = $this->getOr404($request->get('id'));
         return $this->render('DataBundle:Media:show.html.twig', array('data' => $location));
     }
 
-    /**
-     * @Route("/image/new", name="data_mediacrud_new")
-     */
     public function newAction(Request $request)
     {
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
@@ -67,9 +58,6 @@ class CRUDMediaController extends Controller
         ));
     }
 
-    /**
-     * @Route("/location/edit/{id}", name="data_mediacrud_edit")
-     */
     public function editAction(Request $request)
     {
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
@@ -98,9 +86,6 @@ class CRUDMediaController extends Controller
         ));
     }
 
-    /**
-     * @Route("/location/delete/{id}", name="data_mediacrud_delete")
-     */
     public function deleteAction(Request $request)
     {
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {

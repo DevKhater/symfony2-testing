@@ -12,9 +12,6 @@ use DataBundle\Form\LocationType;
 class CRUDLocationController extends Controller
 {
 
-    /**
-     * @Route("/locations/all/{offset}/{limit}", name="data_locationcrud_index")
-     */
     public function indexAction($offset = 1, $limit = 10)
     {
         $paginator = $this->getDoctrine()->getRepository('DataBundle:Location')->findAllLocations($offset, $limit);
@@ -29,18 +26,12 @@ class CRUDLocationController extends Controller
         ));
     }
 
-    /**
-     * @Route("/locations/{id}", name="data_locationcrud_show")
-     */
     public function showAction(Request $request)
     {
         $location = $this->getOr404($request->get('id'));
         return $this->render('DataBundle:Location:show.html.twig', array('data' => $location));
     }
 
-    /**
-     * @Route("/location/new", name="data_locationcrud_new")
-     */
     public function newAction(Request $request)
     {
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
@@ -65,9 +56,6 @@ class CRUDLocationController extends Controller
         ));
     }
 
-    /**
-     * @Route("/location/edit/{id}", name="data_locationcrud_edit")
-     */
     public function editAction(Request $request)
     {
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
@@ -96,9 +84,6 @@ class CRUDLocationController extends Controller
         ));
     }
 
-    /**
-     * @Route("/location/delete/{id}", name="data_locationcrud_delete")
-     */
     public function deleteAction(Request $request)
     {
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {

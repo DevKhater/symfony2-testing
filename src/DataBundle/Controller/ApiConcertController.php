@@ -48,22 +48,25 @@ class ApiConcertController extends ApiController
         $totalConcerts = $this->getDoctrine()->getRepository($this->classEntity)->countAllEntities();
         $maxPages = ceil($totalConcerts / $limit);
         $data = $this->container->get($this->serviceEntity)->all($offset, $limit);
-        $data == null ? $view = $this->view('No concerts found.', 404) : $view = $this->view($data, 200);
-        $paginatedCollection = new PaginatedRepresentation(
-                new CollectionRepresentation(
-                $data, 'concerts', // embedded rel
-                'concerts'  // xml element name
-                ), 'api_concerts_list', // route
-                array(), // route parameters
-                $offset, // page number
-                $limit, // limit
-                $maxPages, // total pages
-                'page', // page route parameter name, optional, defaults to 'page'
-                'limit', // limit route parameter name, optional, defaults to 'limit'
-                false, // generate relative URIs, optional, defaults to `false`
-                $totalConcerts      // total collection size, optional, defaults to `null`
-        );
-        $view = $this->view($paginatedCollection, 200);
+        if ($data == null){
+            $view = $this->view('No concerts found.', 404);
+        } else {
+            $paginatedCollection = new PaginatedRepresentation(
+                    new CollectionRepresentation(
+                    $data, 'concerts', // embedded rel
+                    'concerts'  // xml element name
+                    ), 'api_concerts_list', // route
+                    array(), // route parameters
+                    $offset, // page number
+                    $limit, // limit
+                    $maxPages, // total pages
+                    'page', // page route parameter name, optional, defaults to 'page'
+                    'limit', // limit route parameter name, optional, defaults to 'limit'
+                    false, // generate relative URIs, optional, defaults to `false`
+                    $totalConcerts      // total collection size, optional, defaults to `null`
+            );
+            $view = $this->view($paginatedCollection, 200);
+        }
         return $this->handleView($view);
     }
 

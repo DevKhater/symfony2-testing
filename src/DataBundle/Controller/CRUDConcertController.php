@@ -12,9 +12,6 @@ use DataBundle\Form\ConcertType;
 class CRUDConcertController extends Controller
 {
 
-    /**
-     * @Route("/concerts/all/{offset}/{limit}", name="data_concertcrud_index")
-     */
     public function indexAction($offset = 1, $limit = 10)
     {
         $paginator = $this->getDoctrine()->getRepository('DataBundle:Concert')->findAllConcerts($offset, $limit);
@@ -29,18 +26,12 @@ class CRUDConcertController extends Controller
         ));
     }
 
-    /**
-     * @Route("/concerts/{id}", name="data_concertcrud_show")
-     */
     public function showAction(Request $request)
     {
         $concert = $this->getOr404($request->get('id'));
         return $this->render('DataBundle:Concert:show.html.twig', array('data' => $concert));
     }
 
-    /**
-     * @Route("/concert/new", name="data_concertcrud_new")
-     */
     public function newAction(Request $request)
     {
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
@@ -65,9 +56,6 @@ class CRUDConcertController extends Controller
         ));
     }
 
-    /**
-     * @Route("/concert/edit/{id}", name="data_concertcrud_edit")
-     */
     public function editAction(Request $request)
     {
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
@@ -96,9 +84,6 @@ class CRUDConcertController extends Controller
         ));
     }
 
-    /**
-     * @Route("/concert/delete/{id}", name="data_concertcrud_delete")
-     */
     public function deleteAction(Request $request)
     {
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {

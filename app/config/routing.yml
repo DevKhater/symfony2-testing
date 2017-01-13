@@ -1,7 +1,7 @@
 angular:
     resource: "@AngularBundle/Controller/"
     type:     annotation
-    prefix:   /ng
+    prefix:   /
 
 data:
     resource: "@DataBundle/Controller/"

@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Hateoas\Representation\PaginatedRepresentation;
 use Hateoas\Representation\CollectionRepresentation;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
@@ -61,22 +62,25 @@ class ApiBandController extends ApiController
         $limit = $paramFetcher->get('all') == 1 ? $totalBands : $paramFetcher->get('limit');
         $maxPages = ceil($totalBands / $limit);
         $data = $this->container->get($this->serviceEntity)->all($offset, $limit);
-        $data == null ? $view = $this->view('No Bands found.', 404) : $view = $this->view($data, 200);
-        $paginatedCollection = new PaginatedRepresentation(
-                new CollectionRepresentation(
-                $data, 'bands', // embedded rel
-                'bands'  // xml element name
-                ), 'api_bands_list', // route
-                array(), // route parameters
-                $offset, // page number
-                $limit, // limit
-                $maxPages, // total pages
-                'page', // page route parameter name, optional, defaults to 'page'
-                'limit', // limit route parameter name, optional, defaults to 'limit'
-                false, // generate relative URIs, optional, defaults to `false`
-                $totalBands      // total collection size, optional, defaults to `null`
-        );
-        $view = $this->view($paginatedCollection, 200);
+        if ($data == null) {
+            $view = $this->view('No Bands found.', 404);
+        } else {
+            $paginatedCollection = new PaginatedRepresentation(
+                    new CollectionRepresentation(
+                    $data, 'bands', // embedded rel
+                    'bands'  // xml element name
+                    ), 'api_bands_list', // route
+                    array(), // route parameters
+                    $offset, // page number
+                    $limit, // limit
+                    $maxPages, // total pages
+                    'page', // page route parameter name, optional, defaults to 'page'
+                    'limit', // limit route parameter name, optional, defaults to 'limit'
+                    false, // generate relative URIs, optional, defaults to `false`
+                    $totalBands      // total collection size, optional, defaults to `null`
+            );
+            $view = $this->view($paginatedCollection, 200);
+        }
         return $this->handleView($view);
     }
 
@@ -117,6 +121,7 @@ class ApiBandController extends ApiController
     /**
      * @Route("api/band/", name="api_band_create")
      * @Method("POST")
+     * @Security("has_role('ROLE_SUPER_ADMIN')")
      * @ApiDoc(
      *   resource = true,
      *   description = "Create a new Band",
@@ -167,6 +172,7 @@ class ApiBandController extends ApiController
     /**
      * @Route("api/band/{id}", name="api_band_delete")
      * @Method("DELETE")
+     * @Security("has_role('ROLE_SUPER_ADMIN')")
      * @ApiDoc(
      *  resource=true,
      *  description="Delete Band resource",
