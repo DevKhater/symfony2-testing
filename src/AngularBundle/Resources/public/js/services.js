@@ -153,8 +153,12 @@ app.factory('Galleries', ['$http', '$httpParamSerializerJQLike', function ($http
     dataFactory.removeImageFromGallery = function (id, media) {
       return $http.delete(Routing.generate('api_gallery_remove_image', {id: id+ '/' + media}));
     };
-    dataFactory.addImageToGallery = function (id, media) {
+    dataFactory.addImageToGallery = function (id, media) { 
       return $http.patch(Routing.generate('api_gallery_add_image', {id: id+ '/' + media}), {headers: {'Accept': 'application/json'}})
+    }
+    dataFactory.addImagesToGallery = function (id, medias) {
+        var data = {id: id,medias: medias};
+        return $http.patch(Routing.generate('api_gallery_add_images'),$httpParamSerializerJQLike({data: data}), {headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
     }
     return dataFactory;
   }]);

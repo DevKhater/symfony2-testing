@@ -6,7 +6,7 @@
 //    angular.bootstrap(document.getElementsByTagName('body')[0], ['mainApp']);
 //}
 
-var app = angular.module('mainApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'ngAria', 'ngAnimate', 'angular-growl', 'bw.paging', 'ngFileUpload', 'ui.map']);
+var app = angular.module('mainApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'ngAria', 'ngAnimate', 'angular-growl', 'bw.paging', 'ngFileUpload']);
 
 app.config([
   '$routeProvider',
@@ -30,6 +30,9 @@ app.config([
     }).when('/media', {
       templateUrl: "/bundles/angular/ng/media.html",
       controller: 'mediaCtrl'
+    }).when('/gallery', {
+      templateUrl: "/bundles/angular/ng/gallery.html",
+      controller: 'galleryCtrl'
     })
   }
 ]);

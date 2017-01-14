@@ -32,13 +32,19 @@
                 Media
               </md-button>
             </md-menu-item>
+            <md-menu-item>
+              <md-button ng-click="go('/gallery')">
+                <md-icon md-svg-icon="elem:media" md-menu-align-target></md-icon>
+                Gallery
+              </md-button>
+            </md-menu-item>
           </md-menu-content>
         </md-menu>
         <md-button class="md-icon-button" aria-label="Home"  ng-click="go('/home')">
           <md-icon md-svg-icon="nav:home"></md-icon>
         </md-button>
         <h2>
-          <span>Toolbar with Disabled/Enabled Icon Buttons</span>
+          <span>Michelkhater.com Backend Demo</span>
         </h2>
         <span flex></span>
 
@@ -67,11 +73,7 @@
             </md-menu-item>
           </md-menu-content>
         </md-menu>
-
-
-
-
-        <!--                <login-logout status='logedIn'></login-logout>-->
+        <login-logout status='logedIn'></login-logout>
       </div>
     </md-toolbar>
   </md-content>

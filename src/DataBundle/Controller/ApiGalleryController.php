@@ -76,6 +76,29 @@ class ApiGalleryController extends FOSRestController
         return $this->handleView($view);
     }
     
+    
+    /**
+     * @Route("api/gallery/", name="api_gallery_add_images")
+     * @Method("PATCH")
+     * @ApiDoc(
+     *  resource=true,
+     *  description="Add Images To Gallery",
+     * )
+     */
+    public function addGalleryImagesAction(Request $request, $id)
+    {
+        $data= $request->request->all();
+        $galleryId = $request->request->get('data')['id'];
+        $medias = $request->request->get('data')['medias'];
+        $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
+        $gallery = $this->getOr404($galleryId);
+        //$mediaManager = $this->container->get('data.media.handler');
+        //$newImage = $mediaManager->get($image);
+        $manager = $this->container->get('data.gallery.handler')->addImages($gallery, $medias);
+        $view = $this->view('Images Added To Gallery', 200);
+        return $this->handleView($view);
+    }
+    
     /**
      * @Route("api/gallery/{id}/{image}", name="api_gallery_remove_image")
      * @Method("DELETE")

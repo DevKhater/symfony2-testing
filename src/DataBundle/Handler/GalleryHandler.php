@@ -59,6 +59,24 @@ class GalleryHandler
         return $gallery;
     }
 
+    public function addImages(Gallery $gallery, $medias)
+    {
+        foreach ($medias as $image) {
+            $image = $this->mediaManager->get($image['id']);
+            $gallery->addImagesInGallery($image);
+            
+        $this->em->persist($gallery);
+        try {
+            $this->em->flush();
+        } catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $e) {
+            //if ($e->getErrorCode() === 1062)
+              //  throw new HttpException(Response::HTTP_BAD_REQUEST, "Image is Already Assigned to Other Entity");
+        }
+        }
+
+        return $gallery;
+    }
+
     public function removeImage(Gallery $gallery, Media $image)
     {
         $gallery->removeImagesInGallery($image);

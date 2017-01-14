@@ -1,0 +1,32 @@
+<ng-include src="'/bundles/angular/ng/header.html'"></ng-include>
+<style>
+    .active {
+        border: 5px solid saddlebrown;
+    }
+</style>
+<md-toolbar >
+    <div class="md-toolbar-tools">
+        <h2>Add Image To Gallery</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()">
+            <md-icon md-svg-src="/bundles/angular/img/icons/xClose.svg" aria-label="Cancel"></md-icon>
+        </md-button>
+    </div>
+</md-toolbar>
+<form name="galleryForm" class="elementCardContent">
+    <div layout-padding layout-margin layout='row'>
+        <div flex='30' ng-repeat="image in images" ng-click="select(image)" ng-class="image.isActive ? 'active' : ''" >
+            <img ng-src="{{image.image_url}}" height="50" width="50">
+        </div>
+    </div>
+    <div layout="row" md-whiteframe="2">
+        <span flex> </span>
+        <md-input-container>
+            <md-button type="submit" ng-click="addImagesToGallery()">Save</md-button>
+        </md-input-container>
+        <md-input-container>
+            <div layout="row" layout-sm="row" layout-align="space-around">
+            </div>
+        </md-input-container>
+    </div>
+</form>

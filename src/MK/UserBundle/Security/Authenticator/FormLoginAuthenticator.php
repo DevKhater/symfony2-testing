@@ -70,7 +70,7 @@ class FormLoginAuthenticator extends AbstractFormLoginAuthenticator
     protected function getDefaultSuccessRedirectUrl()
     {
         //return $this->container->get('router')->generate('homepage');
-        return $this->container->get('router')->generate('ng_login');
+        return $this->container->get('router')->generate('backend_login');
     }
     
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
