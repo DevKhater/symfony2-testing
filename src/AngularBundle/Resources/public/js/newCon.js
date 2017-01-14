@@ -320,6 +320,21 @@ app.controller('galleryCtrl', function ($scope, Images, Galleries, $rootScope, $
             console.log($scope.selected);
         }
     };
+    $scope.gallery = {
+        name: ''
+    }
+    $scope.createGallery = function(){
+        datatbundle_gallery = {
+            name: $scope.gallery.name
+        }
+        Galleries.addGallery(datatbundle_gallery).then(
+        function successCallback(response) {
+          $rootScope.showSuccess('Gallery Created');
+        }, function errorCallback(response) {
+          console.log(response);
+        });
+    }
+    
      $scope.addImagesToGallery = function () {
          $scope.medias = [];
          angular.forEach($scope.selected, function(value, key) {

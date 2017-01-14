@@ -8,11 +8,18 @@
     <div class="md-toolbar-tools">
         <h2>Add Image To Gallery</h2>
         <span flex></span>
-        <md-button class="md-icon-button" ng-click="cancel()">
-            <md-icon md-svg-src="/bundles/angular/img/icons/xClose.svg" aria-label="Cancel"></md-icon>
-        </md-button>
     </div>
 </md-toolbar>
+<form name="newGalleryForm">
+    <md-input-container>
+            <label>Name</label>
+            <input ng-model="gallery.name" name="galleryName" required>
+    </md-input-container>
+        <md-input-container>
+            <md-button type="submit" ng-click="createGallery()">Save</md-button>
+        </md-input-container>
+          
+</form>
 <form name="galleryForm" class="elementCardContent">
     <div layout-padding layout-margin layout='row'>
         <div flex='30' ng-repeat="image in images" ng-click="select(image)" ng-class="image.isActive ? 'active' : ''" >
