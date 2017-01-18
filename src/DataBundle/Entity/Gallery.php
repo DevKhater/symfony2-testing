@@ -32,7 +32,7 @@ class Gallery
      * @ORM\ManyToMany(targetEntity="DataBundle\Entity\Media")
      * @ORM\JoinTable(name="galleries_images",
      *      joinColumns={@ORM\JoinColumn(name="gallery_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="media_id", referencedColumnName="id", unique=true)}
+     *      inverseJoinColumns={@ORM\JoinColumn(name="media_id", referencedColumnName="id")}
      *      )
      */
     private $imagesInGallery;
@@ -81,6 +81,11 @@ class Gallery
      * @return \Doctrine\Common\Collections\Collection 
      */
     public function getImagesInGallery()
+    {
+        return $this->imagesInGallery;
+    }
+
+    public function isImagesInGallery()
     {
         return $this->imagesInGallery;
     }

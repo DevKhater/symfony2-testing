@@ -133,20 +133,21 @@ app.factory('Users', ['$http', '$httpParamSerializerJQLike', function ($http, $h
 
 
 app.factory('Galleries', ['$http', '$httpParamSerializerJQLike', function ($http, $httpParamSerializerJQLike) {
-    //var url = Routing.generate('api_bands_list');
     var dataFactory = {};
-//    dataFactory.getAllBands = function () {
-//      return $http({method: "GET", url: url, headers: {'Accept': 'application/json'}, params: {offset: 1, all: 1}});
-//    };
-//    dataFactory.getBands = function (page, limit) {
-//      if (page == 0 || page == null) {
-//        page = 1
-//      }
-//      if (limit == 0 || limit == null) {
-//        limit = 10
-//      }
-//      return $http({method: "GET", url: url, headers: {'Accept': 'application/json'}, params: {offset: page, limit: limit}});
-//    };
+    var url = Routing.generate('api_gallery_list');
+    dataFactory.getAllGalleries = function () {
+      return $http({method: "GET", url: url, headers: {'Accept': 'application/json'}, params: {offset: 1, all: 1}});
+    };
+    dataFactory.getGalleries = function (page, limit) {
+      if (page == 0 || page == null) {
+        page = 1
+      }
+      if (limit == 0 || limit == null) {
+        limit = 10
+      }
+      return $http({method: "GET", url: url, headers: {'Accept': 'application/json'}, params: {offset: page, limit: limit}});
+    };
+
     dataFactory.addGallery = function (databundle_gallery) {
       return $http.post(Routing.generate('api_gallery_create'), $httpParamSerializerJQLike({databundle_gallery: databundle_gallery}), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
     };

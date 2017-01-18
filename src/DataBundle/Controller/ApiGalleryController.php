@@ -24,6 +24,53 @@ class ApiGalleryController extends FOSRestController
         $this->serviceEntity = 'data.gallery.handler';
         $this->templateDirectory = 'DataBundle:Gallery:';
     }
+    
+    /**
+     * @Route("api/gallery", name="api_gallery_list")
+     * @Method("GET")
+     * @ApiDoc(
+     *   description="List All Galleries",
+     *   resource = true,
+     *   statusCodes = {
+     *     200 = "Returned when Successful",
+     *     404 = "Returned when No Content Found",
+     *   }
+     * )
+     *
+     * @Annotations\QueryParam(name="offset", requirements="\d+", nullable=true, description="Offset from which to start listing galleries.")
+     * @Annotations\QueryParam(name="limit", requirements="\d+", default="10", description="How many galleries to return.")
+     * @Annotations\QueryParam(name="all", requirements="\d+", default="0", description="get All galleries.")
+     *
+     */
+    
+    public function getGalleryAction(Request $request, ParamFetcherInterface $paramFetcher)
+    {
+        $offset = null == $paramFetcher->get('offset') ? 1 : $paramFetcher->get('offset');
+        $totalGalleries= $this->getDoctrine()->getRepository($this->classEntity)->countAllEntities();
+        $limit = $paramFetcher->get('all') == 1 ? $totalGalleries : $paramFetcher->get('limit');
+        $maxPages = ceil($totalGalleries / $limit);
+        $data = $this->getDoctrine()->getRepository($this->classEntity)->findAllEntities($offset, $limit);
+        if ($data == null) {
+            $view = $this->view('No Galleries found.', 404);
+        } else {
+            $paginatedCollection = new PaginatedRepresentation(
+                    new CollectionRepresentation(
+                    $data, 'gallery', // embedded rel
+                    'gallery'  // xml element name
+                    ), 'api_gallery_list', // route
+                    array(), // route parameters
+                    $offset, // page number
+                    $limit, // limit
+                    $maxPages, // total pages
+                    'page', // page route parameter name, optional, defaults to 'page'
+                    'limit', // limit route parameter name, optional, defaults to 'limit'
+                    false, // generate relative URIs, optional, defaults to `false`
+                    $totalGalleries      // total collection size, optional, defaults to `null`
+            );
+            $view = $this->view($paginatedCollection, 200);
+        }
+        return $this->handleView($view);
+    }
 
     /**
      * @Route("api/gallery/", name="api_gallery_create")
@@ -68,7 +115,7 @@ class ApiGalleryController extends FOSRestController
         $mediaManager = $this->container->get('data.media.handler');
         $newImage = $mediaManager->get($image);
         if ($newImage) {
-            $band = $this->container->get('data.gallery.handler')->addImage($gallery, $newImage);
+            $band = $this->container->get($this->serviceEntity)->addImage($gallery, $newImage);
             $view = $this->view('Image Added To Gallery', 200);
         } else {
             $view = $this->view('Image Not Found', 404);
@@ -92,9 +139,7 @@ class ApiGalleryController extends FOSRestController
         $medias = $request->request->get('data')['medias'];
         $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
         $gallery = $this->getOr404($galleryId);
-        //$mediaManager = $this->container->get('data.media.handler');
-        //$newImage = $mediaManager->get($image);
-        $manager = $this->container->get('data.gallery.handler')->addImages($gallery, $medias);
+        $this->container->get($this->serviceEntity)->addImages($gallery, $medias);
         $view = $this->view('Images Added To Gallery', 200);
         return $this->handleView($view);
     }
@@ -114,7 +159,7 @@ class ApiGalleryController extends FOSRestController
         $mediaManager = $this->container->get('data.media.handler');
         $newImage = $mediaManager->get($image);
         if ($newImage) {
-            $band = $this->container->get('data.gallery.handler')->removeImage($gallery, $newImage);
+            $band = $this->container->get($this->serviceEntity)->removeImage($gallery, $newImage);
             $view = $this->view('Image Removed from Gallery', 200);
         } else {
             $view = $this->view('Image Not Found', 404);

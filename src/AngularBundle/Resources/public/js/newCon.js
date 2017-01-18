@@ -289,7 +289,7 @@ app.controller('mediaCtrl', function ($scope, $rootScope, $timeout, Images, Uplo
 });
 /* Gallery Controller ***/
 app.controller('galleryCtrl', function ($scope, Images, Galleries, $rootScope, $mdDialog) {
-    $scope.images, $scope.limit, $scope.total, $scope.page, $scope.pages;
+    $scope.images;
     $scope.noFound = false;
     getImagesList();
     function getImagesList() {
@@ -303,6 +303,30 @@ app.controller('galleryCtrl', function ($scope, Images, Galleries, $rootScope, $
             console.log(error.message);
         });
     }
+    
+    $scope.galleries, $scope.limit, $scope.total, $scope.page, $scope.pages;
+    $scope.galleryNoFound = false;
+    getGalleryList($scope.page, $scope.limit);
+    function getGalleryList(page, limit) {
+        Galleries.getAllGalleries()
+                .then(function (response) {
+                    if (response.data.total == 0) {
+                        $scope.galleryNoFound = true;
+                    }
+                    $scope.limit = response.data.limit;
+                    $scope.total = response.data.total;
+                    $scope.page = response.data.page;
+                    $scope.pages = response.data.pages;
+                    $scope.galleries = response.data._embedded.gallery;
+                }, function (error) {
+                    console.log(error.message);
+                });
+    }
+    $scope.changePage = function (page) {
+        getImagesList(page, $scope.limit);
+    }
+    
+    
     $scope.selected = [];
     $scope.class = false;
     $scope.select = function (item) {
@@ -334,18 +358,24 @@ app.controller('galleryCtrl', function ($scope, Images, Galleries, $rootScope, $
           console.log(response);
         });
     }
-    
+    $scope.addImageGalleryId;
      $scope.addImagesToGallery = function () {
-         $scope.medias = [];
-         angular.forEach($scope.selected, function(value, key) {
-                console.log(value);
-                $scope.medias.push(value);
-        });
-        Galleries.addImagesToGallery(1, $scope.medias)
-                .then(function successCallback(response) {
-                    $rootScope.showSuccess('Images Added');
-                }, function errorCallback(response) {
-                    $rootScope.showError(response);
-                });
+         if (angular.isUndefined($scope.addImageGalleryId))
+         {
+             $rootScope.showError('Select A Gallery');
+         } else {
+            $scope.medias = [];
+            angular.forEach($scope.selected, function(value, key) {
+                    console.log(value);
+                    $scope.medias.push(value);
+            });
+            Galleries.addImagesToGallery($scope.addImageGalleryId, $scope.medias)
+                    .then(function successCallback(response) {
+                        $rootScope.showSuccess('Images Added');
+                        getGalleryList($scope.page, $scope.limit);
+                    }, function errorCallback(response) {
+                        $rootScope.showError(response);
+                    });
+          }
     };
 });
