@@ -7,6 +7,7 @@ use Symfony\Component\Form\FormFactoryInterface;
 use DataBundle\Exception\InvalidFormException;
 use DataBundle\Form\Api\ApiConcertType;
 use DataBundle\Entity\Concert;
+use DataBundle\Entity\Gallery;
 
 class ConcertHandler
 {
@@ -158,6 +159,20 @@ class ConcertHandler
         $concert->setBand($band);
         $this->em->persist($concert);
         $this->em->flush($concert);
+        return $concert;
+    }
+    
+    
+    public function addGallery(Concert $concert, Gallery $gallery)
+    {
+        $concert->setGallery($gallery);
+        $this->em->persist($gallery);
+        try {
+            $this->em->flush();
+        } catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $e) {
+            if ($e->getErrorCode() === 1062)
+                throw new HttpException(Response::HTTP_BAD_REQUEST, "Gallery is Already Assigned to Other Entity");
+        }
         return $concert;
     }
 

@@ -158,4 +158,4 @@ nelmio_cors:
             max_age: 3600
 
 fos_js_routing:
-    routes_to_expose: [ login_check, ng_loginSuccess, ng_get_user, logout, api_band_genres, api_band_create, api_bands_list, api_band_delete, api_band_update, api_concerts_list, api_locations_list, api_concert_create, api_location_create, api_media_list, api_media_create, api_band_add_image, api_location_delete, api_concert_delete, api_media_delete, api_gallery_create, api_gallery_remove_image, api_gallery_add_image, api_gallery_add_images, api_gallery_list]
+    routes_to_expose: [ login_check, ng_loginSuccess, ng_get_user, logout, api_band_genres, api_band_create, api_bands_list, api_band_delete, api_band_update, api_concerts_list, api_locations_list, api_concert_create, api_location_create, api_media_list, api_media_create, api_band_add_image, api_location_delete, api_concert_delete, api_media_delete, api_gallery_create, api_gallery_remove_image, api_gallery_add_image, api_gallery_add_images, api_gallery_list, api_concert_add_gallery]

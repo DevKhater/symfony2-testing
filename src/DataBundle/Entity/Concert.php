@@ -37,6 +37,12 @@ use JMS\Serializer\Annotation as Serializer;
  *     embedded = "expr(object.getLocation().getLocationInformation())",
  *     exclusion = @Hateoas\Exclusion(excludeIf = "expr(object.getLocation() === null)")
  * )
+ * @Hateoas\Relation(
+ *     "gallery",
+ *     href = "expr('/api/gallery/' ~ object.getGallery().getId())",
+ *     embedded = "expr(object.getGallery())",
+ *     exclusion = @Hateoas\Exclusion(excludeIf = "expr(object.getGallery() === null)")
+ * )
  */
 class Concert implements ConcertInterface
 {
@@ -73,6 +79,13 @@ class Concert implements ConcertInterface
      * @Serializer\Exclude 
      */
     protected $band;
+    
+    /**
+     * @ORM\OneToOne(targetEntity="DataBundle\Entity\Gallery")
+     * @ORM\JoinColumn(name="gallery_id", referencedColumnName="id", onDelete="SET NULL")
+     * @Serializer\Exclude 
+     */
+    protected $gallery;
 
     /**
      * Get id
@@ -153,4 +166,27 @@ class Concert implements ConcertInterface
         return $this->band;
     }
 
+
+    /**
+     * Set gallery
+     *
+     * @param \DataBundle\Entity\Gallery $gallery
+     * @return Concert
+     */
+    public function setGallery(\DataBundle\Entity\Gallery $gallery = null)
+    {
+        $this->gallery = $gallery;
+
+        return $this;
+    }
+
+    /**
+     * Get gallery
+     *
+     * @return \DataBundle\Entity\Gallery 
+     */
+    public function getGallery()
+    {
+        return $this->gallery;
+    }
 }

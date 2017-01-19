@@ -105,6 +105,9 @@ app.factory('Users', ['$http', '$httpParamSerializerJQLike', function ($http, $h
     dataFactory.deleteConcert = function (id) {
       return $http.delete(Routing.generate('api_concert_delete', {id: id}));
     };
+    dataFactory.addGalleryToConcert = function (concert, gallery) {
+      return $http.patch(Routing.generate('api_concert_add_gallery', {id: concert+ '/' + gallery}), {headers: {'Accept': 'application/json'}})
+    };
     return dataFactory;
   }]);
 

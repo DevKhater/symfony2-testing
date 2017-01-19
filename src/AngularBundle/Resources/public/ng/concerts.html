@@ -40,6 +40,9 @@
       <td>
         Location
       </td>
+      <td>
+        Gallery
+      </td>
      </tr>
     </thead>
     <tbody>
@@ -48,6 +51,15 @@
         <td>{{ gig.date | date : 'dd, MMMM - yyyy'}}</td>
         <td>{{ gig._embedded.band.name}}</td>
         <td>{{ gig._embedded.location.name}}</td>
+        <td>
+                <md-select ng-model="gig.gallery.id" ng-if="gig.gallery.editing" placeholder="Select Gallery" style="margin:0">
+                    <md-option ng-repeat="g in galleries" value="{{g.id}}">{{g.name}}</md-option>
+              </md-select>
+            <span ng-if="!gig.gallery.editing">{{ gig._embedded.gallery.name}}</span>
+             <button type="submit" data-ng-hide="gig.gallery.editing" data-ng-click="gig.gallery.editing = true; editConcertGallery(gig)" class="btn btn-default">Edit</button>
+             <button type="submit" data-ng-show="gig.gallery.editing" data-ng-click="gig.gallery.editing = false; saveConcertGallery(gig.id, gig.gallery.id)" class="btn btn-default">Save</button>
+            <button type="submit" data-ng-show="gig.gallery.editing" data-ng-click="gig.gallery.editing = false; cancel()" class="btn btn-default">Cancel</button>
+        </td>
       </tr>
      </tbody>
    </table>

@@ -229,6 +229,32 @@ class ApiConcertController extends ApiController
         return $this->handleView($view);
     }
 
+    
+    /**
+     * @Route("api/concert/{id}/{gallery}", name="api_concert_add_gallery")
+     * @Method("PATCH")
+     * @ApiDoc(
+     *  resource=true,
+     *  description="Add Gallery To Concert",
+     * )
+     */
+    public function addGalleryConcertAction(Request $request, $id, $gallery)
+    {
+        $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
+        $concert = $this->getOr404($request->get('id'));
+        $galleryManager = $this->container->get('data.gallery.handler');
+        $newGallery = $galleryManager ->get($gallery);
+        if ($newGallery) {
+            $concert = $this->container->get($this->serviceEntity)->addGallery($concert, $newGallery);
+            $view = $this->view('Gallery Added To Concert', 200);
+        } else {
+            $view = $this->view('Gallery Not Found', 404);
+        }
+        return $this->handleView($view);
+    }
+    
+    
+    
     /**
      * @Route("api/concert/{id}", name="api_concert_delete")
      * @Method("DELETE")

@@ -73,6 +73,13 @@ class Concert implements ConcertInterface
      * @Serializer\Exclude 
      */
     protected $band;
+    
+    /**
+     * @ORM\OneToOne(targetEntity="DataBundle\Entity\Gallery")
+     * @ORM\JoinColumn(name="gallery_id", referencedColumnName="id", onDelete="SET NULL")
+     * @Serializer\Exclude 
+     */
+    protected $gallery;
 
     /**
      * Get id
