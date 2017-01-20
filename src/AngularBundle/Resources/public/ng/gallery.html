@@ -6,37 +6,69 @@
 </style>
 
 
+ <md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="right">
 
-  <table class="table table-bordered table-striped backWhite" ng-hide="galleryNoFound">
+      <md-toolbar class="md-theme-light">
+        <h1 class="md-toolbar-tools">Sidenav Right</h1>
+      </md-toolbar>
+      <md-content layout-padding>
+        <form>
+            <div layout-padding layout-margin layout='column'>
+                <div flex='30' ng-repeat="image in editGal.images">
+                    <img ng-src="{{image.image_url}}" height="50" width="50">
+                    <md-button aria-label="DeleteImageFromGallery" ng-click="deleteImageFromGallery(image, $index)"><md-icon md-svg-icon="crud:delete" style="fill:red"></md-icon></md-button>
+                </div>
+            </div>
+          <md-input-container>
+            <label for="testInput">Test input</label>
+            <input type="text" id="testInput"
+                   ng-model="data" md-autofocus>
+          </md-input-container>
+        </form>
+        <md-button ng-click="close()" class="md-primary">
+          Close Sidenav Right
+        </md-button>
+      </md-content>
+
+    </md-sidenav>
+
+
+
+
+<table class="table table-bordered table-striped backWhite" ng-hide="galleryNoFound">
     <thead>
-      <tr>
-        <td></td>
-        <td>
-            Name
-      </td>
-      <td>
-          Images
-      </td>
-     </tr>
+        <tr>
+            <td></td>
+            <td>
+                Name
+            </td>
+            <td>
+                Images
+            </td>
+        </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="gallery in galleries">
-        <td flex><md-button aria-label="DeleteGallery" ng-click="deleteGallery(gallery)"><md-icon md-svg-icon="crud:delete" style="fill:red"></md-icon></md-button></td>
-        <td>{{ gallery.name}}</td>
-        <td>{{ gallery.images_in_gallery.length}}</td>
-        <td></td>
-      </tr>
-     </tbody>
-   </table>
-  <div layout-align="center center" layout="row"
-  paging
-  page="page"
-  page-size="limit"
-  total="total"
-  paging-action="changePage(page)">
-  </div>
+        <tr ng-repeat="gallery in galleries">
+            <td flex><md-button aria-label="DeleteGallery" ng-click="deleteGallery(gallery)"><md-icon md-svg-icon="crud:delete" style="fill:red"></md-icon></md-button></td>
+            <td><span ng-click="editGallery(gallery)">{{ gallery.name}}</span></td>
+<td>{{ gallery.images_in_gallery.length}}</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div layout-align="center center" layout="row"
+     paging
+     page="page"
+     page-size="limit"
+     total="total"
+     paging-action="changePage(page)">
+</div>
 
-
+<md-button ng-click="toggleRight()"
+            ng-hide="isOpenRight()"
+            class="md-primary">
+            Toggle right
+</md-button>
 
 
 
@@ -48,21 +80,21 @@
 </md-toolbar>
 <form name="newGalleryForm">
     <md-input-container>
-            <label>Name</label>
-            <input ng-model="gallery.name" name="galleryName" required>
+        <label>Name</label>
+        <input ng-model="gallery.name" name="galleryName" required>
     </md-input-container>
-        <md-input-container>
-            <md-button type="submit" ng-click="createGallery()">Save</md-button>
-        </md-input-container>
-          
+    <md-input-container>
+        <md-button type="submit" ng-click="createGallery()">Save</md-button>
+    </md-input-container>
+
 </form>
 <form name="galleryForm" class="elementCardContent">
     <div layout-padding layout-margin layout='row'>
-           <div class='npT' style="width:100%;">
-              <md-select ng-model='addImageGalleryId' placeholder="Select Gallery" style="margin:0">
+        <div class='npT' style="width:100%;">
+            <md-select ng-model='addImageGalleryId' placeholder="Select Gallery" style="margin:0">
                 <md-option ng-repeat="g in galleries" value="{{g.id}}">{{g.name}}</md-option>
-              </md-select>
-            </div>
+            </md-select>
+        </div>
     </div>
     <div layout-padding layout-margin layout='row'>
         <div flex='30' ng-repeat="image in images" ng-click="select(image)" ng-class="image.isActive ? 'active' : ''" >
