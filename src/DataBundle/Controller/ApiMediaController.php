@@ -2,19 +2,18 @@
 
 namespace DataBundle\Controller;
 
-use FOS\RestBundle\Request\ParamFetcherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Hateoas\Representation\PaginatedRepresentation;
-use Hateoas\Representation\CollectionRepresentation;
-use FOS\RestBundle\Controller\FOSRestController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use DataBundle\Controller\BaseApiController as ApiController;
+use MK\ApiBundle\Api\ApiProblem;
 
-class ApiMediaController extends FOSRestController
+class ApiMediaController extends ApiController
 {
 
     public function __construct()
@@ -44,29 +43,13 @@ class ApiMediaController extends FOSRestController
      */
     public function getMediaAction(Request $request, ParamFetcherInterface $paramFetcher)
     {
-        $offset = null == $paramFetcher->get('offset') ? 1 : $paramFetcher->get('offset');
         $totalImages = $this->getDoctrine()->getRepository($this->classEntity)->countAllEntities();
-        $limit = $paramFetcher->get('all') == 1 ? $totalImages : $paramFetcher->get('limit');
-        $maxPages = ceil($totalImages / $limit);
-        $data = $this->getDoctrine()->getRepository($this->classEntity)->findAllEntities($offset, $limit);
-        if ($data == null) {
-            $view = $this->view('No media found.', 404);
-        } else {
-            $paginatedCollection = new PaginatedRepresentation(
-                    new CollectionRepresentation(
-                    $data, 'media', // embedded rel
-                    'media'  // xml element name
-                    ), 'api_media_list', // route
-                    array(), // route parameters
-                    $offset, // page number
-                    $limit, // limit
-                    $maxPages, // total pages
-                    'page', // page route parameter name, optional, defaults to 'page'
-                    'limit', // limit route parameter name, optional, defaults to 'limit'
-                    false, // generate relative URIs, optional, defaults to `false`
-                    $totalImages      // total collection size, optional, defaults to `null`
-            );
+        if ($totalImages != 0) {
+            $op = parent::getList($request, $paramFetcher, $totalImages);
+            $paginatedCollection = parent::createPaginations($op[0], 'media', 'api_media_list', $op[1], $op[2], $op[3], $totalImages);
             $view = $this->view($paginatedCollection, 200);
+        } else {
+            $view = $this->view([], 200);
         }
         return $this->handleView($view);
     }
@@ -92,7 +75,8 @@ class ApiMediaController extends FOSRestController
         if ($newMedia->getId()) {
             $view = $this->view($newMedia, 200);
         } else {
-            $view = $this->view('Couldnt Create Band', 500);
+            $problem = new ApiProblem(500, 'Error', 'Can\'t create Image');
+            $view = $this->view($problem, 500);
         }
         return $this->handleView($view);
     }
@@ -112,14 +96,6 @@ class ApiMediaController extends FOSRestController
         $this->container->get($this->serviceEntity)->delete($entity);
         $view = $this->view(null, 204);
         return $this->handleView($view);
-    }
-
-    private function getOr404($id)
-    {
-        if (!($entity = $this->container->get($this->serviceEntity)->get($id))) {
-            throw new NotFoundHttpException($this->classEntity . ' Not Found');
-        }
-        return $entity;
     }
 
 }

@@ -28,7 +28,13 @@ class MediaHandler
     {
         return $this->repository->find($id);
     }
+    
+    public function all($offset = 0, $limit = 10)
+    {
+        return $this->repository->findAllEntities($offset, $limit);
+    }
 
+    
     public function delete(MediaInterface $image)
     {
         $this->em->remove($image);

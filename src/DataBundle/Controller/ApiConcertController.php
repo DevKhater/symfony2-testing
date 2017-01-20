@@ -5,7 +5,6 @@ namespace DataBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
@@ -40,18 +39,15 @@ class ApiConcertController extends ApiController
      *
      * @Annotations\View(templateVar="concerts")
      */
-    public function getConcertAction(Request $request, ParamFetcherInterface $paramFetcher)
+    public function getConcertsAction(Request $request, ParamFetcherInterface $paramFetcher)
     {
-        $offset = null == $paramFetcher->get('offset') ? 1 : $paramFetcher->get('offset');
         $totalConcerts = $this->getDoctrine()->getRepository($this->classEntity)->countAllEntities();
-        $limit = $paramFetcher->get('all') == 1 ? $totalConcerts : $paramFetcher->get('limit');
-        $maxPages = ceil($totalConcerts / $limit);
-        $data = $this->container->get($this->serviceEntity)->all($offset, $limit);
-        if ($data == null){
-            $view = $this->view([], 200);
-        } else {
-            $paginatedCollection = parent::createPaginations($data, 'concerts', 'api_concerts_list', $offset, $limit, $maxPages, $totalConcerts );
+        if ($totalConcerts != 0) {
+            $op = parent::getList($request, $paramFetcher, $totalConcerts);
+            $paginatedCollection = parent::createPaginations($op[0], 'concerts', 'api_concerts_list', $op[1], $op[2], $op[3], $totalConcerts);
             $view = $this->view($paginatedCollection, 200);
+        } else {
+            $view = $this->view([], 200);
         }
         return $this->handleView($view);
     }
@@ -65,7 +61,7 @@ class ApiConcertController extends ApiController
      * )
      * 
      */
-    public function showConcertAction(Request $request)
+    public function getConcertAction(Request $request)
     {
         $id = $request->get('id');
         $response = parent::showAction($id);
@@ -87,23 +83,6 @@ class ApiConcertController extends ApiController
                 ->setTemplate($this->templateDirectory . "concertApiShowFields.html.twig")
                 ->setTemplateData(['element' => 'Band Name']);
         return $this->handleView($view);
-    }
-
-    /**
-     * @Route("api/concert/{id}/band/{name}", name="api_concert_patch_band")
-     * @Method("PATCH")
-     * @ApiDoc(
-     *  resource=true,
-     *  description="Show Concert's Band",
-     * )
-     */
-    public function patchConcertBandAction(Request $request)
-    {
-        $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
-        $newName = $request->get('name');
-        $concert = $this->getOr404($request->get('id'));
-        $updatedConcert = $this->container->get($this->serviceEntity)->patchBand($concert, $newName);
-        return $this->forward('DataBundle:ApiConcert:showConcert', array('id' => $updatedConcert->getId()));
     }
 
     /**
@@ -160,7 +139,7 @@ class ApiConcertController extends ApiController
 
         return $this->handleView($view);
     }
-
+    
     /**
      * @Route("api/concert/", name="api_concert_create")
      * @Method("POST")
@@ -181,7 +160,8 @@ class ApiConcertController extends ApiController
         if ($newConcert) {
             $view = $this->view('Concert Created', 200);
         } else {
-            $view = $this->view('Error Can\'t Create Concert', 500);
+            $problem = new ApiProblem(500, 'Error', 'Can\'t create Concert');
+            $view = $this->view($problem, 500);
         }
         return $this->handleView($view);
     }
@@ -213,7 +193,23 @@ class ApiConcertController extends ApiController
         }
         return $this->handleView($view);
     }
-
+    
+    /**
+     * @Route("api/concert/{id}/band/{name}", name="api_concert_patch_band")
+     * @Method("PATCH")
+     * @ApiDoc(
+     *  resource=true,
+     *  description="Show Concert's Band",
+     * )
+     */
+    public function patchConcertBandAction(Request $request)
+    {
+        $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
+        $newName = $request->get('name');
+        $concert = $this->getOr404($request->get('id'));
+        $updatedConcert = $this->container->get($this->serviceEntity)->patchBand($concert, $newName);
+        return $this->forward('DataBundle:ApiConcert:showConcert', array('id' => $updatedConcert->getId()));
+    }
     
     /**
      * @Route("api/concert/{id}/{gallery}", name="api_concert_add_gallery")
@@ -228,7 +224,7 @@ class ApiConcertController extends ApiController
         $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
         $concert = $this->getOr404($request->get('id'));
         $galleryManager = $this->container->get('data.gallery.handler');
-        $newGallery = $galleryManager ->get($gallery);
+        $newGallery = $galleryManager->get($gallery);
         if ($newGallery) {
             $concert = $this->container->get($this->serviceEntity)->addGallery($concert, $newGallery);
             $view = $this->view('Gallery Added To Concert', 200);
@@ -237,8 +233,6 @@ class ApiConcertController extends ApiController
         }
         return $this->handleView($view);
     }
-    
-    
     
     /**
      * @Route("api/concert/{id}", name="api_concert_delete")
@@ -254,5 +248,4 @@ class ApiConcertController extends ApiController
         $response = parent::deleteAction($request->get('id'));
         return($response);
     }
-
 }

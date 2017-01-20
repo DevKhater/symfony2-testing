@@ -5,7 +5,6 @@ namespace DataBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\Controller\Annotations;
@@ -56,16 +55,13 @@ class ApiBandController extends ApiController
      */
     public function getBandsAction(Request $request, ParamFetcherInterface $paramFetcher)
     {
-        $offset = null == $paramFetcher->get('offset') ? 1 : $paramFetcher->get('offset');
         $totalBands = $this->getDoctrine()->getRepository($this->classEntity)->countAllEntities();
-        $limit = $paramFetcher->get('all') == 1 ? $totalBands : $paramFetcher->get('limit');
-        $maxPages = ceil($totalBands / $limit);
-        $data = $this->container->get($this->serviceEntity)->all($offset, $limit);
-        if ($data == null) {
-            $view = $this->view([], 200);
-        } else {
-            $paginatedCollection = parent::createPaginations($data, 'bands', 'api_bands_list', $offset, $limit, $maxPages, $totalBands );
+        if ($totalBands != 0) {
+            $op = parent::getList($request, $paramFetcher, $totalBands);
+            $paginatedCollection = parent::createPaginations($op[0], 'bands', 'api_bands_list', $op[1], $op[2], $op[3], $totalBands);
             $view = $this->view($paginatedCollection, 200);
+        } else {
+            $view = $this->view([], 200);
         }
         return $this->handleView($view);
     }
@@ -82,7 +78,7 @@ class ApiBandController extends ApiController
      *   }
      * )
      */
-    public function showBandAction(Request $request)
+    public function getBandAction(Request $request)
     {
         $id = $request->get('slug');
         $response = parent::showAction($id);
@@ -158,22 +154,6 @@ class ApiBandController extends ApiController
     }
 
     /**
-     * @Route("api/band/{id}", name="api_band_delete")
-     * @Method("DELETE")
-     * @Security("has_role('ROLE_SUPER_ADMIN')")
-     * @ApiDoc(
-     *  resource=true,
-     *  description="Delete Band resource",
-     * )
-     */
-    public function deleteBandAction(Request $request)
-    {
-        $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
-        $response = parent::deleteAction($request->get('id'));
-        return($response);
-    }
-
-    /**
      * @Route("api/band/{slug}/{image}", name="api_band_add_image")
      * @Method("PATCH")
      * @ApiDoc(
@@ -195,6 +175,22 @@ class ApiBandController extends ApiController
             $view = $this->view('Error', 500);
         }
         return $this->handleView($view);
+    }
+
+    /**
+     * @Route("api/band/{id}", name="api_band_delete")
+     * @Method("DELETE")
+     * @Security("has_role('ROLE_SUPER_ADMIN')")
+     * @ApiDoc(
+     *  resource=true,
+     *  description="Delete Band resource",
+     * )
+     */
+    public function deleteBandAction(Request $request)
+    {
+        $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
+        $response = parent::deleteAction($request->get('id'));
+        return($response);
     }
 
 }

@@ -34,7 +34,7 @@ class GalleryHandler
         return $this->repository->find($id);
     }
 
-    public function all($offset = 0, $limit = 5)
+    public function all($offset = 0, $limit = 10)
     {
         return $this->repository->findAllEntities($offset, $limit);
     }

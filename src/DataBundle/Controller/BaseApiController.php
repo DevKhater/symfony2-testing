@@ -14,22 +14,17 @@ class BaseApiController extends FOSRestController {
 
     var $classEntity, $serviceEntity, $templateDirectory;
 
-    public function getAction(Request $request, ParamFetcherInterface $paramFetcher) {
-        $offset = null == $paramFetcher->get('offset') ? 1 : $paramFetcher->get('offset');
-        $limit = $paramFetcher->get('limit');
-        $maxPages = ceil($this->getDoctrine()->getRepository($this->classEntity)->countAllEntities() / $limit);
-        $data = $this->container->get($this->serviceEntity)->all($offset, $limit);
-        $data == null ? $view = $this->view('No concerts found.', 404) : $view = $this->view($data, 200);
-        $view->setTemplate($this->templateDirectory . "apiList.html.twig")
-                ->setTemplateData(['maxPages' => $maxPages,
-                    'thisPage' => $offset, 'theIndex' => 'api_concerts_list']);
-        return $this->handleView($view);
+    public function getList(Request $request, ParamFetcherInterface $paramFetcher, $toalEntities) {
+            $offset = null == $paramFetcher->get('offset') ? 1 : $paramFetcher->get('offset');
+            $limit = $paramFetcher->get('all') == 1 ? $toalEntities : $paramFetcher->get('limit');
+            $maxPages = ceil($toalEntities / $limit);
+            $data = $this->container->get($this->serviceEntity)->all($offset, $limit);
+            return [$data, $offset, $limit, $maxPages];
     }
 
     public function showAction($id) {
         $data = $this->getOr404($id);
-        $view = $this->view($data, 200)
-                ->setTemplate($this->templateDirectory . "apiShow.html.twig");
+        $view = $this->view($data, 200);
         return $this->handleView($view);
     }
 

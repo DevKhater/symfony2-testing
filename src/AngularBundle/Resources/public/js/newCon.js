@@ -74,6 +74,7 @@ app.controller('bandsCtrl', function ($scope, $rootScope, Bands, $mdDialog) {
     $scope.noFound = false;
     function updateBandsList(page, limit) {
         Bands.getBands(page, limit).then(function (response) {
+            console.log(response);
             if (response.data.length == 0) {
                 $scope.noFound = true;
             } else {
@@ -270,31 +271,31 @@ app.controller('mediaCtrl', function ($scope, $rootScope, $timeout, Images, Uplo
             $rootScope.showError(result.data.message);
         });
     }
-    $scope.uploadPic = function (file) {
-        var url = Routing.generate('api_media_create');
-        file.upload = Upload.upload({
-            url: url,
-            data: {file: file}
-        });
 
-        file.upload.then(function (result) {
-            $timeout(function () {
-                file.result = result.data;
-                getImagesList();
-                $scope.picFile = null;
-                $rootScope.showSuccess('Image Added');
+    $scope.uploadPic = function (files, errFiles) {
+        $scope.files = files;
+        $scope.errFiles = errFiles;
+        var url = Routing.generate('api_media_create');
+        angular.forEach(files, function (file) {
+            file.upload = Upload.upload({
+                url: url,
+                data: {file: file}
             });
-        }, function (result) {
-            console.log('result');
-            if (result.status > 0) {
-                console.log('result.status > 0');
-                $scope.errorMsg = result.status + ': ' + result.data;
-            } else {
-                console.log('result.status < 0');
-            }
-        }, function (evt) {
-            // Math.min is to fix IE which reports 200% sometimes
-            file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+
+            file.upload.then(function (result) {
+                $timeout(function () {
+                    file.result = result.data;
+                    getImagesList();
+                    $scope.picFile = null;
+                    $rootScope.showSuccess('Image Added');
+                });
+            }, function (response) {
+                if (response.status > 0)
+                    $scope.errorMsg = response.status + ': ' + response.data;
+            }, function (evt) {
+                file.progress = Math.min(100, parseInt(100.0 *
+                        evt.loaded / evt.total));
+            });
         });
     }
 });

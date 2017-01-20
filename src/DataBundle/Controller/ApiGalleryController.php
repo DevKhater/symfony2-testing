@@ -2,23 +2,22 @@
 
 namespace DataBundle\Controller;
 
-use FOS\RestBundle\Request\ParamFetcherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Hateoas\Representation\PaginatedRepresentation;
-use Hateoas\Representation\CollectionRepresentation;
-use FOS\RestBundle\Controller\FOSRestController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use MK\ApiBundle\Api\ApiProblem;
 use DataBundle\Controller\BaseApiController as ApiController;
+use MK\ApiBundle\Api\ApiProblem;
 
-class ApiGalleryController extends ApiController {
+class ApiGalleryController extends ApiController
+{
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->classEntity = 'DataBundle:Gallery';
         $this->serviceEntity = 'data.gallery.handler';
         $this->templateDirectory = 'DataBundle:Gallery:';
@@ -41,20 +40,43 @@ class ApiGalleryController extends ApiController {
      * @Annotations\QueryParam(name="all", requirements="\d+", default="0", description="get All galleries.")
      *
      */
-    public function getGalleryAction(Request $request, ParamFetcherInterface $paramFetcher) {
+    public function getGalleriesAction(Request $request, ParamFetcherInterface $paramFetcher)
+    {
         $totalGalleries = $this->getDoctrine()->getRepository($this->classEntity)->countAllEntities();
         if ($totalGalleries != 0) {
+            $op = parent::getList($request, $paramFetcher, $totalGalleries);
+            $paginatedCollection = parent::createPaginations($op[0], 'gallery', 'api_gallery_list', $op[1], $op[2], $op[3], $totalGalleries);
+
             $offset = null == $paramFetcher->get('offset') ? 1 : $paramFetcher->get('offset');
             $paramFetcher->get('all') == 1 ? $limit = $totalGalleries : $limit = $paramFetcher->get('limit');
             if ($limit != 0)
                 $maxPages = ceil($totalGalleries / $limit);
             $data = $this->container->get($this->serviceEntity)->all($offset, $limit);
-            $paginatedCollection = parent::createPaginations($data, 'gallery', 'api_gallery_list', $offset, $limit, $maxPages, $totalGalleries);
+
             $view = $this->view($paginatedCollection, 200);
         } else {
             $view = $this->view([], 200);
         }
         return $this->handleView($view);
+    }
+
+    /**
+     * @Route("api/gallery/{id}", name="api_gallery_show")
+     * @Method("GET")
+     * @ApiDoc(
+     *  resource=true,
+     *  description="Get Band by Slug",
+     *  statusCodes = {
+     *     200 = "Returned when Successful",
+     *     404 = "Returned when No Content Found",
+     *   }
+     * )
+     */
+    public function getBandAction(Request $request)
+    {
+        $id = $request->get('id');
+        $response = parent::showAction($id);
+        return($response);
     }
 
     /**
@@ -71,7 +93,8 @@ class ApiGalleryController extends ApiController {
      * )
      *
      */
-    public function postGalleryAction(Request $request) {
+    public function postGalleryAction(Request $request)
+    {
         $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
         $newGallery = $this->container->get($this->serviceEntity)->post($request->request->all());
         dump($request);
@@ -83,29 +106,7 @@ class ApiGalleryController extends ApiController {
         }
         return $this->handleView($view);
     }
-
-    /**
-     * @Route("api/gallery/{id}/{image}", name="api_gallery_add_image")
-     * @Method("PATCH")
-     * @ApiDoc(
-     *  resource=true,
-     *  description="Add Image To Gallery",
-     * )
-     */
-    public function addGalleryImageAction(Request $request, $id, $image) {
-        $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
-        $gallery = $this->getOr404($id);
-        $mediaManager = $this->container->get('data.media.handler');
-        $newImage = $mediaManager->get($image);
-        if ($newImage) {
-            $band = $this->container->get($this->serviceEntity)->addImage($gallery, $newImage);
-            $view = $this->view('Image Added To Gallery', 200);
-        } else {
-            $view = $this->view('Image Not Found', 404);
-        }
-        return $this->handleView($view);
-    }
-
+    
     /**
      * @Route("api/gallery/", name="api_gallery_add_images")
      * @Method("PATCH")
@@ -114,7 +115,8 @@ class ApiGalleryController extends ApiController {
      *  description="Add Images To Gallery",
      * )
      */
-    public function addGalleryImagesAction(Request $request, $id) {
+    public function addGalleryImagesAction(Request $request, $id)
+    {
         $data = $request->request->all();
         $galleryId = $request->request->get('data')['id'];
         $medias = $request->request->get('data')['medias'];
@@ -133,11 +135,11 @@ class ApiGalleryController extends ApiController {
      *  description="Add Image To Gallery",
      * )
      */
-    public function removeGalleryImageAction(Request $request, $id, $image) {
+    public function removeGalleryImageAction(Request $request, $id, $image)
+    {
         $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
         $gallery = $this->getOr404($id);
-        $mediaManager = $this->container->get('data.media.handler');
-        $newImage = $mediaManager->get($image);
+        $newImage = $this->fetchImage($image);
         if ($newImage) {
             $band = $this->container->get($this->serviceEntity)->removeImage($gallery, $newImage);
             $view = $this->view('Image Removed from Gallery', 200);
@@ -146,12 +148,10 @@ class ApiGalleryController extends ApiController {
         }
         return $this->handleView($view);
     }
-
-    public function getOr404($id) {
-        if (!($entity = $this->container->get($this->serviceEntity)->get($id))) {
-            throw new NotFoundHttpException($this->classEntity . ' Not Found');
-        }
-        return $entity;
+    
+    private function fetchImage($image)
+    {
+        $mediaManager = $this->container->get('data.media.handler');
+        return $mediaManager->get($image);
     }
-
 }
