@@ -1,8 +1,3 @@
-/*****************************************************************************************/
-/**********                 CONTROLLERS                                         **********/
-/*****************************************************************************************/
-
-
 /* Navigation Controller ***/
 app.controller('navigationCtrl', function ($mdDialog, $scope) {
     var originatorEv;
@@ -41,19 +36,16 @@ app.controller('navigationCtrl', function ($mdDialog, $scope) {
         });
     };
 });
-
 /* Login Controller ***/
-app.controller('loginCtrl', function ($scope, $http, $httpParamSerializerJQLike, $rootScope, checkAuth) {
+app.controller('loginCtrl', function ($scope, $rootScope, Users, checkAuth) {
     checkAuth.check();
     $scope.submit = function () {
-        $http.post(Routing.generate('login_check'), $httpParamSerializerJQLike({_username: $scope.username, _password: $scope.password}), {
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-        }).then(function successCallback(response) {
+        Users.loginUser($scope.username, $scope.password).then(function (response) {
             $rootScope.user = $scope.username;
             $rootScope.logedIn = true;
             $rootScope.go('/home');
-        }, function errorCallback(response) {
-            console.log(response);
+        }, function (error) {
+            console.log(error);
             $rootScope.User = '';
         });
     };
@@ -61,15 +53,13 @@ app.controller('loginCtrl', function ($scope, $http, $httpParamSerializerJQLike,
         $rootScope.go('/home');
     }
 });
-
 /* Home Controller ***/
 app.controller('welcomeCtrl', function ($scope, $rootScope, Users) {
     getUser = function () {
-        Users.getUser().then(
-                function successCallback(response) {
-                    $rootScope.user = response.data;
-                    $scope.welcomeMessage = "Welcome Mr. " + $rootScope.user;
-                }, function errorCallback(response) {
+        Users.getUser().then(function successCallback(response) {
+            $rootScope.user = response.data;
+            $scope.welcomeMessage = "Welcome Mr. " + $rootScope.user;
+        }, function errorCallback(response) {
             console.log(response);
         });
     }
@@ -77,41 +67,38 @@ app.controller('welcomeCtrl', function ($scope, $rootScope, Users) {
         getUser();
     }
     $scope.welcomeMessage = "Welcome Mr. " + $rootScope.user;
-
 });
-
 /* Bands Controller ***/
-app.controller('bandsCtrl', function ($scope, Bands, $rootScope, $mdDialog) {
+app.controller('bandsCtrl', function ($scope, $rootScope, Bands, $mdDialog) {
     $scope.page, $scope.limit, $scope.total, $scope.Bands;
     $scope.noFound = false;
     function updateBandsList(page, limit) {
-        Bands.getBands(page, limit)
-                .then(function (response) {
-                    $scope.limit = response.data.limit;
-                    $scope.total = response.data.total;
-                    $scope.page = response.data.page;
-                    $scope.pages = response.data.pages;
-                    $scope.Bands = response.data._embedded.bands;
-                }, function (error) {
-                    if (error.status === 404) {
-                        $scope.noFound = true;
-                    }
-                });
+        Bands.getBands(page, limit).then(function (response) {
+            if (response.data.length == 0) {
+                $scope.noFound = true;
+            } else {
+                $scope.noFound = false;
+                $scope.limit = response.data.limit;
+                $scope.total = response.data.total;
+                $scope.page = response.data.page;
+                $scope.pages = response.data.pages;
+                $scope.Bands = response.data._embedded.bands;
+            }
+        }, function (error) {
+            console.log(error);
+        });
     }
     updateBandsList($scope.page, $scope.limit);
-    $scope.refreshList = function () {
-    }
     $scope.changePage = function (page) {
         updateBandsList(page, $scope.limit);
     }
     $scope.deleteBand = function (slug) {
-        Bands.deleteBand(slug)
-                .then(function successCallback(response) {
-                    updateBandsList($scope.page);
-                    $rootScope.showSuccess('Band Deleted');
-                }, function errorCallback(response) {
-                    console.log(response);
-                });
+        Bands.deleteBand(slug).then(function successCallback(response) {
+            updateBandsList($scope.page);
+            $rootScope.showSuccess('Band Deleted');
+        }, function errorCallback(response) {
+            console.log(response);
+        });
     };
     $scope.editForm = function (band, ev) {
         $mdDialog.show({
@@ -147,31 +134,31 @@ app.controller('bandsCtrl', function ($scope, Bands, $rootScope, $mdDialog) {
     };
 });
 /* Concerts Controller ***/
-app.controller('concertsCtrl', function ($scope, $rootScope, Concerts, Galleries ) {
+app.controller('concertsCtrl', function ($scope, $rootScope, Concerts, Galleries) {
     $scope.concerts, $scope.limit, $scope.total, $scope.page, $scope.pages;
     $scope.noFound = false;
     updateConcertsList = function (page) {
         Concerts.getConcerts(page).then(function (result) {
+            if (result.data.length === 0) {
+                $scope.noFound = true;
+            } else {
+                $scope.noFound = false;
                 $scope.limit = result.data.limit;
                 $scope.total = result.data.total;
                 $scope.page = result.data.page;
                 $scope.pages = result.data.pages;
                 $scope.concerts = result.data._embedded.concerts;
-                console.log(result);
-            }, function (error) {
-                if (error.status === 404) {
-                    $scope.noFound = true;
-                }
-            });
+                $scope.getGalleryList();
+            }
+        }, function (error) {
+            console.log(error);
+        });
     }
-    console.log($scope.page, $scope.limit)
     updateConcertsList($scope.page, $scope.limit);
     $scope.refreshList = function () {
-        console.log($scope.page, $scope.limit)
         updateConcertsList($scope.page, $scope.limit);
     }
     $scope.deleteConcert = function (gig) {
-        console.log(gig);
         Concerts.deleteConcert(gig.id).then(function successCallback(result) {
             $rootScope.showSuccess('Concert Deleted');
             updateConcertsList($scope.page);
@@ -179,54 +166,37 @@ app.controller('concertsCtrl', function ($scope, $rootScope, Concerts, Galleries
             $rootScope.showError(result.data.message);
         });
     }
-    
     $scope.galleries;
-    getGalleryList();
-    function getGalleryList() {
-        Galleries.getAllGalleries()
-                .then(function (result) {
-                    $scope.galleries = result.data._embedded.gallery;
-                }, function (error) {
-                    console.log(error.message);
-                });
+    $scope.getGalleryList = function () {
+        Galleries.getAllGalleries().then(function (result) {
+            if (result.data.length !== 0) {
+                $scope.galleries = result.data._embedded.gallery;
+            }
+        }, function (error) {
+            console.log(error.message);
+        });
     }
-    
-    $scope.editing;
-    $scope.newField;
-     $scope.editConcertGallery = function(field) {
-         console.log(field);
+    $scope.editing, $scope.newField;
+    $scope.editConcertGallery = function (field) {
         $scope.editing = $scope.concerts.indexOf(field);
-        console.log($scope.concerts.indexOf(field));
-        $scope.newField = angular.copy(field);
     }
-    
-    $scope.editedConcert;
-    $scope.saveConcertGallery = function(concert, newGallery) {
+    $scope.saveConcertGallery = function (concert, newGallery) {
         if ($scope.editing !== false) {
-            console.log(concert);
-            console.log(newGallery);
             Concerts.addGalleryToConcert(concert, newGallery).then(function successCallback(result) {
                 $scope.refreshList();
                 $rootScope.showSuccess('Gallery Added To Concert');
             }, function errorCallback(result) {
-            $rootScope.showError(result.data.message);
+                $rootScope.showError(result.data.message);
             });
             $scope.editing = false;
         }
     };
-    
-    $scope.cancel = function(index) {
+    $scope.cancel = function (index) {
         if ($scope.editing !== false) {
-            $scope.appkeys[$scope.editing] = $scope.newField;
             $scope.editing = false;
-        }       
+            $scope.refreshList();
+        }
     };
-    
-    
-    
-    
-    
-    
     $scope.sortType = 'date'; // set the default sort type
     $scope.sortReverse = true;  // set the default sort order
     $scope.searchBand = '';     // set the default search/filter term
@@ -235,7 +205,7 @@ app.controller('concertsCtrl', function ($scope, $rootScope, Concerts, Galleries
     }
 });
 /* Location Controller ***/
-app.controller('locationsCtrl', function ($scope, Locations, $rootScope) {
+app.controller('locationsCtrl', function ($scope, $rootScope, Locations) {
     $scope.locations;
     $scope.noFound = false;
     function getLocationsList(page) {
@@ -276,19 +246,18 @@ app.controller('mediaCtrl', function ($scope, $rootScope, $timeout, Images, Uplo
     $scope.noFound = false;
     getImagesList($scope.page, $scope.limit);
     function getImagesList(page, limit) {
-        Images.getImages(page, limit)
-                .then(function (result) {
-                    if (result.data.total == 0) {
-                        $scope.noFound = true;
-                    }
-                    $scope.limit = result.data.limit;
-                    $scope.total = result.data.total;
-                    $scope.page = result.data.page;
-                    $scope.pages = result.data.pages;
-                    $scope.images = result.data._embedded.media;
-                }, function (error) {
-                    console.log(error.message);
-                });
+        Images.getImages(page, limit).then(function (result) {
+            if (result.data.total == 0) {
+                $scope.noFound = true;
+            }
+            $scope.limit = result.data.limit;
+            $scope.total = result.data.total;
+            $scope.page = result.data.page;
+            $scope.pages = result.data.pages;
+            $scope.images = result.data._embedded.media;
+        }, function (error) {
+            console.log(error.message);
+        });
     }
     $scope.changePage = function (page) {
         getImagesList(page, $scope.limit);
@@ -322,55 +291,53 @@ app.controller('mediaCtrl', function ($scope, $rootScope, $timeout, Images, Uplo
                 $scope.errorMsg = result.status + ': ' + result.data;
             } else {
                 console.log('result.status < 0');
-
             }
         }, function (evt) {
             // Math.min is to fix IE which reports 200% sometimes
             file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
         });
     }
-
 });
 /* Gallery Controller ***/
-app.controller('galleryCtrl', function ($scope, Images, Galleries, $rootScope, $mdDialog) {
+app.controller('galleryCtrl', function ($scope, $rootScope, Galleries, Images) {
     $scope.images;
     $scope.noFound = false;
-    getImagesList();
-    function getImagesList() {
-        Images.getAllImages().then(function (result) {
-            if (result.data.total == 0) {
-                $scope.noFound = true;
+//    getImagesList();
+//    function getImagesList() {
+//        Images.getAllImages().then(function (result) {
+//            if (result.data.length == 0) {
+//                $scope.noFound = true;
+//            } else {
+//                $scope.images = result.data._embedded.media;
+//            }
+//        }, function (error) {
+//            console.log(error);
+//        });
+//    }
+
+    $scope.galleries, $scope.limit, $scope.total, $scope.page, $scope.pages;
+    $scope.galleryNoFound = false;
+    getGalleryList($scope.page, $scope.limit);
+    function getGalleryList(page, limit) {
+        Galleries.getAllGalleries().then(function (result) {
+            console.log(result);
+            if (result.data.length == 0) {
+                $scope.galleryNoFound = true;
             } else {
-                $scope.images = result.data._embedded.media;
+                $scope.limit = result.data.limit;
+                $scope.total = result.data.total;
+                $scope.page = result.data.page;
+                $scope.pages = result.data.pages;
+                $scope.galleries = result.data._embedded.gallery;
             }
         }, function (error) {
             console.log(error.message);
         });
     }
-    
-    $scope.galleries, $scope.limit, $scope.total, $scope.page, $scope.pages;
-    $scope.galleryNoFound = false;
-    getGalleryList($scope.page, $scope.limit);
-    function getGalleryList(page, limit) {
-        Galleries.getAllGalleries()
-                .then(function (result) {
-                    if (result.data.total == 0) {
-                        $scope.galleryNoFound = true;
-                    }
-                    $scope.limit = result.data.limit;
-                    $scope.total = result.data.total;
-                    $scope.page = result.data.page;
-                    $scope.pages = result.data.pages;
-                    $scope.galleries = result.data._embedded.gallery;
-                }, function (error) {
-                    console.log(error.message);
-                });
-    }
     $scope.changePage = function (page) {
         getImagesList(page, $scope.limit);
     }
-    
-    
+
     $scope.selected = [];
     $scope.class = false;
     $scope.select = function (item) {
@@ -379,8 +346,8 @@ app.controller('galleryCtrl', function ($scope, Images, Galleries, $rootScope, $
         console.log($scope.selected);
         console.log($scope.selected.indexOf(item));
         if ($scope.selected.indexOf(item) == -1) {
-                $scope.class= true;
-                $scope.selected.push(item);
+            $scope.class = true;
+            $scope.selected.push(item);
             console.log($scope.selected);
         } else {
             $scope.class = false;
@@ -391,35 +358,33 @@ app.controller('galleryCtrl', function ($scope, Images, Galleries, $rootScope, $
     $scope.gallery = {
         name: ''
     }
-    $scope.createGallery = function(){
+    $scope.createGallery = function () {
         datatbundle_gallery = {
             name: $scope.gallery.name
         }
-        Galleries.addGallery(datatbundle_gallery).then(
-        function successCallback(result) {
-          $rootScope.showSuccess('Gallery Created');
+        Galleries.addGallery(datatbundle_gallery).then(function successCallback(result) {
+            $rootScope.showSuccess('Gallery Created');
         }, function errorCallback(result) {
-          console.log(result);
+            console.log(result);
         });
     }
     $scope.addImageGalleryId;
-     $scope.addImagesToGallery = function () {
-         if (angular.isUndefined($scope.addImageGalleryId))
-         {
-             $rootScope.showError('Select A Gallery');
-         } else {
+    $scope.addImagesToGallery = function () {
+        if (angular.isUndefined($scope.addImageGalleryId))
+        {
+            $rootScope.showError('Select A Gallery');
+        } else {
             $scope.medias = [];
-            angular.forEach($scope.selected, function(value, key) {
-                    console.log(value);
-                    $scope.medias.push(value);
+            angular.forEach($scope.selected, function (value, key) {
+                console.log(value);
+                $scope.medias.push(value);
             });
-            Galleries.addImagesToGallery($scope.addImageGalleryId, $scope.medias)
-                    .then(function successCallback(result) {
-                        $rootScope.showSuccess('Images Added');
-                        getGalleryList($scope.page, $scope.limit);
-                    }, function errorCallback(error) {
-                        $rootScope.showError(error);
-                    });
-          }
+            Galleries.addImagesToGallery($scope.addImageGalleryId, $scope.medias).then(function successCallback(result) {
+                $rootScope.showSuccess('Images Added');
+                getGalleryList($scope.page, $scope.limit);
+            }, function errorCallback(error) {
+                $rootScope.showError(error);
+            });
+        }
     };
 });

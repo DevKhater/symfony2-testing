@@ -6,8 +6,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Hateoas\Representation\PaginatedRepresentation;
-use Hateoas\Representation\CollectionRepresentation;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
@@ -38,34 +36,21 @@ class ApiConcertController extends ApiController
      *
      * @Annotations\QueryParam(name="offset", requirements="\d+", nullable=true, description="Offset from which to start listing bands.")
      * @Annotations\QueryParam(name="limit", requirements="\d+", default="10", description="How many bands to return.")
+     * @Annotations\QueryParam(name="all", requirements="\d+", default="0", description="get All Concerts.")
      *
      * @Annotations\View(templateVar="concerts")
      */
     public function getConcertAction(Request $request, ParamFetcherInterface $paramFetcher)
     {
         $offset = null == $paramFetcher->get('offset') ? 1 : $paramFetcher->get('offset');
-        $totalBands = $this->getDoctrine()->getRepository($this->classEntity)->countAllEntities();
-        $limit = $paramFetcher->get('limit');
         $totalConcerts = $this->getDoctrine()->getRepository($this->classEntity)->countAllEntities();
+        $limit = $paramFetcher->get('all') == 1 ? $totalConcerts : $paramFetcher->get('limit');
         $maxPages = ceil($totalConcerts / $limit);
         $data = $this->container->get($this->serviceEntity)->all($offset, $limit);
         if ($data == null){
-            $view = $this->view('No concerts found.', 404);
+            $view = $this->view([], 200);
         } else {
-            $paginatedCollection = new PaginatedRepresentation(
-                    new CollectionRepresentation(
-                    $data, 'concerts', // embedded rel
-                    'concerts'  // xml element name
-                    ), 'api_concerts_list', // route
-                    array(), // route parameters
-                    $offset, // page number
-                    $limit, // limit
-                    $maxPages, // total pages
-                    'page', // page route parameter name, optional, defaults to 'page'
-                    'limit', // limit route parameter name, optional, defaults to 'limit'
-                    false, // generate relative URIs, optional, defaults to `false`
-                    $totalConcerts      // total collection size, optional, defaults to `null`
-            );
+            $paginatedCollection = parent::createPaginations($data, 'concerts', 'api_concerts_list', $offset, $limit, $maxPages, $totalConcerts );
             $view = $this->view($paginatedCollection, 200);
         }
         return $this->handleView($view);

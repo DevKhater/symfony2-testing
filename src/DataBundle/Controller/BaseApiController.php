@@ -6,14 +6,15 @@ use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Hateoas\Representation\PaginatedRepresentation;
+use Hateoas\Representation\CollectionRepresentation;
 
-class BaseApiController extends FOSRestController
-{
+
+class BaseApiController extends FOSRestController {
 
     var $classEntity, $serviceEntity, $templateDirectory;
 
-    public function getAction(Request $request, ParamFetcherInterface $paramFetcher)
-    {
+    public function getAction(Request $request, ParamFetcherInterface $paramFetcher) {
         $offset = null == $paramFetcher->get('offset') ? 1 : $paramFetcher->get('offset');
         $limit = $paramFetcher->get('limit');
         $maxPages = ceil($this->getDoctrine()->getRepository($this->classEntity)->countAllEntities() / $limit);
@@ -25,28 +26,30 @@ class BaseApiController extends FOSRestController
         return $this->handleView($view);
     }
 
-    public function showAction($id)
-    {
+    public function showAction($id) {
         $data = $this->getOr404($id);
         $view = $this->view($data, 200)
                 ->setTemplate($this->templateDirectory . "apiShow.html.twig");
         return $this->handleView($view);
     }
 
-    public function deleteAction($id)
-    {
+    public function deleteAction($id) {
         $entity = $this->getOr404($id);
         $this->container->get($this->serviceEntity)->delete($entity);
         $view = $this->view(null, 204);
         return $this->handleView($view);
     }
 
-    public function getOr404($id)
-    {
+    public function getOr404($id) {
         if (!($entity = $this->container->get($this->serviceEntity)->get($id))) {
             throw new NotFoundHttpException($this->classEntity . ' Not Found');
         }
         return $entity;
     }
 
-}
+    public function createPaginations($data, $relName, $apiUrl, $offset, $limit, $maxPages, $totalData ) {
+        return new PaginatedRepresentation(
+                new CollectionRepresentation($data, $relName, $relName), $apiUrl, array(), $offset, $limit, $maxPages, 
+                'page', 'limit', false, $totalData);
+        }
+    }

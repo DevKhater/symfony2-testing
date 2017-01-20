@@ -6,8 +6,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Hateoas\Representation\PaginatedRepresentation;
-use Hateoas\Representation\CollectionRepresentation;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\Controller\Annotations;
@@ -64,22 +62,9 @@ class ApiBandController extends ApiController
         $maxPages = ceil($totalBands / $limit);
         $data = $this->container->get($this->serviceEntity)->all($offset, $limit);
         if ($data == null) {
-            $view = $this->view(["error" => 'No Bands found.'], 404);
+            $view = $this->view([], 200);
         } else {
-            $paginatedCollection = new PaginatedRepresentation(
-                    new CollectionRepresentation(
-                    $data, 'bands', // embedded rel
-                    'bands'  // xml element name
-                    ), 'api_bands_list', // route
-                    array(), // route parameters
-                    $offset, // page number
-                    $limit, // limit
-                    $maxPages, // total pages
-                    'page', // page route parameter name, optional, defaults to 'page'
-                    'limit', // limit route parameter name, optional, defaults to 'limit'
-                    false, // generate relative URIs, optional, defaults to `false`
-                    $totalBands      // total collection size, optional, defaults to `null`
-            );
+            $paginatedCollection = parent::createPaginations($data, 'bands', 'api_bands_list', $offset, $limit, $maxPages, $totalBands );
             $view = $this->view($paginatedCollection, 200);
         }
         return $this->handleView($view);

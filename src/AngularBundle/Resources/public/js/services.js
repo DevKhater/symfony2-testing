@@ -8,7 +8,7 @@ app.factory('checkAuth', ['$rootScope', 'Users', function ($rootScope, Users) {
       $rootScope.logedIn = 1;
       return true;
     }, function (error) {
-      console.log(error.data.title);
+      console.log(error);
       $rootScope.logedIn = 0;
       return false;
     });
