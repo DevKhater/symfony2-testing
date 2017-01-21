@@ -126,6 +126,25 @@ class ApiGalleryController extends ApiController
         $view = $this->view('Images Added To Gallery', 200);
         return $this->handleView($view);
     }
+    
+    /**
+     * @Route("api/gallery/{id}/{name}", name="api_gallery_patch_name")
+     * @Method("PATCH")
+     * @ApiDoc(
+     *  resource=true,
+     *  description="Show Concert's Band",
+     * )
+     */
+    public function patchGalleryNameAction(Request $request)
+    {
+        $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
+        $newName = $request->get('name');
+        $gallery = $this->getOr404($request->get('id'));
+        $this->container->get($this->serviceEntity)->editGallery($gallery, $newName);
+        $view = $this->view('Gallery Name Updated', 200);
+        return $this->handleView($view);    
+    }
+
 
     /**
      * @Route("api/gallery/{id}/{image}", name="api_gallery_remove_image")
@@ -147,6 +166,22 @@ class ApiGalleryController extends ApiController
             $view = $this->view('Image Not Found', 404);
         }
         return $this->handleView($view);
+    }
+    
+    
+    /**
+     * @Route("api/gallery/{id}", name="api_gallery_delete")
+     * @Method("DELETE")
+     * @ApiDoc(
+     *  resource=true,
+     *  description="Delete Gallery resource",
+     * )
+     */
+    public function deleteGalleryAction(Request $request)
+    {
+        $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
+        $response = parent::deleteAction($request->get('id'));
+        return($response);
     }
     
     private function fetchImage($image)

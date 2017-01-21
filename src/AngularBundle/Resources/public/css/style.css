@@ -175,3 +175,9 @@ md-menu-content .backWhite {
 #main.ng-enter.ng-active {
   opacity: 1;
 }
+
+
+
+body{
+    color: black;
+}

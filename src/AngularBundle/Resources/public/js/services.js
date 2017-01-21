@@ -86,6 +86,8 @@ app.factory('Users', ['$http', '$httpParamSerializerJQLike', function ($http, $h
 
   app.factory('Concerts', ['$http', '$httpParamSerializerJQLike', function ($http, $httpParamSerializerJQLike) {
     var url = Routing.generate('api_concerts_list');
+    var urlFut = Routing.generate('api_new_concerts_list');
+    var urlOld = Routing.generate('api_old_concerts_list');
     var dataFactory = {};
     dataFactory.getAllConcerts = function () {
       return $http({method: "GET", url: url, headers: {'Accept': 'application/json'}, params: {offset: 1, all: 1}});
@@ -98,6 +100,18 @@ app.factory('Users', ['$http', '$httpParamSerializerJQLike', function ($http, $h
         limit = 10
       }
       return $http({method: "GET", url: url, headers: {'Accept': 'application/json'}, params: {offset: page, limit: limit}});
+    };
+    dataFactory.getFutureConcerts = function () {
+      return $http({method: "GET", url: urlFut, headers: {'Accept': 'application/json'}});
+    };
+    dataFactory.getOldConcerts = function (page, limit) {
+      if (page == 0 || page == null) {
+        page = 1
+      }
+      if (limit == 0 || limit == null) {
+        limit = 10
+      }
+      return $http({method: "GET", url: urlOld, headers: {'Accept': 'application/json'}, params: {offset: page, limit: limit}});
     };
     dataFactory.addConcert = function (databundle_concert) {
       return $http.post(Routing.generate('api_concert_create'), $httpParamSerializerJQLike({databundle_concert: databundle_concert}), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
@@ -161,6 +175,12 @@ app.factory('Galleries', ['$http', '$httpParamSerializerJQLike', function ($http
         var data = {id: id,medias: medias};
         return $http.patch(Routing.generate('api_gallery_add_images'),$httpParamSerializerJQLike({data: data}), {headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
     }
+    dataFactory.editGalleryName = function (id, name) {
+        return $http.patch(Routing.generate('api_gallery_patch_name', {id: id+ '/' + name}), {headers: {'Accept': 'application/json'}})
+    }
+    dataFactory.deleteGallery = function (id) {
+      return $http.delete(Routing.generate('api_gallery_delete', {id: id}), {headers: {'Accept': 'application/json'}});
+    };
     return dataFactory;
   }]);
 

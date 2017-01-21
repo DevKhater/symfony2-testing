@@ -53,6 +53,61 @@ class ApiConcertController extends ApiController
     }
 
     /**
+     * @Route("api/old/concerts/", name="api_old_concerts_list")
+     * @Method("GET")
+     * @ApiDoc(
+     *   description="List All Old Concert",
+     *   resource = true,
+     *   statusCodes = {
+     *     200 = "Returned when Successful",
+     *     404 = "Returned when No Content Found",
+     *   }
+     * )
+     *
+     * @Annotations\QueryParam(name="offset", requirements="\d+", nullable=true, description="Offset from which to start listing bands.")
+     * @Annotations\QueryParam(name="limit", requirements="\d+", default="10", description="How many bands to return.")
+     * @Annotations\QueryParam(name="all", requirements="\d+", default="0", description="get All Concerts.")
+     *
+     * @Annotations\View(templateVar="concerts")
+     */
+    public function getOldConcertsAction(Request $request, ParamFetcherInterface $paramFetcher)
+    {
+        $totalConcerts = $this->getDoctrine()->getRepository($this->classEntity)->countOldConcerts();
+        if ($totalConcerts != 0) {
+            $offset = null == $paramFetcher->get('offset') ? 1 : $paramFetcher->get('offset');
+            $limit = $paramFetcher->get('all') == 1 ? $totalConcerts : $paramFetcher->get('limit');
+            $maxPages = ceil($totalConcerts / $limit);
+            $data = $this->getDoctrine()->getRepository($this->classEntity)->findOldConcerts($offset, $limit);
+            $paginatedCollection = parent::createPaginations($data, 'concerts', 'api_old_concerts_list', $offset, $limit, $maxPages, $totalConcerts);
+            $view = $this->view($paginatedCollection, 200);
+        } else {
+            $view = $this->view([], 200);
+        }
+        return $this->handleView($view);
+    }
+
+    /**
+     * @Route("api/new/concerts/", name="api_new_concerts_list")
+     * @Method("GET")
+     * @ApiDoc(
+     *   description="List All Old Concert",
+     *   resource = true,
+     *   statusCodes = {
+     *     200 = "Returned when Successful",
+     *     404 = "Returned when No Content Found",
+     *   }
+     * )
+     *
+     * @Annotations\View(templateVar="concerts")
+     */
+    public function getNewConcertsAction(Request $request)
+    {
+        $data = $this->getDoctrine()->getRepository($this->classEntity)->findFutureConcerts();
+        $view = $this->view($data, 200);
+        return $this->handleView($view);
+    }
+
+    /**
      * @Route("api/concerts/{id}", name="api_concert_show")
      * @Method("GET")
      * @ApiDoc(

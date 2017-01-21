@@ -64,10 +64,15 @@ app.config(['$mdThemingProvider', function ($mdThemingProvider) {
   .primaryPalette('red')
   .accentPalette('deep-purple')
   .warnPalette('grey')
-  //.backgroundPalette('blue-grey')
+  .backgroundPalette('blue-grey')
   .dark();
 }
 ]);
+
+app.config(['growlProvider', function (growlProvider) {
+  growlProvider.globalTimeToLive(3000);
+  growlProvider.onlyUniqueMessages(false);
+}]);
 
 app.run(function ($rootScope, $location, $window, $templateRequest, growl) {
   $rootScope.logedIn;

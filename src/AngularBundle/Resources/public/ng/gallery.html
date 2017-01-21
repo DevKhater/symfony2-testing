@@ -6,7 +6,7 @@
 </style>
 
 
- <md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="right">
+<md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="right" ng-hide="galleryNoFound">
 
       <md-toolbar class="md-theme-light">
         <h1 class="md-toolbar-tools">Sidenav Right</h1>
@@ -22,7 +22,10 @@
           <md-input-container>
             <label for="testInput">Test input</label>
             <input type="text" id="testInput"
-                   ng-model="data" md-autofocus>
+                   ng-model="editGal.name" md-autofocus>
+            <md-button ng-click="saveGalleryName()" class="md-primary">
+                Update Name
+        </md-button>
           </md-input-container>
         </form>
         <md-button ng-click="close()" class="md-primary">
@@ -32,8 +35,9 @@
 
     </md-sidenav>
 
-
-
+<div ng-show="galleryNoFound">
+    <h2>No Gallery Found</h2>
+</div>
 
 <table class="table table-bordered table-striped backWhite" ng-hide="galleryNoFound">
     <thead>
@@ -50,7 +54,7 @@
     <tbody>
         <tr ng-repeat="gallery in galleries">
             <td flex><md-button aria-label="DeleteGallery" ng-click="deleteGallery(gallery)"><md-icon md-svg-icon="crud:delete" style="fill:red"></md-icon></md-button></td>
-            <td><span ng-click="editGallery(gallery)">{{ gallery.name}}</span></td>
+            <td><span ng-click="openGalleryForm(gallery)">{{ gallery.name}}</span></td>
 <td>{{ gallery.images_in_gallery.length}}</td>
 <td></td>
 </tr>
@@ -63,12 +67,6 @@
      total="total"
      paging-action="changePage(page)">
 </div>
-
-<md-button ng-click="toggleRight()"
-            ng-hide="isOpenRight()"
-            class="md-primary">
-            Toggle right
-</md-button>
 
 
 
@@ -88,7 +86,7 @@
     </md-input-container>
 
 </form>
-<form name="galleryForm" class="elementCardContent">
+<form name="galleryForm" class="elementCardContent" ng-hide="noImages">
     <div layout-padding layout-margin layout='row'>
         <div class='npT' style="width:100%;">
             <md-select ng-model='addImageGalleryId' placeholder="Select Gallery" style="margin:0">

@@ -58,6 +58,12 @@ class GalleryHandler
 
         return $gallery;
     }
+    
+    public function delete(Gallery $gallery)
+    {
+        $this->em->remove($gallery);
+        $this->em->flush();
+    }
 
     public function addImages(Gallery $gallery, $medias)
     {
@@ -79,6 +85,14 @@ class GalleryHandler
         $this->em->persist($gallery);
         $this->em->flush();
         return $gallery;
+    }
+    
+      public function editGallery(Gallery $gallery, $newName)
+    {
+          $gallery->setName($newName);
+          $this->em->persist($gallery);
+          $this->em->flush();
+          return $gallery;
     }
 
     private function processForm(Gallery $gallery, $parameters, $method = "PUT")
