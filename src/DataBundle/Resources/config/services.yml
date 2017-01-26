@@ -42,3 +42,7 @@ services:
     data.gallery.handler:
         class: %data.gallery.handler.class%
         arguments: ['@doctrine.orm.entity_manager','%data.gallery.class%', '@form.factory', '@data.media.handler']
+        
+    data.category.handler:
+        class: DataBundle\Model\CategoryList
+        arguments: ['@doctrine.orm.entity_manager','DataBundle\Entity\Category']
