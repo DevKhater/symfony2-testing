@@ -29,5 +29,14 @@ class CategoryRepository extends EntityRepository
                         ->setParameter('par', $parent)
                         ->getResult();
     }
+    
+    public function getAllCategory()
+    {
+        return $this->getEntityManager()
+                        ->createQuery(
+                                'SELECT a.id, a.name, a.parent, b.name as parentName FROM DataBundle:Category a JOIN  DataBundle:Category b WITH a.parent = b.id where a.parent = 0 or a.parent != 0')
+                        //->setParameter('par', $parent)
+                        ->getResult();
+    }
 
 }

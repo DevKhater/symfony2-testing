@@ -21,17 +21,12 @@ class DefaultController extends Controller
     public function indexAction(Request $request)
     {
         
-        $cat = new Category();
-        $cat->setName('UNIQUE');
-        $cat->setParent(0);
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($cat);
-        $em->flush($cat);
+        $catMan = $this->container->get('data.category.handler');
+       // $catMan->deleteCategory(1);
+        dump($catMan->getCategoryList());
+        //dump($this->getDoctrine()->getRepository('DataBundle:Category')->getAllCategory());
         
-        
-        
-        $data = $this->container->get('data.category.handler')->getCategoryList();
-        dump($data);exit;
+        exit;
         
 //        $cat = new Category();
 //        $cat->setName('Category 1');

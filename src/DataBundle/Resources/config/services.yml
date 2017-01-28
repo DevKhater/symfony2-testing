@@ -11,6 +11,10 @@ parameters:
     data.media.handler.class:   'DataBundle\Handler\MediaHandler'
     data.gallery.class:           'DataBundle\Entity\Gallery'
     data.gallery.handler.class:   'DataBundle\Handler\GalleryHandler'
+    data.category.class:           'DataBundle\Entity\Category'
+    data.category.handler.class:   'DataBundle\Handler\CategoryHandler'
+    data.project.class:           'DataBundle\Entity\Project'
+    data.project.handler.class:   'DataBundle\Handler\ProjectHandler'
 
 services:
     mkcrud.file.uploader:
@@ -44,5 +48,9 @@ services:
         arguments: ['@doctrine.orm.entity_manager','%data.gallery.class%', '@form.factory', '@data.media.handler']
         
     data.category.handler:
-        class: DataBundle\Model\CategoryList
-        arguments: ['@doctrine.orm.entity_manager','DataBundle\Entity\Category']
+        class: %data.category.handler.class%
+        arguments: ['@doctrine.orm.entity_manager','%data.category.class%']
+
+    data.project.handler:
+        class: %data.project.handler.class%
+        arguments: ['@doctrine.orm.entity_manager','%data.project.class%', '@form.factory']
