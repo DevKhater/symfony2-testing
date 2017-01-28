@@ -1,6 +1,6 @@
 /*** Forms Controllers ***/
 
-app.controller('bandFormCtrl', function ($scope, $rootScope, $mdDialog, $location, $route, Bands) {
+app.controller('bandFormCtrl', function ($scope, $rootScope, Bands) {
     $scope.genres;
     $scope.band = {
         name: "",
@@ -25,11 +25,12 @@ app.controller('bandFormCtrl', function ($scope, $rootScope, $mdDialog, $locatio
             genre: $scope.band.genre
         };
         Bands.addBand(databundle_band).then(
-                function successCallback(response) {
-                    $scope.hide();
+                function (response) {
+
                     $rootScope.showSuccess('Band Created');
-                }, function errorCallback(response) {
-            console.log(response);
+                    $scope.clearForm();
+                }, function (error) {
+            console.log(error);
         });
     };
     $scope.clearForm = function () {
@@ -37,15 +38,9 @@ app.controller('bandFormCtrl', function ($scope, $rootScope, $mdDialog, $locatio
         $scope.band.genre = "";
         $scope.displayInput = false;
     };
-    $scope.hide = function () {
-        $mdDialog.hide();
-    };
-    $scope.cancel = function () {
-        $mdDialog.cancel();
-    };
 });
 
-app.controller('locationFormCtrl', function ($scope, $rootScope, $location, $route, $mdDialog, $http, $httpParamSerializerJQLike) {
+app.controller('locationFormCtrl', function ($scope, $rootScope, Locations) {
     $scope.location = {
         name: "",
         address: ""
@@ -55,32 +50,22 @@ app.controller('locationFormCtrl', function ($scope, $rootScope, $location, $rou
             name: $scope.location.name,
             address: $scope.location.address
         };
-        $http.post(Routing.generate('api_location_create'), $httpParamSerializerJQLike({databundle_location: databundle_location}), {
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-        }).then(function successCallback(response) {
-            $scope.hide();
+        Locations.addLocation(databundle_location).then(function (response) {
             $rootScope.showSuccess('Venue Created');
-            if ($location.path() == '/venues')
-                $route.reload();
-        }, function errorCallback(response) {
-            console.log(response);
-        });
+            $scope.clearForm();
+        }, function (error) {
+            console.log(error);
+        }
+        )
     };
     $scope.clearForm = function () {
         $scope.location.name = "";
         $scope.location.address = "";
     };
-    $scope.hide = function () {
-        $mdDialog.hide();
-    };
-    $scope.cancel = function () {
-        $mdDialog.cancel();
-    };
 });
 
-app.controller('concertFormCtrl', function ($scope, $rootScope, $location, $route, $controller, $mdDialog, Bands, Locations, Concerts) {
+app.controller('concertFormCtrl', function ($scope, $rootScope, Bands, Locations, Concerts) {
     $scope.ncband, $scope.nclocation;
-
     $scope.fbands;
     function getBands() {
         Bands.getAllBands().then(function (response) {
@@ -90,7 +75,6 @@ app.controller('concertFormCtrl', function ($scope, $rootScope, $location, $rout
         });
     }
     getBands();
-
     $scope.flocations;
     function getLocations() {
         Locations.getAllLocations().then(function (response) {
@@ -100,7 +84,6 @@ app.controller('concertFormCtrl', function ($scope, $rootScope, $location, $rout
         });
     }
     getLocations();
-
     var y = [];
     var m = [];
     var d = [];
@@ -113,7 +96,6 @@ app.controller('concertFormCtrl', function ($scope, $rootScope, $location, $rout
     for (var i = 1; i <= 31; i++) {
         d.push(i);
     }
-
     $scope.years = y;
     $scope.months = m;
     $scope.days = d;
@@ -132,26 +114,20 @@ app.controller('concertFormCtrl', function ($scope, $rootScope, $location, $rout
         saveConcert(databundle_concert);
     };
     function saveConcert(data) {
-        Concerts.addConcert(data).then(function successCallback(response) {
-            $scope.hide();
-            if ($location.path() == '/concerts') {
-                angular.extend(this, $controller('concertsCtrl', {$scope: $scope}));
-                $scope.refreshList();
-            }
+        Concerts.addConcert(data).then(function (response) {
             $rootScope.showSuccess('Concert Created');
-        }, function errorCallback(response) {
-            console.log(response);
-        });
-    }
+            $scope.clearForm();
+        }, function (error) {
+            console.log(error);
+        }
+        )};
     $scope.clearForm = function () {
-
-    };
-    $scope.hide = function () {
-        $mdDialog.hide();
-    };
-    $scope.cancel = function () {
-        $mdDialog.cancel();
-    };
+        $scope.coYear = '';
+        $scope.coMonth = '';
+        $scope.coDay = '';
+        $scope.fbands = '';
+        $scope.flocations = '';
+    }
 });
 
 app.controller('bandImageCtrl', function ($scope, $rootScope, $mdDialog, band, Bands, Images) {
@@ -178,10 +154,10 @@ app.controller('bandImageCtrl', function ($scope, $rootScope, $mdDialog, band, B
     };
     $scope.saveBand = function () {
         Bands.addImageToBand(band.slug, $scope.selected.id)
-                .then(function successCallback(response) {
+                .then(function (response) {
                     $mdDialog.hide();
                     $rootScope.showSuccess('Preview Image Saved');
-                }, function errorCallback(response) {
+                }, function (response) {
                     $rootScope.showError(response.data.message);
                 });
     };

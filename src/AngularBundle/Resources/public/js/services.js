@@ -140,6 +140,11 @@ app.factory('Users', ['$http', '$httpParamSerializerJQLike', function ($http, $h
       }
       return $http({method: "GET", url: url, headers: {'Accept': 'application/json'}, params: {offset: page, limit: limit}});
     };
+    
+    dataFactory.addLocation = function (databundle_location) {
+      return $http.post(Routing.generate('api_location_create'), $httpParamSerializerJQLike({databundle_location: databundle_location}), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+    };
+
 
     dataFactory.deleteLocation = function (id) {
       return $http.delete(Routing.generate('api_location_delete', {id: id}));

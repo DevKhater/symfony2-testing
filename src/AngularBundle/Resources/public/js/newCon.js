@@ -1,40 +1,11 @@
 /* Navigation Controller ***/
-app.controller('navigationCtrl', function ($mdDialog, $scope) {
-    var originatorEv;
-    this.openMenu = function ($mdOpenMenu, ev) {
-        originatorEv = ev;
-        $mdOpenMenu(ev);
-    };
-    $scope.showBandForm = function (ev) {
-        $mdDialog.show({
-            controller: 'bandFormCtrl',
-            templateUrl: 'newBandForm.html',
-            parent: angular.element(document.body),
-            targetEvent: ev,
-            clickOutsideToClose: false,
-            fullscreen: false // Only for -xs, -sm breakpoints.
-        });
-    };
-    $scope.showLocationForm = function (ev) {
-        $mdDialog.show({
-            controller: 'locationFormCtrl',
-            templateUrl: 'newLocationForm.html',
-            parent: angular.element(document.body),
-            targetEvent: ev,
-            clickOutsideToClose: false,
-            fullscreen: false // Only for -xs, -sm breakpoints.
-        });
-    };
-    $scope.showConcertForm = function (ev) {
-        $mdDialog.show({
-            controller: 'concertFormCtrl',
-            templateUrl: 'newConcertForm.html',
-            parent: angular.element(document.body),
-            targetEvent: ev,
-            clickOutsideToClose: false,
-            fullscreen: false // Only for -xs, -sm breakpoints.
-        });
-    };
+app.controller('navigationCtrl', function ($scope, $timeout, $mdSidenav) {
+    this.toggleLeft = buildToggler('left');
+    function buildToggler(componentId) {
+      return function() {
+        $mdSidenav(componentId).toggle();
+      }
+    }
 });
 /* Login Controller ***/
 app.controller('loginCtrl', function ($scope, $rootScope, Users, checkAuth) {
@@ -53,6 +24,32 @@ app.controller('loginCtrl', function ($scope, $rootScope, Users, checkAuth) {
         $rootScope.go('/home');
     }
 });
+
+/* Forms Contoller ***/
+
+app.controller('formsCtrl', function ($scope, $rootScope){
+    $scope.theform = 0;
+    $scope.visibleForm = 0;
+    $scope.forms = [
+        { 'id': 1, 'name' : 'Band' },
+        { 'id': 2, 'name' : 'Venue' },
+        { 'id': 3, 'name' : 'Concert' },
+    ]
+    console.log($scope.forms);
+    $scope.$watch('theform', function() {
+        console.log('Form Changed');
+        console.log($scope.theform);
+        $scope.visibleForm = $scope.theform;
+        $scope.cancel = function(){
+            $scope.theform = 0;
+        }
+        
+    });    
+});
+
+
+
+
 /* Home Controller ***/
 app.controller('welcomeCtrl', function ($scope, $rootScope, Users) {
     getUser = function () {
