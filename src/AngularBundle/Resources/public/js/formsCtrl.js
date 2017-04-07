@@ -87,7 +87,7 @@ app.controller('concertFormCtrl', function ($scope, $rootScope, Bands, Locations
     var y = [];
     var m = [];
     var d = [];
-    for (var i = 2011; i < 2022; i++) {
+    for (var i = 2000; i < 2022; i++) {
         y.push(i);
     }
     for (var i = 1; i <= 12; i++) {

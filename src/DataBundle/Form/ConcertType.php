@@ -11,7 +11,7 @@ class ConcertType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('date')
+        $builder->add('date', 'birthday')
                 ->add('location', 'entity', array(
                     'class' => 'DataBundle:Location',
                     'choice_label' => 'name',
